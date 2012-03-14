@@ -9,5 +9,5 @@ group :development do
   gem "rspec", "~> 2.3.0"
   gem "bundler", "~> 1.1.0"
   gem "jeweler"
-  gem 'therubyracer'
+  gem 'jasmine'
 end

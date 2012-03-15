@@ -1,9 +1,10 @@
 beforeEach(function() {
-  this.addMatchers({
-    toBePlaying: function(expectedSong) {
-      var player = this.actual;
-      return player.currentlyPlayingSong === expectedSong && 
-             player.isPlaying;
-    }
-  });
 });
+
+function fail() {
+  expect(true).toBe(false);
+};
+
+function pend() {
+  expect("pending test").toBe(false);
+}

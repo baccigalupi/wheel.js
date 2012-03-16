@@ -94,15 +94,15 @@ describe("Function", function() {
     });
 
     describe("instance attributes", function () {
-      it('gains new class attributes', function () {
+      it('gains new instance attributes', function () {
         expect(subby.bof).toBe('bof');
       });
 
-      it('maintains a reference to old class variables', function () {
+      it('maintains a reference to old instance variables', function () {
         expect(subby.foo()).toBe('Let there be foo');
       });
 
-      it('maintains a reference to old class methods', function () {
+      it('maintains a reference to old instance methods', function () {
         expect(subby.zardoz()).toBe('Zardoz has moxy!');
       });
     });
@@ -137,6 +137,40 @@ describe("Function", function() {
 
     it('maintains a reference to old class methods', function () {
       expect(Subby.bar()).toBe('I can has Super');
+    });
+  });
+
+  describe('mixin', function() {
+    beforeEach(function() {
+      Subby = SubClass.subclass({});
+      Subby.mixin({
+        bof: 'bof',
+        foo: function() {
+          if ( this._super ) {
+            return 'Let there be foo';
+          }
+        },
+        zardoz: function() {
+          this._super();
+          if(this.hasMoxy) {
+            return "Zardoz has moxy!";
+          }
+        },
+      });
+
+      subby = new Subby();
+    });
+
+    it('gains new instance attributes', function () {
+      expect(subby.bof).toBe('bof');
+    });
+
+    it('maintains a reference to old instance variables', function () {
+      expect(subby.foo()).toBe('Let there be foo');
+    });
+
+    it('maintains a reference to old instance methods', function () {
+      expect(subby.zardoz()).toBe('Zardoz has moxy!');
     });
   });
 });

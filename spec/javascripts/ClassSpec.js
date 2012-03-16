@@ -15,40 +15,42 @@ describe("Function", function() {
       classy: true,
       bar: function() { this.canHasSuper = true; }
     });
-
-    Subby = SubClass.subclass({
-      bof: 'bof',
-      foo: function() {
-        if ( this._super ) {
-          return 'Let there be foo';
-        }
-      },
-      zardoz: function() {
-        this._super();
-        if(this.hasMoxy) {
-          return "Zardoz has moxy!";
-        }
-      },
-    }, {
-      baz: 'baz',
-      classy: function() {
-        if ( this._super ) {
-          return 'I am classy';
-        }
-      },
-      bar: function() {
-        this._super();
-        if ( this.canHasSuper ) {
-          return 'I can has Super';
-        }
-      }
-    });
-
-    subclass = new SubClass();
-    subby = new Subby();
   });
 
   describe("subclassing", function () {
+    beforeEach(function() {
+      Subby = SubClass.subclass({
+        bof: 'bof',
+        foo: function() {
+          if ( this._super ) {
+            return 'Let there be foo';
+          }
+        },
+        zardoz: function() {
+          this._super();
+          if(this.hasMoxy) {
+            return "Zardoz has moxy!";
+          }
+        },
+      }, {
+        baz: 'baz',
+        classy: function() {
+          if ( this._super ) {
+            return 'I am classy';
+          }
+        },
+        bar: function() {
+          this._super();
+          if ( this.canHasSuper ) {
+            return 'I can has Super';
+          }
+        }
+      });
+
+      subclass = new SubClass();
+      subby = new Subby();
+    });
+
     describe('convenience and propigation attributes', function() {
       it("has a class method subclass", function () {
         expect(typeof Function.subclass).toBe('function');
@@ -77,7 +79,7 @@ describe("Function", function() {
       });
     });
 
-    describe("class attributes", function () {
+    describe('class inheritance', function() {
       it('gains new class attributes', function () {
         expect(Subby.baz).toBe('baz');
       });
@@ -106,4 +108,35 @@ describe("Function", function() {
     });
   });
 
+  describe('mashin', function() {
+    beforeEach(function() {
+      Subby = SubClass.subclass();
+      Subby.mashin({
+        baz: 'baz',
+        classy: function() {
+          if ( this._super ) {
+            return 'I am classy';
+          }
+        },
+        bar: function() {
+          this._super();
+          if ( this.canHasSuper ) {
+            return 'I can has Super';
+          }
+        }
+      });
+    });
+
+    it('gains new class attributes', function () {
+      expect(Subby.baz).toBe('baz');
+    });
+
+    it('maintains a reference to old class variables', function () {
+      expect(Subby.classy()).toBe('I am classy');
+    });
+
+    it('maintains a reference to old class methods', function () {
+      expect(Subby.bar()).toBe('I can has Super');
+    });
+  });
 });

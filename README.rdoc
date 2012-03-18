@@ -1,6 +1,6 @@
 = jlisten
 
-Description goes here.
+
 
 == Contributing to jlisten
  

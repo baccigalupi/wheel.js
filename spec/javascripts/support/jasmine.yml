@@ -11,6 +11,9 @@
 #   - dist/**/*.js
 #
 src_files:
+    - lib/base.js
+    - lib/class.js
+    - lib/mixins/**/*.js
     - lib/**/*.js
 
 # stylesheets

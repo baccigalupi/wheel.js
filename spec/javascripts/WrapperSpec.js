@@ -87,7 +87,25 @@ describe("Wrapper", function () {
         });
       });
 
-    });
+      describe('given the element itself', function() {
+        var wrap;
+        beforeEach(function() {
+          gathered = Wrap.gather($(html).find('li.item')[0]);
+          wrap = gathered[0];
+        });
 
+        it('returns only one object in the array', function() {
+          expect(gathered.length).toBe(1);
+        });
+
+        it('the object is the right type', function() {
+          expect(wrap instanceof Wrap).toBeTruthy();
+        });
+
+        it('the object has the right dom', function() {
+          expect(wrap.$.is('li.item')).toBeTruthy();
+        });
+      });
+    });
   });
 });

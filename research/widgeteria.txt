@@ -1,0 +1,31 @@
+Widgets
+========
+Disabler
+Link: Get, Post etc
+Tabs
+Dialog/ modal overlay
+Form
+Upload Form
+Menu/Selector
+Searcher
+Time Since
+Tooltip
+
+Helpers
+========
+Poller
+Drag/Drop ... spring loaded for touch
+Gestures
+History / Router
+LocalStorage with Sync
+WebSockets
+Modernizr stuff
+
+Application
+============
+Models with 
+  - class retreival methods
+  - instance stuff
+Application Container
+Repository??
+    

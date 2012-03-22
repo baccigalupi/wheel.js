@@ -121,6 +121,33 @@ describe("jlisten.View", function () {
     });
   });
 
+  xdescribe('appenders', function() {
+    describe('append', function() {
+      describe("single argument", function(){
+        it("can append a jlisten.View object");
+        it('can append a dom element');
+        it('can append a wrapped dom element');
+        it('can append a string');
+      });
+      describe("array argument", function(){
+        it("can append an array of jlisten.View object");
+        it('can append an array of wrapped dom element');
+      });
+    });
+    describe('prepend', function() {
+      describe("single argument", function(){
+        it("can prepend a jlisten.View object");
+        it('can prepend a dom element');
+        it('can prepend a wrapped dom element');
+        it('can prepend a string');
+      });
+      describe("array argument", function(){
+        it("can prepend an array of jlisten.View object");
+        it('can prepend an array of wrapped dom element');
+      });
+    });
+  });
+
   describe('as a builder of html', function() {
     var Builder, builder;
 
@@ -134,12 +161,69 @@ describe("jlisten.View", function () {
       builder = new Builder({canHas: true});
     });
 
-    it("gets sets the right instance attributes", function () {
-      expect(builder.canHas).toBe(true);
+    describe('initialize', function() {
+      it("gets sets the right instance attributes", function () {
+        expect(builder.canHas).toBe(true);
+      });
+
+      it("has builds the right dom", function() {
+        expect(builder.$.is('div.builder')).toBe(true);
+      });
     });
 
-    it("has the right dom", function() {
-      expect(builder.$.is('div.builder')).toBe(true);
+    xdescribe("rendering", function() {
+      it("");
+    });
+
+    describe('assemble class method', function() {
+      var ListItem;
+
+      beforeEach(function(){
+        ListItem = jlisten.View.subclass({},{
+          template: function() {
+            return "<li class='list_item'>{{first_name}} {{last_name}}</li>"
+          }
+        });
+      });
+
+      describe("when passed an array", function() {
+        var list;
+
+        beforeEach(function() {
+          list = ListItem.assemble([{
+            model: {
+              first_name: 'Herman', last_name: 'Melville'
+            }},{
+            model: {
+              first_name: 'Nathaniel', last_name: 'Hawthorne'
+            }
+          }]);
+        });
+
+        it("returns an array of instances", function() {
+          expect(list.length).toBe(2);
+          expect(list[0] instanceof ListItem).toBe(true);
+          expect(list[1] instanceof ListItem).toBe(true);
+        });
+
+        it("instances are initialized with the correct instance variables", function() {
+          expect(list[0].model.first_name).toBe('Herman');
+          expect(list[0].model.last_name).toBe('Melville');
+
+          expect(list[1].model.first_name).toBe('Nathaniel');
+          expect(list[1].model.last_name).toBe('Hawthorne');
+        });
+
+        it("renders each correctly", function() {
+          var item = list[0];
+          expect(item.$.is('li.list_item')).toBe(true);
+          expect(item.$.text()).toBe("Herman Melville");
+
+          item = list[1];
+          expect(item.$.is('li.list_item')).toBe(true);
+          expect(item.$.text()).toBe("Nathaniel Hawthorne");
+        });
+      });
     });
   });
 });

@@ -43,10 +43,17 @@ describe('jlisten.widgets.Link', function() {
       expect(linker.onClick).toHaveBeenCalled();
     });
 
-    it("prevents the default click behavior");
+    it("prevents the default click behavior", function() {
+      var event = jQuery.Event("click");
+      spyOn(event, 'preventDefault');
+      linker.$.trigger(event);
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
 
     describe("propegation", function() {
-      it("prevents propegation if this.propegate is false");
+      it("prevents propegation if this.propegate is false", function() {
+        
+      });
       it("otherwise allows the propegation of the event");
     });
 

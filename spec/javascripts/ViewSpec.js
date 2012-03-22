@@ -120,4 +120,26 @@ describe("jlisten.View", function () {
       });
     });
   });
+
+  describe('as a builder of html', function() {
+    var Builder, builder;
+
+    beforeEach(function() {
+      Builder = jlisten.View.subclass({}, {
+        template: function() {
+          return "<div class='builder'></div>"
+        }
+      });
+
+      builder = new Builder({canHas: true});
+    });
+
+    it("gets sets the right instance attributes", function () {
+      expect(builder.canHas).toBe(true);
+    });
+
+    it("has the right dom", function() {
+      expect(builder.$.is('div.builder')).toBe(true);
+    });
+  });
 });

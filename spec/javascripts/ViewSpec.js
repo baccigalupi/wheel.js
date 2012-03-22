@@ -171,8 +171,97 @@ describe("jlisten.View", function () {
       });
     });
 
-    xdescribe("rendering", function() {
-      it("");
+    describe("rendering", function() {
+      var Lister, list, rendered;
+      beforeEach(function() {
+        Lister = jlisten.View.subclass({
+          title: function() {
+            return this.collection.length + " Authors";
+          }
+        },{
+          template: function() {
+            return "<div class='list_container'>"+
+            "<h1>{{title}}</h1>" +
+            "  <ul class='authors'>" +
+            "  {{#collection}}" +
+            "    <li>{{first_name}} {{last_name}}</li>" +
+            "  {{/collection}}" +
+            "  </ul></div>" +
+            "</div>"
+          }
+        });
+      });
+
+      describe("using self as the view class", function () {
+        beforeEach(function () {
+          list = new Lister({collection: [
+            {first_name: 'Herman', last_name: 'Melville'},
+            {first_name: 'Nathaniel', last_name: 'Hawthorne'}
+          ]});
+
+          rendered = list.$.html();
+        });
+
+        it("renders passed in attributes", function () {
+          expect(rendered).toMatch(/<li>Herman Melville<\/li>/)
+          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/)
+        });
+
+        it("renders methods correctly", function () {
+          expect(rendered).toMatch(/<h1>2 Authors<\/h1>/);
+        });
+      });
+
+      describe("using a model as the view class", function() {
+        beforeEach(function () {
+          list = new Lister({model: {
+            title: 'Some Authors',
+            collection: [
+              {first_name: 'Edgar Allen', last_name: 'Poe'},
+              {first_name: 'Mark', last_name: 'Twain'}
+            ]
+          }});
+
+          rendered = list.$.html();
+        });
+
+        it("renders correctly", function () {
+          expect(rendered).toMatch(/<h1>Some Authors<\/h1>/);
+          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/)
+          expect(rendered).toMatch(/<li>Mark Twain<\/li>/)
+        });
+      });
+
+      describe("customizing the view class", function() {
+        var SubLister, subview;
+
+        beforeEach(function() {
+          SubLister = Lister.subclass({
+            viewModel: function() {
+              return {
+                title: "America! It's Authors!",
+                collection: [
+                  {first_name: 'Herman', last_name: 'Melville'},
+                  {first_name: 'Nathaniel', last_name: 'Hawthorne'},
+                  {first_name: 'Edgar Allen', last_name: 'Poe'},
+                  {first_name: 'Mark', last_name: 'Twain'}
+                ]
+              }
+            }
+          });
+
+          subview = new SubLister();
+          rendered = subview.$.html();
+        });
+
+        it("renders correctly", function () {
+          expect(rendered).toMatch(/<h1>America! It's Authors!<\/h1>/);
+          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/)
+          expect(rendered).toMatch(/<li>Mark Twain<\/li>/)
+          expect(rendered).toMatch(/<li>Herman Melville<\/li>/)
+          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/)
+        });
+      })
     });
 
     describe('assemble class method', function() {

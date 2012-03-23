@@ -15,6 +15,7 @@ src_files:
     - lib/class.js
     - lib/mixins/**/*.js
     - lib/view.js
+    - lib/widgeteria/link.js
     - lib/**/*.js
 
 # stylesheets

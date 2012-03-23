@@ -77,5 +77,30 @@ describe("jlisten.widgets.AjaxLink", function () {
     it("sends data returned from the data() method", function () {
       expect(args.data).toBe(data);
     });
+
+    it("uses the object as context", function () {
+      expect(args.context).toBe(link);
+    });
+
+    it("registers a success handler", function () {
+      expect(args.success).toBe(link.onSuccess)
+    });
+
+    it("registers an error handler", function () {
+      expect(args.error).toBe(link.processError);
+    });
+
+    it("registers a complete handler", function () {
+      expect(args.complete).toBe(link.onCompletion);
+    });
+  });
+
+  describe('processError', function () {
+    it("passes the error data on to the onError method", function () {
+      spyOn(link, 'onError');
+      var xhr = {responseText: JSON.stringify({status: 'foo'})};
+      link.processError(xhr);
+      expect(link.onError).toHaveBeenCalledWith({status: 'foo'});
+    });
   });
 });

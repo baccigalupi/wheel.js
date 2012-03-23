@@ -4,7 +4,7 @@ describe("jlisten.widgets.AjaxLink", function () {
   beforeEach(function() {
     Linker = jlisten.widgets.AjaxLink.subclass({},{
       template: function() {
-        return "<a class='click'>Clink</a>"
+        return "<a class='click' href='http://clinkity.com'>Clink</a>"
       }
     });
     link = new Linker();
@@ -33,9 +33,49 @@ describe("jlisten.widgets.AjaxLink", function () {
         expect(link.httpMethod).toBe('delete');
       });
     });
+
+    describe("dataType", function () {
+      it("defaults to json", function () {
+        expect(link.dataType).toBe('json');
+      });
+
+      it("can be customized", function () {
+        link = new Linker({dataType: 'xml'});
+        expect(link.dataType).toBe('xml');
+      });
+    });
   });
 
   describe("onClick", function () {
-    it("");
+    var args, spy, data;
+    beforeEach(function() {
+      link.httpMethod = 'delete';
+      link.dataType = 'xml';
+      data = {foo: 'bar'};
+      link.data = function() {return data};
+      spy = spyOn($, 'ajax');
+      link.onClick();
+      args = spy.argsForCall[0][0];
+    });
+
+    it("calls $.ajax", function () {
+      expect($.ajax).toHaveBeenCalled();
+    });
+
+    it("uses the right url", function() {
+      expect(args.url).toBe('http://clinkity.com');
+    });
+
+    it("uses the httpMethod", function() {
+      expect(args.type).toBe('delete');
+    });
+
+    it("user the dataType", function () {
+      expect(args.dataType).toBe('xml');
+    });
+
+    it("sends data returned from the data() method", function () {
+      expect(args.data).toBe(data);
+    });
   });
 });

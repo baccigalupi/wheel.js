@@ -1,61 +1,75 @@
-describe("jlisten.widgets.AjaxLink", function () {
-  var Linker, link;
+describe("jlisten.mixins.Ajax", function () {
+  var Sender, sender;
 
   beforeEach(function() {
-    Linker = jlisten.widgets.AjaxLink.subclass({},{
+    Sender = jlisten.View.subclass({
+      init: function () {
+        this.url = 'http://csenderity.com';
+      },
+      send: function () { this.bar = 'foo'; },
+      data: function() { return {}; },
+      onSuccess: function () {},
+      onCompletion: function () {},
+      onError: function () {}
+    },{
       template: function() {
-        return "<a class='click' href='http://clinkity.com'>Clink</a>"
+        return "<a class='click' href='http://csenderity.com'>Csender</a>"
       }
     });
-    link = new Linker();
+    Sender.mixin(jlisten.mixins.Ajax);
+
+    sender = new Sender();
   });
 
   describe("init", function (){
-    it("has the right class heirarchy", function() {
-      expect(link instanceof jlisten.widgets.Link).toBe(true);
-      expect(link instanceof jlisten.widgets.AjaxLink).toBe(true);
+    it('calls _super', function () {
+      expect(sender.url).toBe('http://csenderity.com');
     });
 
     describe("httpMethod", function () {
       it("defaults to 'get'", function () {
-        expect(link.httpMethod).toBe('get');
+        expect(sender.httpMethod).toBe('get');
       });
 
       it("can be customized with initialization values", function () {
-        link = new Linker({httpMethod: 'put'});
-        expect(link.httpMethod).toBe('put');
+        sender = new Sender({httpMethod: 'put'});
+        expect(sender.httpMethod).toBe('put');
       });
 
       it("can be set on the subclass", function () {
-        Linker.prototype.httpMethod = 'delete';
-        link = new Linker();
+        Sender.prototype.httpMethod = 'delete';
+        sender = new Sender();
 
-        expect(link.httpMethod).toBe('delete');
+        expect(sender.httpMethod).toBe('delete');
       });
     });
 
     describe("dataType", function () {
       it("defaults to json", function () {
-        expect(link.dataType).toBe('json');
+        expect(sender.dataType).toBe('json');
       });
 
       it("can be customized", function () {
-        link = new Linker({dataType: 'xml'});
-        expect(link.dataType).toBe('xml');
+        sender = new Sender({dataType: 'xml'});
+        expect(sender.dataType).toBe('xml');
       });
     });
   });
 
-  describe("onClick", function () {
+  describe("send", function () {
     var args, spy, data;
     beforeEach(function() {
-      link.httpMethod = 'delete';
-      link.dataType = 'xml';
+      sender.httpMethod = 'delete';
+      sender.dataType = 'xml';
       data = {foo: 'bar'};
-      link.data = function() {return data};
+      sender.data = function() {return data};
       spy = spyOn($, 'ajax');
-      link.onClick();
+      sender.send();
       args = spy.argsForCall[0][0];
+    });
+
+    it("calls _super", function () {
+      expect(sender.bar).toBe('foo');
     });
 
     it("calls $.ajax", function () {
@@ -63,7 +77,7 @@ describe("jlisten.widgets.AjaxLink", function () {
     });
 
     it("uses the right url", function() {
-      expect(args.url).toBe('http://clinkity.com');
+      expect(args.url).toBe('http://csenderity.com');
     });
 
     it("uses the httpMethod", function() {
@@ -79,31 +93,31 @@ describe("jlisten.widgets.AjaxLink", function () {
     });
 
     it("uses the object as context", function () {
-      expect(args.context).toBe(link);
+      expect(args.context).toBe(sender);
     });
 
     it("registers a success handler", function () {
-      expect(args.success).toBe(link.onSuccess)
+      expect(args.success).toBe(sender.onSuccess)
     });
 
     it("registers an error handler", function () {
-      expect(args.error).toBe(link.processError);
+      expect(args.error).toBe(sender.processError);
     });
 
     it("registers a complete handler", function () {
-      expect(args.complete).toBe(link.onCompletion);
+      expect(args.complete).toBe(sender.onCompletion);
     });
   });
 
   describe('processError', function () {
     beforeEach(function () {
-      spyOn(link, 'onError');
+      spyOn(sender, 'onError');
     });
 
     it("passes the parsed error data on to the onError method", function () {
       var xhr = {responseText: JSON.stringify({status: 'foo'})};
-      link.processError(xhr);
-      expect(link.onError).toHaveBeenCalledWith({status: 'foo'});
+      sender.processError(xhr);
+      expect(sender.onError).toHaveBeenCalledWith({status: 'foo'});
     });
 
     it("passes on other json when that fails", function () {
@@ -111,8 +125,9 @@ describe("jlisten.widgets.AjaxLink", function () {
         responseText: "]<span> not json at all {",
         statusCode: function(){ return 500; }
       };
-      link.processError(xhr);
-      expect(link.onError).toHaveBeenCalledWith({status: 500, message: "]<span> not json at all {"});
+      sender.processError(xhr);
+      expect(sender.onError).toHaveBeenCalledWith({status: 500, message: "]<span> not json at all {"});
     });
   });
 });
+

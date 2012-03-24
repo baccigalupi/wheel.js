@@ -172,5 +172,39 @@ describe("Function", function() {
     it('maintains a reference to old instance methods', function () {
       expect(subby.zardoz()).toBe('Zardoz has moxy!');
     });
+
+    describe('mixing something into multiple classes', function () {
+      var A, B, mix, a, b;
+      beforeEach(function() {
+        A = Class.subclass({
+          initialize: function() {
+            this.it = 'a';
+          }
+        });
+        B = Class.subclass({
+          initialize: function() {
+            this.it = 'b';
+          }
+        });
+
+        mix = {
+          initialize: function () {
+            this._super();
+            this.it = this.it + ' mix';
+          }
+        };
+
+        A.mixin(mix);
+        B.mixin(mix);
+
+        a = new A();
+        b = new B();
+      });
+
+      it("everything should maintain its superness", function () {
+        expect(a.it).toBe('a mix');
+        expect(b.it).toBe('b mix');
+      })
+    });
   });
 });

@@ -1,8 +1,8 @@
-describe("jlisten.widgets.AjaxLink", function () {
+describe("Wheel.Widgeteria.AjaxLink", function () {
   var Linker, link;
 
   beforeEach(function() {
-    Linker = jlisten.widgets.AjaxLink.subclass({},{
+    Linker = Wheel.Widgeteria.AjaxLink.subclass({},{
       template: function() {
         return "<a class='click' href='http://clinkity.com'>Clink</a>"
       }
@@ -11,12 +11,12 @@ describe("jlisten.widgets.AjaxLink", function () {
   });
 
   it("has the right class heirarchy", function() {
-    expect(link instanceof jlisten.widgets.Link).toBe(true);
-    expect(link instanceof jlisten.widgets.AjaxLink).toBe(true);
+    expect(link instanceof Wheel.Widgeteria.Link).toBe(true);
+    expect(link instanceof Wheel.Widgeteria.AjaxLink).toBe(true);
   });
 
   it("mixes in Ajax", function () {
-    expect(link.send).toBe(jlisten.mixins.Ajax.send);
+    expect(link.send).toBe(Wheel.Mixins.Ajax.send);
   })
 
   describe("onClick", function () {

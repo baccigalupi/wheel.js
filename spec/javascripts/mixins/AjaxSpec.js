@@ -1,8 +1,8 @@
-describe("jlisten.mixins.Ajax", function () {
+describe("Wheel.Mixins.Ajax", function () {
   var Sender, sender;
 
   beforeEach(function() {
-    Sender = jlisten.View.subclass({
+    Sender = Wheel.View.subclass({
       init: function () {
         this.url = 'http://csenderity.com';
       },
@@ -16,7 +16,7 @@ describe("jlisten.mixins.Ajax", function () {
         return "<a class='click' href='http://csenderity.com'>Csender</a>"
       }
     });
-    Sender.mixin(jlisten.mixins.Ajax);
+    Sender.mixin(Wheel.Mixins.Ajax);
 
     sender = new Sender();
   });

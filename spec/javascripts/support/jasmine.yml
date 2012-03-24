@@ -17,7 +17,7 @@ src_files:
 
     - lib/base.js
     - lib/class.js
-    - lib/mixins/**/*.js
+    - lib/Mixins/**/*.js
     - lib/view.js
     - lib/*.js
 

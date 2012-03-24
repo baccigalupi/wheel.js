@@ -1,10 +1,10 @@
-describe("jlisten.View", function () {
+describe("Wheel.View", function () {
   describe("initialization", function () {
     var view;
     beforeEach(function() {
-      spyOn(jlisten.View.prototype, 'init');
-      spyOn(jlisten.View.prototype, 'listen');
-      view = new jlisten.View('<span></span>',{
+      spyOn(Wheel.View.prototype, 'init');
+      spyOn(Wheel.View.prototype, 'listen');
+      view = new Wheel.View('<span></span>',{
         thingy: true,
         that: function() {return 'that';}
       });
@@ -16,11 +16,11 @@ describe("jlisten.View", function () {
     });
 
     it("calls init", function () {
-      expect(jlisten.View.prototype.init).toHaveBeenCalled();
+      expect(Wheel.View.prototype.init).toHaveBeenCalled();
     });
 
     it("calls listen", function () {
-      expect(jlisten.View.prototype.listen).toHaveBeenCalled();
+      expect(Wheel.View.prototype.listen).toHaveBeenCalled();
     });
   });
 
@@ -28,7 +28,7 @@ describe("jlisten.View", function () {
     var Wrap, wrap;
 
     beforeEach(function() {
-      Wrap = jlisten.View.subclass();
+      Wrap = Wheel.View.subclass();
     });
 
     describe("initalization with dom", function() {
@@ -122,25 +122,25 @@ describe("jlisten.View", function () {
   xdescribe('appenders', function() {
     describe('append', function() {
       describe("single argument", function(){
-        it("can append a jlisten.View object");
+        it("can append a Wheel.View object");
         it('can append a dom element');
         it('can append a wrapped dom element');
         it('can append a string');
       });
       describe("array argument", function(){
-        it("can append an array of jlisten.View object");
+        it("can append an array of Wheel.View object");
         it('can append an array of wrapped dom element');
       });
     });
     describe('prepend', function() {
       describe("single argument", function(){
-        it("can prepend a jlisten.View object");
+        it("can prepend a Wheel.View object");
         it('can prepend a dom element');
         it('can prepend a wrapped dom element');
         it('can prepend a string');
       });
       describe("array argument", function(){
-        it("can prepend an array of jlisten.View object");
+        it("can prepend an array of Wheel.View object");
         it('can prepend an array of wrapped dom element');
       });
     });
@@ -150,7 +150,7 @@ describe("jlisten.View", function () {
     var Builder, builder;
 
     beforeEach(function() {
-      Builder = jlisten.View.subclass({}, {
+      Builder = Wheel.View.subclass({}, {
         template: function() {
           return "<div class='builder'></div>"
         }
@@ -172,7 +172,7 @@ describe("jlisten.View", function () {
     describe("rendering", function() {
       var Lister, list, rendered;
       beforeEach(function() {
-        Lister = jlisten.View.subclass({
+        Lister = Wheel.View.subclass({
           title: function() {
             return this.collection.length + " Authors";
           }
@@ -266,7 +266,7 @@ describe("jlisten.View", function () {
       var ListItem;
 
       beforeEach(function(){
-        ListItem = jlisten.View.subclass({},{
+        ListItem = Wheel.View.subclass({},{
           template: function() {
             return "<li class='list_item'>{{first_name}} {{last_name}}</li>"
           }

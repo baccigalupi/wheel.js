@@ -1,4 +1,4 @@
-describe('jlisten.widgets.Link', function() {
+describe('Wheel.Widgeteria.Link', function() {
   var link, Linker, dom;
 
   beforeEach(function() {
@@ -11,7 +11,7 @@ describe('jlisten.widgets.Link', function() {
     "  </ul>" +
     "</div>";
 
-    Linker = jlisten.widgets.Link.subclass({
+    Linker = Wheel.Widgeteria.Link.subclass({
     }, {
       cssSelector: 'a.clunker'
     });

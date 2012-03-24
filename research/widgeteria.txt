@@ -1,4 +1,4 @@
-Widgets
+Widgeteria
 ========
 Disabler
 Link: Get, Post etc

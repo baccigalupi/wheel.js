@@ -1,14 +1,12 @@
-describe("Class", function() {
-  it("is a function", function() {
-    expect(typeof Class).toBe('function');
-  });
-});
-
-describe("Function", function() {
+describe("Wheel.Class", function() {
   var SubClass, subclass, Subby, subby;
 
+  it("is a function", function() {
+    expect(typeof Wheel.Class).toBe('function');
+  });
+
   beforeEach(function() {
-    SubClass = Class.subclass({
+    SubClass = Wheel.Class.subclass({
       foo: 'bar',
       zardoz: function() {this.hasMoxy = true}
     }, {
@@ -53,21 +51,21 @@ describe("Function", function() {
 
     describe('convenience and propigation attributes', function() {
       it("has a class method subclass", function () {
-        expect(typeof Function.subclass).toBe('function');
+        expect(typeof SubClass.subclass).toBe('function');
       });
 
       it("has a reference to its super class", function () {
-        expect(SubClass.superclass).toBe(Class);
+        expect(SubClass.superclass).toBe(Wheel.Class);
       });
 
       it("passes on the subclass method during inheritance", function () {
-        expect(SubClass.subclass).toBe(Class.subclass);
+        expect(SubClass.subclass).toBe(Wheel.Class.subclass);
       });
     });
 
     describe("identity", function () {
-      it("is an instance of Function", function () {
-        expect(subclass instanceof Function).toBe(true);
+      it("is an instance of Wheel.Class", function () {
+        expect(subclass instanceof Wheel.Class).toBe(true);
       });
 
       it("is an instance of its class", function () {
@@ -176,12 +174,12 @@ describe("Function", function() {
     describe('mixing something into multiple classes', function () {
       var A, B, mix, a, b;
       beforeEach(function() {
-        A = Class.subclass({
+        A = Wheel.Class.subclass({
           initialize: function() {
             this.it = 'a';
           }
         });
-        B = Class.subclass({
+        B = Wheel.Class.subclass({
           initialize: function() {
             this.it = 'b';
           }
@@ -208,3 +206,4 @@ describe("Function", function() {
     });
   });
 });
+

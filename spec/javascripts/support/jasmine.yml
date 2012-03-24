@@ -16,7 +16,6 @@ src_files:
     - lib/vendor/mustache/mustache.js
 
     - lib/wheel.js
-    - lib/class.js
     - lib/Mixins/**/*.js
     - lib/view.js
     - lib/*.js

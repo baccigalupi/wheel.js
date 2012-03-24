@@ -1,0 +1,12 @@
+Getting Classy
+===============
+
+- Why object orientation important for easy components
+
+
+Just Want the class part? Want to expose class on a higher level?
+
+Include wheel.js base file. Expose/export what you want where you want:
+  myThing.Class = Wheel.Class; // put it in your namespace
+  window.Class = Wheel.Class; // expose it on the window
+  this.Class = Wheel.Class; // put it in some context

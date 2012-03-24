@@ -13,8 +13,6 @@
 src_files:
     - lib/vendor/jquery-1.7.1.min.js
     - lib/vendor/mustache.js
-    - lib/vendor/underscore.js
-    - lib/
     - lib/base.js
     - lib/class.js
     - lib/mixins/**/*.js

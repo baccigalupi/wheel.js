@@ -11,13 +11,16 @@
 #   - dist/**/*.js
 #
 src_files:
-    - lib/vendor/jquery-1.7.1.min.js
+    #- lib/vendor/jquery-1.7.1.min.js
+    - lib/vendor/zepto.js
     - lib/vendor/mustache.js
+
     - lib/base.js
     - lib/class.js
     - lib/mixins/**/*.js
     - lib/view.js
     - lib/*.js
+
     - lib/widgeteria/link.js
     - lib/widgeteria/*.js
 

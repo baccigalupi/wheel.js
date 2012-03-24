@@ -1,8 +1,8 @@
 describe('jlisten.widgets.Link', function() {
-  var link, Linker, html;
+  var link, Linker, dom;
 
   beforeEach(function() {
-    html =
+    dom =
     "<div class='something_big'>" +
     "  <ul>" +
     "    <li>" +
@@ -16,7 +16,7 @@ describe('jlisten.widgets.Link', function() {
       cssSelector: 'a.clunker'
     });
 
-    linker = Linker.gather(html)[0];
+    linker = Linker.gather(dom)[0];
   });
 
   describe("init()", function() {
@@ -30,7 +30,7 @@ describe('jlisten.widgets.Link', function() {
       });
 
       it("can be overwritten by initialization variables", function () {
-        linker = new Linker($(html).find('a'), {propagate: false});
+        linker = new Linker($(dom).find('a'), {propagate: false});
         expect(linker.propagate).toBe(false);
       });
     });
@@ -41,12 +41,12 @@ describe('jlisten.widgets.Link', function() {
       });
 
       it("will be true if it finds a disabled attribute", function () {
-        linker = new Linker($(html).find('a').attr('disabled', true));
+        linker = new Linker($(dom).find('a').attr('disabled', true));
         expect(linker.disabled).toBe(true);
       });
 
       it("will consider the initialization options before the default or dom attribute", function () {
-        linker = new Linker($(html).find('a').attr('disabled', true), {disabled: false});
+        linker = new Linker($(dom).find('a').attr('disabled', true), {disabled: false});
         expect(linker.disabled).toBe(false);
       });
     });
@@ -55,7 +55,7 @@ describe('jlisten.widgets.Link', function() {
   describe("listen()", function() {
     var event;
     beforeEach(function() {
-      event = jQuery.Event("click");
+      event = $.Event("click");
     });
 
     it("binds onClick to click events", function() {
@@ -65,7 +65,7 @@ describe('jlisten.widgets.Link', function() {
     });
 
     it("prevents the default click behavior", function() {
-      spyOn(event, 'preventDefault');
+      spyOn(event, 'preventDefault').andCallThrough();
       linker.$.trigger(event);
       expect(event.preventDefault).toHaveBeenCalled();
     });
@@ -97,7 +97,7 @@ describe('jlisten.widgets.Link', function() {
       });
 
       it("will cancel the default", function () {
-        spyOn(event, 'preventDefault');
+        spyOn(event, 'preventDefault').andCallThrough();
         linker.$.trigger(event);
         expect(event.preventDefault).toHaveBeenCalled();
       });

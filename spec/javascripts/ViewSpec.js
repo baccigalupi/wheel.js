@@ -45,9 +45,9 @@ describe("jlisten.View", function () {
     });
 
     describe("gather", function() {
-      var html;
+      var dom;
       beforeEach(function () {
-        html =
+        dom =
         "  <ul class='lister'>" +
         "    <li class='item'>one</li>" +
         "    <li class='seperator'></li>" +
@@ -59,14 +59,12 @@ describe("jlisten.View", function () {
         it("requires a selector", function () {
           var raises = false;
           try {
-            Wrap.gather(html);
+            Wrap.gather(dom);
           } catch (e) {
             raises = true;
             expect(e).toBe("Define a cssSelector on the class to use the 'gather' class method");
           }
           expect(raises).toBe(true);
-
-          //expect(Wrap.gather(html)).toThrow("Define a cssSelector on the class to use the 'gather' class method");
         });
       });
 
@@ -78,7 +76,7 @@ describe("jlisten.View", function () {
 
         describe('given a parent element', function () {
           beforeEach(function() {
-            gathered = Wrap.gather(html);
+            gathered = Wrap.gather(dom);
           });
 
           it("finds the right number of elements", function () {
@@ -101,7 +99,7 @@ describe("jlisten.View", function () {
         describe('given the element itself', function() {
           var wrap;
           beforeEach(function() {
-            gathered = Wrap.gather($(html).find('li.item')[0]);
+            gathered = Wrap.gather($(dom).find('li.item')[0]);
             wrap = gathered[0];
           });
 
@@ -304,13 +302,13 @@ describe("jlisten.View", function () {
         });
 
         it("renders each correctly", function() {
-          var item = list[0];
-          expect(item.$.is('li.list_item')).toBe(true);
-          expect(item.$.text()).toBe("Herman Melville");
+          // Zepto fails with list[0].$.is('li.list_item')
 
-          item = list[1];
-          expect(item.$.is('li.list_item')).toBe(true);
-          expect(item.$.text()).toBe("Nathaniel Hawthorne");
+          expect(list[0].$.hasClass('list_item')).toBe(true);
+          expect(list[0].$.text()).toBe("Herman Melville");
+
+          expect(list[1].$.hasClass('list_item')).toBe(true);
+          expect(list[1].$.text()).toBe("Nathaniel Hawthorne");
         });
       });
     });

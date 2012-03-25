@@ -12,16 +12,16 @@
 #
 src_files:
     #- lib/vendor/jquery/jquery-1.7.1.js
-    - lib/vendor/zepto/zepto.js
-    - lib/vendor/mustache/mustache.js
+    - vendor/zepto/zepto.js
+    - vendor/mustache/mustache.js
 
     - lib/wheel.js
-    - lib/Mixins/**/*.js
-    - lib/view.js
-    - lib/*.js
+    - lib/wheel/mixins/**/*.js
+    - lib/wheel/view.js
+    - lib/wheel/*.js
 
-    - lib/widgeteria/link.js
-    - lib/widgeteria/*.js
+    - lib/wheel/widgeteria/link.js
+    - lib/wheel/widgeteria/*.js
 
 # stylesheets
 #

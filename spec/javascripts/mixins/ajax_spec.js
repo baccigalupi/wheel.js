@@ -58,54 +58,99 @@ describe("Wheel.Mixins.Ajax", function () {
 
   describe("send", function () {
     var args, spy, data;
+    var sendWith = function(httpMethod) {
+      sender.httpMethod = httpMethod;
+      sender.send();
+      args = spy.argsForCall[0][0];
+    };
+
     beforeEach(function() {
-      sender.httpMethod = 'delete';
+      sender.httpMethod = 'get';
       sender.dataType = 'xml';
       data = {foo: 'bar'};
       sender.data = function() {return data};
       spy = spyOn($, 'ajax');
-      sender.send();
-      args = spy.argsForCall[0][0];
     });
 
-    it("calls _super", function () {
-      expect(sender.bar).toBe('foo');
+    describe('basic ajax attributes', function() {
+      beforeEach(function() {
+        sendWith('get');
+      });
+
+      it("calls _super", function () {
+        expect(sender.bar).toBe('foo');
+      });
+
+      it("calls $.ajax", function () {
+        expect($.ajax).toHaveBeenCalled();
+      });
+
+      it("uses the right url", function() {
+        expect(args.url).toBe('http://csenderity.com');
+      });
+
+      it("user the dataType", function () {
+        expect(args.dataType).toBe('xml');
+      });
     });
 
-    it("calls $.ajax", function () {
-      expect($.ajax).toHaveBeenCalled();
+    describe('ajax http type, and data', function() {
+      describe("standard http methods", function () {
+        it("sends data returned from the data() method", function () {
+          sendWith('get');
+          expect(args.data).toBe(data);
+        });
+
+        it("uses get if the httpMethod is get", function() {
+          sendWith('get');
+          expect(args.type).toBe('get');
+        });
+
+        it("uses post if the httpMethod is post", function() {
+          sendWith('post');
+          expect(args.type).toBe('post');
+        });
+      });
+
+      describe("non standard http methods", function () {
+        it("uses post", function() {
+          sendWith('delete');
+          expect(args.type).toBe('post');
+        });
+
+        it("adds a _method key/value to the data", function() {
+          sendWith('delete');
+          expect(args.data['_method']).toBe('delete');
+        });
+
+        it('does not overwrite existing _method data elements', function() {
+          sender.data = function() { return {'_method': 'put'} };
+          sendWith('delete');
+          expect(args.data['_method']).toBe('put');
+        });
+      });
     });
 
-    it("uses the right url", function() {
-      expect(args.url).toBe('http://csenderity.com');
-    });
+    describe('response handling', function() {
+      beforeEach(function() {
+        sendWith('get');
+      });
 
-    it("uses the httpMethod", function() {
-      expect(args.type).toBe('delete');
-    });
+      it("uses the object as context", function () {
+        expect(args.context).toBe(sender);
+      });
 
-    it("user the dataType", function () {
-      expect(args.dataType).toBe('xml');
-    });
+      it("registers a success handler", function () {
+        expect(args.success).toBe(sender.onSuccess)
+      });
 
-    it("sends data returned from the data() method", function () {
-      expect(args.data).toBe(data);
-    });
+      it("registers an error handler", function () {
+        expect(args.error).toBe(sender.processError);
+      });
 
-    it("uses the object as context", function () {
-      expect(args.context).toBe(sender);
-    });
-
-    it("registers a success handler", function () {
-      expect(args.success).toBe(sender.onSuccess)
-    });
-
-    it("registers an error handler", function () {
-      expect(args.error).toBe(sender.processError);
-    });
-
-    it("registers a complete handler", function () {
-      expect(args.complete).toBe(sender.onCompletion);
+      it("registers a complete handler", function () {
+        expect(args.complete).toBe(sender.onCompletion);
+      });
     });
   });
 

@@ -21,6 +21,7 @@ src_files:
     - lib/wheel/*.js
 
     - lib/wheel/widgeteria/link.js
+    - lib/wheel/widgeteria/form.js
     - lib/wheel/widgeteria/*.js
 
 # stylesheets

@@ -4,7 +4,7 @@ describe('Wheel.Widgeteria.Form', function() {
   beforeEach(function() {
     Former = Wheel.Widgeteria.Form.subclass();
     dom =
-    "  <form action='/users/new' method='post'>" +
+    "  <form action='/users/new' method='put'>" +
     "    <input type='email' name='user[email]' value='baccigalupi@gmail.com'/>" +
     "    <input type='password' name='user[password]' value='secret'/>" +
     "    <select name='user[referral]'>" +
@@ -27,11 +27,14 @@ describe('Wheel.Widgeteria.Form', function() {
     expect(form.url).toBe("/users/new");
   });
 
+  it("gets its httpMethod from the method attribute", function() {
+    expect(form.httpMethod).toBe('put');
+  });
+
   describe("data serialization", function () {
     var data;
     beforeEach(function() {
       data = form.data();
-      console.log(data);
     });
 
     it("works for checkboxes", function() {

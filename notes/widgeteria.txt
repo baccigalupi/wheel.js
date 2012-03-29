@@ -1,11 +1,10 @@
 Widgeteria
 ========
 Disabler
-Link: Get, Post etc
 Tabs
 Dialog/ modal overlay
-Form
 Upload Form
+Form Elements ??
 Menu/Selector
 Searcher
 Time Since
@@ -14,18 +13,19 @@ Tooltip
 Helpers
 ========
 Poller
-Drag/Drop ... spring loaded for touch
+Touch/Mouse event manager
 Gestures
-History / Router
-LocalStorage with Sync
-WebSockets
 Modernizr stuff
+Cookie manager
 
 Application
 ============
 Models with 
   - class retreival methods
   - instance stuff
-Application Container
 Repository??
+History / Router
+LocalStorage with Sync
+WebSockets
+Request Queue ... with offline mode
     

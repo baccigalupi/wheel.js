@@ -10,6 +10,9 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
-//= require jquery_ujs
-//= require_tree .
+//= require zepto
+//= require ./wheel/wheel.js
+//= require_tree ./wheel/wheel/mixins
+//= require ./wheel/wheel/view
+//= require_tree ./wheel/wheel
+//= require_tree ./wheel/wheel/widgeteria

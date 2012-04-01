@@ -31,11 +31,14 @@ task :compile do
   source_dir = root_dir + "/lib"
   [
     source_dir + "/wheel.js",
-    source_dir + "/mixins/ajax.js",
-    source_dir + "/mixins/optionize.js",
-    source_dir + "/view.js",
-    source_dir + "/widgeteria/link.js",
-    source_dir + "/widgeteria/ajax_link.js"
+    source_dir + "/wheel/mixins/ajax.js",
+    source_dir + "/wheel/mixins/optionize.js",
+    source_dir + "/wheel/view.js",
+    source_dir + "/wheel/application.js",
+    source_dir + "/wheel/touch_manager.js",
+    source_dir + "/wheel/widgeteria/link.js",
+    source_dir + "/wheel/widgeteria/ajax_link.js",
+    source_dir + "/wheel/widgeteria/form.js"
   ].each do |path|
     source << File.read(path);
   end

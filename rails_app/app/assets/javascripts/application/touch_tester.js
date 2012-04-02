@@ -6,8 +6,25 @@ Application.TouchTester = Wheel.View.subclass({
   listen: function() {
     var self = this;
     this.$.bind('touchhold', function(e) {
-      self.$.append("<p>touchhold - "+ new Date() +"; pageX: "+e.pageX+"; pageY: "+e.pageY+"</p>");
+      self.logEvent('touchhold', e);
     });
+    this.$.bind('tap', function(e) {
+      self.logEvent('tap', e);
+    });
+  },
+
+  logEvent: function(type, e) {
+     this.$.append(
+      "<p>"+type+" - "+
+      new Date() +
+      "; pageX: " +
+      e.pageX +
+      "; pageY: " +
+      e.pageY +
+      "; originalEvent" +
+      e +
+      "</p>"
+    );
   }
 }, {
   template: function() {

@@ -10,6 +10,16 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require ./application/app
-//= require ./application/touch_tester.js
-//= require_tree ./application
+//= require zepto
+//= require mustache
+//
+//= require ./wheel/wheel.js
+//= require_tree ./wheel/wheel/mixins
+//
+//= require ./wheel/wheel/view
+//= require ./wheel/wheel/application
+//= require ./wheel/wheel/body_listener
+//
+//= require ./wheel/wheel/widgeteria/form
+//= require ./wheel/wheel/widgeteria/link
+//= require_tree ./wheel/wheel/widgeteria

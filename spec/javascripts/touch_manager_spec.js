@@ -1,40 +1,58 @@
 describe('Wheel.TouchManager', function() {
-  describe('view delegation on initialization', function() {
-    var view, manager;
+  var manager = new Wheel.TouchManager(),
+      div, events;
 
-    beforeEach(function() {
-      view = new Wheel.Widgeteria.Form("<form/>");
-      manager = new Wheel.TouchManager(view);
-    });
+  beforeEach(function() {
+    events = {
+      touchhold:  jasmine.createSpy('touchhold'),
+      tap:        jasmine.createSpy('tap'),
+      doubletap:  jasmine.createSpy('doubletap'),
+      swipe:      jasmine.createSpy('swipe'),
+      swipeleft:  jasmine.createSpy('swipeleft'),
+      swiperight: jasmine.createSpy('swiperight'),
+      swipeup:    jasmine.createSpy('swipeup'),
+      swipedown:  jasmine.createSpy('swipedown')
+    };
 
-    it('stores a view object as its base', function() {
-      expect(manager.base).toBe(view);
-    });
+    div = $('<div class="touch_tester"/>');
+    div
+      .bind('touchhold',  function(e) {events.touchhold(e)})
+      .bind('tap',        function(e) {events.tap(e)})
+      .bind('doubletap',  function(e) {events.doubletap(e)})
+      .bind('swipe',      function(e) {events.swipe(e)})
+      .bind('swipeleft',  function(e) {events.swipeleft(e)})
+      .bind('swiperight', function(e) {events.swiperight(e)})
+      .bind('swipeup',    function(e) {events.swipeup(e)})
+      .bind('swipedown',  function(e) {events.swipedown(e)});
 
-    it("delegates its own wrapped dom to the base dom", function () {
-      expect(manager.$).toBe(view.$);
-    });
+    $(document.body).append(div);
   });
 
-  describe('class level listening', function() {
-    describe('ensuring listeners are only added once', function() {
-      it('keeps track of whether listener have been added to body', function (){
-        Wheel.TouchManager._isListening = false;
-        expect(Wheel.TouchManager.isListening()).toBeFalsy();
-        Wheel.TouchManager.listen();
-        expect(Wheel.TouchManager.isListening()).toBe(true);
-      });
+  describe('touchhold', function() {
+    var startEvent, moveEvent, endEvent,
+        spy, args;
 
-      it('keeps track of whether superclasses have already listened on body', function() {
-        Wheel.TouchManager._isListening = false;
-        var TouchLight = Wheel.TouchManager.subclass();
-        Wheel.TouchManager._isListening = true;
-        expect(TouchLight._isListening).toBeFalsy();
-        expect(TouchLight.isListening()).toBe(true);
+    beforeEach(function() {
+      startEvent = $.Event('touchstart', {
+        touches: [{
+          pageX: 100,
+          pageY: 200,
+        }]
       });
     });
 
-    describe('listening on body', function () {
+    it('should be detected if the touch is not moved after 750 ms', function() {
+      div.trigger(startEvent);
+      waits(manager.HOLD_DELAY);
+
+      runs(function() {
+        expect(events.touchhold).toHaveBeenCalled();
+        args = spyArgs(events.touchhold);
+        expect(args.type).toBe('touchhold');
+        expect(args.pageX).toBe(100);
+        expect(args.pageY).toBe(200);
+      });
     });
+
   });
 });

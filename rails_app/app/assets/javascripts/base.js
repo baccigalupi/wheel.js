@@ -18,7 +18,7 @@
 //
 //= require ./wheel/wheel/view
 //= require ./wheel/wheel/application
-//= require ./wheel/wheel/touch_listener
+//= require ./wheel/wheel/touch_manager
 //
 //= require ./wheel/wheel/widgeteria/form
 //= require ./wheel/wheel/widgeteria/link

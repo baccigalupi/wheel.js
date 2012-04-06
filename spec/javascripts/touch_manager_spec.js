@@ -1,8 +1,19 @@
 describe('Wheel.TouchManager', function() {
   var manager = new Wheel.TouchManager(),
-      div, events;
+      div, events, touches,
+      startEvent, moveEvent, endEvent,
+      spy, args;
 
   beforeEach(function() {
+    // reset the manager
+    manager.clearTimeout();
+    manager.touch = {};
+
+    touches = [{
+      pageX: 100,
+      pageY: 200,
+    }];
+
     events = {
       touchhold:  jasmine.createSpy('touchhold'),
       tap:        jasmine.createSpy('tap'),
@@ -29,30 +40,87 @@ describe('Wheel.TouchManager', function() {
   });
 
   describe('touchhold', function() {
-    var startEvent, moveEvent, endEvent,
-        spy, args;
-
     beforeEach(function() {
       startEvent = $.Event('touchstart', {
-        touches: [{
-          pageX: 100,
-          pageY: 200,
-        }]
+        touches: touches
       });
     });
 
-    it('should be detected if the touch is not moved after 750 ms', function() {
-      div.trigger(startEvent);
-      waits(manager.HOLD_DELAY);
+    describe('detection happens when', function() {
+      it('the touch is not moved after 750 ms', function() {
+        div.trigger(startEvent);
+        waits(manager.HOLD_DELAY);
 
-      runs(function() {
-        expect(events.touchhold).toHaveBeenCalled();
-        args = spyArgs(events.touchhold);
-        expect(args.type).toBe('touchhold');
-        expect(args.pageX).toBe(100);
-        expect(args.pageY).toBe(200);
+        runs(function() {
+          expect(events.touchhold).toHaveBeenCalled();
+          args = spyArgs(events.touchhold);
+          expect(args.type).toBe('touchhold');
+          expect(args.pageX).toBe(100);
+          expect(args.pageY).toBe(200);
+        });
+      });
+
+      it('touch moves in x by a small amount', function() {
+        div.trigger(startEvent);
+
+        touches[0].pageX = 105
+        moveEvent = $.Event('touchmove', {
+          touches: touches
+        });
+        div.trigger(moveEvent);
+
+        waits(manager.HOLD_DELAY);
+
+        runs(function() {
+          expect(events.touchhold).toHaveBeenCalled();
+          args = spyArgs(events.touchhold);
+          expect(args.type).toBe('touchhold');
+          expect(args.pageX).toBe(105);
+          expect(args.pageY).toBe(200);
+        });
+      });
+
+      it('touch moves in y by a small amount', function() {
+        div.trigger(startEvent);
+
+        touches[0].pageY = 205
+        moveEvent = $.Event('touchmove', {
+          touches: touches
+        });
+        div.trigger(moveEvent);
+
+        waits(manager.HOLD_DELAY);
+
+        runs(function() {
+          expect(events.touchhold).toHaveBeenCalled();
+          args = spyArgs(events.touchhold);
+          expect(args.type).toBe('touchhold');
+          expect(args.pageX).toBe(100);
+          expect(args.pageY).toBe(205);
+        });
       });
     });
+  });
 
+  describe('tap', function() {
+    describe('detection', function() {
+      it("triggers after a delay with a rapid touchstart, touchend", function() {
+        startEvent = $.Event('touchstart', {touches: touches});
+        endEvent = $.Event('touchend', {touches: touches});
+
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+
+        waits(manager.DOUBLE_DELAY);
+
+        runs(function() {
+          expect(events.tap).toHaveBeenCalled();
+          args = spyArgs(events.tap);
+          expect(args.type).toBe('tap');
+          expect(args.pageX).toBe(100);
+          expect(args.pageY).toBe(200);
+        });
+      });
+    });
   });
 });

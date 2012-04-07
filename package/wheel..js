@@ -230,7 +230,7 @@ Wheel.Application = Wheel.Class.subclass({
  *
  */
 
-Wheel.EventManager = Wheel.View.subclass({
+Wheel.TouchManagerr = Wheel.View.subclass({
   // view delegation ... extract into a subclass ??
   initializeDom: function(viewInstance, opts) {
     this.optionize(opts);

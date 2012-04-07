@@ -1,6 +1,6 @@
 var Application = Wheel.Application.subclass({
   init: function() {
-    this.touchManager = new Wheel.EventManager({delayForTap: false});
+    this.touchManager = new Wheel.TouchManagerr({delayForTap: false});
     this.tester = new Application.TouchTester();
   }
 }, {

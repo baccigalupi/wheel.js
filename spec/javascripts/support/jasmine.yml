@@ -18,6 +18,7 @@ src_files:
     - lib/wheel.js
     - lib/wheel/mixins/**/*.js
     - lib/wheel/view.js
+    - lib/wheel/touch_manager.js
     - lib/wheel/*.js
 
     - lib/wheel/widgeteria/link.js

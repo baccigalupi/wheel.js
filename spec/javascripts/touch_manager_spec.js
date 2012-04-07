@@ -100,6 +100,25 @@ describe('Wheel.TouchManager', function() {
         });
       });
     });
+
+    describe('when a touchhold is triggered', function() {
+      beforeEach(function() {
+        div.trigger(startEvent);
+        waits(manager.HOLD_DELAY + 50);
+      });
+
+      it('does not trigger a tap', function() {
+        runs(function() {
+          expect(events.tap).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not trigger a swipe', function() {
+        runs(function() {
+          expect(events.swipe).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('tap', function() {
@@ -218,6 +237,15 @@ describe('Wheel.TouchManager', function() {
       expect(args.pageX).toBe(100);
       expect(args.pageY).toBe(500);
     });
+
+    it('tap will not be triggered', function() {
+      div.trigger(startEvent);
+      touches[0].pageY = 500
+      moveEvent = $.Event('touchmove', {touches: touches});
+      div.trigger(moveEvent);
+
+      expect(events.tap).not.toHaveBeenCalled();
+    });
   });
 
   describe('doubletap', function() {
@@ -240,6 +268,19 @@ describe('Wheel.TouchManager', function() {
         expect(args.type).toBe('doubletap');
         expect(args.pageX).toBe(100);
         expect(args.pageY).toBe(200);
+      });
+    });
+
+    it('will not trigger a tap', function() {
+      div.trigger(startEvent);
+      div.trigger(endEvent);
+      waits(50);
+
+      runs(function() {
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+
+        expect(events.tap).not.toHaveBeenCalled();
       });
     });
   });

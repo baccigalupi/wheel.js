@@ -315,14 +315,15 @@ describe('Wheel.TouchManager', function() {
         });
       });
 
-      xit('when triggering a double tap, both taps get triggered too', function() {
+      it('when triggering a double tap, the first tap will be triggered too', function() {
         div.trigger(startEvent);
         div.trigger(endEvent);
         waits(50);
         runs(function() {
           div.trigger(startEvent);
           div.trigger(endEvent);
-          expect(events.tap.callCount).toBe(2);
+          expect(events.tap).toHaveBeenCalled();
+          expect(events.doubletap).toHaveBeenCalled();
         });
       });
     });

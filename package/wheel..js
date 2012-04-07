@@ -230,7 +230,7 @@ Wheel.Application = Wheel.Class.subclass({
  *
  */
 
-Wheel.TouchManager = Wheel.View.subclass({
+Wheel.EventManager = Wheel.View.subclass({
   // view delegation ... extract into a subclass ??
   initializeDom: function(viewInstance, opts) {
     this.optionize(opts);
@@ -245,7 +245,7 @@ Wheel.TouchManager = Wheel.View.subclass({
     //
     // call methods for listening
     // single finger gestures only:
-    // swipe, touchhold, tap, doubletap
+    // swipe, taphold, tap, doubletap
     //
     this._isListening = true;
   },
@@ -273,10 +273,10 @@ Wheel.TouchManager = Wheel.View.subclass({
 
       if (delta > 0 && delta <= self.DOUBLE_DELAY) {
         self.touch.isDoubleTap = true;
-        return; // don't bother listening for a touchhold
+        return; // don't bother listening for a taphold
       }
 
-      // wait to see if this is a touchhold event
+      // wait to see if this is a taphold event
       self.touchTimout = setTimeout(function(e) {
         self._testForTouchHold(e);
       }, self.HOLD_DELAY);
@@ -301,7 +301,7 @@ Wheel.TouchManager = Wheel.View.subclass({
     var self = this;
     if ((this.touch.last && (Date.now() - this.touch.last >= this.HOLD_DELAY)) //&&
         /* (touches are within tolerante) */ ) {
-      var newEvent = $.Event('touchhold', {
+      var newEvent = $.Event('taphold', {
         pageX: e.pageX,
         pageY: e.pageY,
         stopPropogation: function() { e.originalEvent.stopPropogation() },

@@ -1,5 +1,7 @@
-describe('Wheel.TouchManager', function() {
-  var manager = new Wheel.TouchManager(),
+describe('Wheel.EventManager', function() {
+  window.ontouchstart = true; // triggers the manager to assume touchevent
+
+  var manager = new Wheel.EventManager(),
       div, events, touches, moves,
       startEvent, moveEvent, endEvent,
       spy, args;
@@ -15,7 +17,7 @@ describe('Wheel.TouchManager', function() {
     }];
 
     events = {
-      touchhold:  jasmine.createSpy('touchhold'),
+      taphold:    jasmine.createSpy('taphold'),
       tap:        jasmine.createSpy('tap'),
       doubletap:  jasmine.createSpy('doubletap'),
       swipe:      jasmine.createSpy('swipe'),
@@ -27,7 +29,7 @@ describe('Wheel.TouchManager', function() {
 
     div = $('<div class="touch_tester"/>');
     div
-      .bind('touchhold',  function(e) {events.touchhold(e)})
+      .bind('taphold',    function(e) {events.taphold(e)})
       .bind('tap',        function(e) {events.tap(e)})
       .bind('doubletap',  function(e) {events.doubletap(e)})
       .bind('swipe',      function(e) {events.swipe(e)})
@@ -39,7 +41,7 @@ describe('Wheel.TouchManager', function() {
     $(document.body).append(div);
   });
 
-  describe('touchhold', function() {
+  describe('taphold', function() {
     beforeEach(function() {
       startEvent = $.Event('touchstart', {
         touches: touches
@@ -52,9 +54,9 @@ describe('Wheel.TouchManager', function() {
         waits(manager.HOLD_DELAY);
 
         runs(function() {
-          expect(events.touchhold).toHaveBeenCalled();
-          args = spyArgs(events.touchhold);
-          expect(args.type).toBe('touchhold');
+          expect(events.taphold).toHaveBeenCalled();
+          args = spyArgs(events.taphold);
+          expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(100);
           expect(args.pageY).toBe(200);
         });
@@ -72,9 +74,9 @@ describe('Wheel.TouchManager', function() {
         waits(manager.HOLD_DELAY);
 
         runs(function() {
-          expect(events.touchhold).toHaveBeenCalled();
-          args = spyArgs(events.touchhold);
-          expect(args.type).toBe('touchhold');
+          expect(events.taphold).toHaveBeenCalled();
+          args = spyArgs(events.taphold);
+          expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(105);
           expect(args.pageY).toBe(200);
         });
@@ -92,16 +94,16 @@ describe('Wheel.TouchManager', function() {
         waits(manager.HOLD_DELAY);
 
         runs(function() {
-          expect(events.touchhold).toHaveBeenCalled();
-          args = spyArgs(events.touchhold);
-          expect(args.type).toBe('touchhold');
+          expect(events.taphold).toHaveBeenCalled();
+          args = spyArgs(events.taphold);
+          expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(100);
           expect(args.pageY).toBe(205);
         });
       });
     });
 
-    describe('when a touchhold is triggered', function() {
+    describe('when a taphold is triggered', function() {
       beforeEach(function() {
         div.trigger(startEvent);
         waits(manager.HOLD_DELAY + 50);
@@ -141,7 +143,7 @@ describe('Wheel.TouchManager', function() {
         });
       });
 
-      it("triggers after a delay less than touchhold", function() {
+      it("triggers after a delay less than taphold", function() {
         startEvent = $.Event('touchstart', {touches: touches});
         endEvent = $.Event('touchend', {touches: touches});
 

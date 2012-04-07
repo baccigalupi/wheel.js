@@ -5,8 +5,8 @@ Application.TouchTester = Wheel.View.subclass({
 
   listen: function() {
     var self = this;
-    this.$.bind('touchhold', function(e) {
-      self.logEvent('touchhold', e);
+    this.$.bind('taphold', function(e) {
+      self.logEvent('taphold', e);
     });
     this.$.bind('tap', function(e) {
       self.logEvent('tap', e);

@@ -327,5 +327,22 @@ describe('Wheel.TouchManager', function() {
         });
       });
     });
+
+    describe('scroll prevention on scrolling', function() {
+      it('provides a method for overriding to prevent scrolling on swipe', function() {
+        manager._preventScroll = function() { return true; };
+
+        startEvent = $.Event('touchstart', {touches: touches});
+        div.trigger(startEvent);
+
+        touches[0].pageY = 500
+        moveEvent = $.Event('touchmove', { touches: touches });
+        spyOn(moveEvent, 'preventDefault');
+        div.trigger(moveEvent);
+
+        expect(events.swipe).toHaveBeenCalled();
+        expect(moveEvent.preventDefault).toHaveBeenCalled();
+      });
+    });
   });
 });

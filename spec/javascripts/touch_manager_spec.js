@@ -284,4 +284,47 @@ describe('Wheel.TouchManager', function() {
       });
     });
   });
+
+  describe('customizations', function() {
+    describe('getting a responsive tap', function() {
+      beforeEach(function() {
+        startEvent = $.Event('touchstart', {touches: touches});
+        endEvent = $.Event('touchend', {touches: touches});
+
+        manager.RESPONSIVE_TAP = true;
+      });
+
+      afterEach(function() {
+        manager.RESPONSIVE_TAP = false; // returning it to its non-custom state
+      });
+
+      it('triggers the tap as soon as the touch ends', function() {
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+        expect(events.tap).toHaveBeenCalled();
+      });
+
+      it('may also trigger a double tap', function() {
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+        waits(50);
+        runs(function() {
+          div.trigger(startEvent);
+          div.trigger(endEvent);
+          expect(events.doubletap).toHaveBeenCalled();
+        });
+      });
+
+      xit('when triggering a double tap, both taps get triggered too', function() {
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+        waits(50);
+        runs(function() {
+          div.trigger(startEvent);
+          div.trigger(endEvent);
+          expect(events.tap.callCount).toBe(2);
+        });
+      });
+    });
+  });
 });

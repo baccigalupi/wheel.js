@@ -219,4 +219,28 @@ describe('Wheel.TouchManager', function() {
       expect(args.pageY).toBe(500);
     });
   });
+
+  describe('doubletap', function() {
+    beforeEach(function() {
+      startEvent = $.Event('touchstart', {touches: touches});
+      endEvent = $.Event('touchend', {touches: touches});
+    });
+
+    it('is correctly detected with an appropriate delay', function() {
+      div.trigger(startEvent);
+      div.trigger(endEvent);
+      waits(50);
+ 
+      runs(function() {
+        div.trigger(startEvent);
+        div.trigger(endEvent);
+
+        expect(events.doubletap).toHaveBeenCalled();
+        args = spyArgs(events.doubletap);
+        expect(args.type).toBe('doubletap');
+        expect(args.pageX).toBe(100);
+        expect(args.pageY).toBe(200);
+      });
+    });
+  });
 });

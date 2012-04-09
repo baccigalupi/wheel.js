@@ -1,341 +1,58 @@
-xdescribe('Wheel.MouseManager', function() {
-  var manager = new Wheel.MouseManager(),
-      div, events, pageCoordinates, moves,
-      startEvent, moveEvent, endEvent,
-      spy, args;
+describe('Wheel.MouseManager', function() {
+  var manager = new Wheel.MouseManager();
 
-  beforeEach(function() {
-    // reset the manager
-    manager.clearTimeout();
-    manager.touch = {};
+  // TODO: figure out how to trigger MouseEvents with
+  // given specified pageX and pageY. Then switch to
+  // shared examples. Current specs test differences in
+  // classes after inheritance, and I would like something
+  // more integration-y.
 
-    pageCoordinates = {
-      pageX: 100,
-      pageY: 200,
-    };
-
-    events = {
-      taphold:    jasmine.createSpy('taphold'),
-      tap:        jasmine.createSpy('tap'),
-      doubletap:  jasmine.createSpy('doubletap'),
-      swipe:      jasmine.createSpy('swipe'),
-      swipeleft:  jasmine.createSpy('swipeleft'),
-      swiperight: jasmine.createSpy('swiperight'),
-      swipeup:    jasmine.createSpy('swipeup'),
-      swipedown:  jasmine.createSpy('swipedown')
-    };
-
-    div = $('<div class="touch_tester"/>');
-    div
-      .bind('taphold',    function(e) {events.taphold(e)})
-      .bind('tap',        function(e) {events.tap(e)})
-      .bind('doubletap',  function(e) {events.doubletap(e)})
-      .bind('swipe',      function(e) {events.swipe(e)})
-      .bind('swipeleft',  function(e) {events.swipeleft(e)})
-      .bind('swiperight', function(e) {events.swiperight(e)})
-      .bind('swipeup',    function(e) {events.swipeup(e)})
-      .bind('swipedown',  function(e) {events.swipedown(e)});
-
-    $(document.body).append(div);
+  describe('ancestry', function() {
+    it('is a TouchManager', function() {
+      expect(manager instanceof Wheel.MouseManager).toBe(true);
+    });
   });
 
-  describe('taphold', function() {
+  describe('normalizing the event', function() {
+    it('just returns the original event', function() {
+      e = {'isWeird': true};
+      expect(manager.normalizeEvent(e)).toBe(e);
+    });
+  });
+
+  describe('listening', function() {
     beforeEach(function() {
-      startEvent = $.Event('mousedown', pageCoordinates);
+      // reset the manager
+      manager.clearTimeout();
+      manager.touch = {};
     });
 
-    describe('detection happens when', function() {
-      it('the touch is not moved after 750 ms', function() {
-        div.trigger(startEvent);
-        waits(manager.HOLD_DELAY);
-
-        runs(function() {
-          expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
-          expect(args.type).toBe('taphold');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(200);
-        });
-      });
-
-      it('touch moves in x by a small amount', function() {
-        div.trigger(startEvent);
-
-        pageCoordinates.pageX = 105
-        moveEvent = $.Event('mousemove', pageCoordinates);
-        div.trigger(moveEvent);
-
-        waits(manager.HOLD_DELAY);
-
-        runs(function() {
-          expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
-          expect(args.type).toBe('taphold');
-          expect(args.pageX).toBe(105);
-          expect(args.pageY).toBe(200);
-        });
-      });
-
-      it('touch moves in y by a small amount', function() {
-        div.trigger(startEvent);
-
-        pageCoordinates.pageY = 205;
-        moveEvent = $.Event('mousemove', pageCoordinates);
-        div.trigger(moveEvent);
-
-        waits(manager.HOLD_DELAY);
-
-        runs(function() {
-          expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
-          expect(args.type).toBe('taphold');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(205);
-        });
+    describe('before mousedown', function() {
+      it('does not listen for mousemove', function() {
+        spyOn(manager, 'onMove');
+        $(document.body).trigger($.Event('mousemove'));
+        expect(manager.onMove).not.toHaveBeenCalled();
       });
     });
 
-    describe('when a taphold is triggered', function() {
-      beforeEach(function() {
-        div.trigger(startEvent);
-        waits(manager.HOLD_DELAY + 50);
-      });
+    describe('after mousedown', function() {
+      it('listens for mousemove', function() {
+        $(document.body).trigger($.Event('mousedown'));
 
-      it('does not trigger a tap', function() {
-        runs(function() {
-          expect(events.tap).not.toHaveBeenCalled();
-        });
-      });
-
-      it('does not trigger a swipe', function() {
-        runs(function() {
-          expect(events.swipe).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
-  describe('tap', function() {
-    describe('detection', function() {
-      it("triggers after a delay with a rapid mousedown, mouseup", function() {
-        startEvent = $.Event('mousedown',pageCoordinates);
-        endEvent = $.Event('mouseup', pageCoordinates);
-
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-
-        waits(manager.DOUBLE_DELAY);
-
-        runs(function() {
-          expect(events.tap).toHaveBeenCalled();
-          args = spyArgs(events.tap);
-          expect(args.type).toBe('tap');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(200);
-        });
-      });
-
-      it("triggers after a delay less than taphold", function() {
-        startEvent = $.Event('mousedown', pageCoordinates);
-        endEvent = $.Event('mouseup', pageCoordinates);
-
-        div.trigger(startEvent);
-        waits(manager.HOLD_DELAY - 50);
-        runs(function() {
-          div.trigger(endEvent);
-        });
-
-        waits(manager.DOUBLE_DELAY);
-        runs(function() {
-          expect(events.tap).toHaveBeenCalled();
-          args = spyArgs(events.tap);
-          expect(args.type).toBe('tap');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(200);
-        });
-      });
-    });
-  });
-
-  describe('swipe', function() {
-    beforeEach(function() {
-      startEvent = $.Event('mousedown', pageCoordinates);
-    });
-
-    it('dectects swipes after a distance has been moved, without a mouseup', function() {
-      div.trigger(startEvent);
-
-      pageCoordinates.pageX = pageCoordinates.pageX + manager.SWIPE_TOLERANCE + 1
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.swipe).toHaveBeenCalled();
-      args = spyArgs(events.swipe);
-      expect(args.type).toBe('swipe');
-      expect(args.pageX).toBe(201);
-      expect(args.pageY).toBe(200);
-    });
-
-    it('triggers swiperight', function() {
-      div.trigger(startEvent);
-
-      pageCoordinates.pageX = 300
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.swiperight).toHaveBeenCalled();
-      args = spyArgs(events.swiperight);
-      expect(args.type).toBe('swiperight');
-      expect(args.pageX).toBe(300);
-      expect(args.pageY).toBe(200);
-    });
-
-    it('triggers swipeleft', function() {
-      div.trigger(startEvent);
-
-      pageCoordinates.pageX = -200
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.swipeleft).toHaveBeenCalled();
-      args = spyArgs(events.swipeleft);
-      expect(args.type).toBe('swipeleft');
-      expect(args.pageX).toBe(-200);
-      expect(args.pageY).toBe(200);
-    });
-
-    it('triggers swipeup', function() {
-      div.trigger(startEvent);
-
-      pageCoordinates.pageY = 0
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.swipeup).toHaveBeenCalled();
-      args = spyArgs(events.swipeup);
-      expect(args.type).toBe('swipeup');
-      expect(args.pageX).toBe(100);
-      expect(args.pageY).toBe(0);
-    });
-
-    it('triggers swipedown', function() {
-      div.trigger(startEvent);
-
-      pageCoordinates.pageY = 500
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.swipedown).toHaveBeenCalled();
-      args = spyArgs(events.swipedown);
-      expect(args.type).toBe('swipedown');
-      expect(args.pageX).toBe(100);
-      expect(args.pageY).toBe(500);
-    });
-
-    it('tap will not be triggered', function() {
-      div.trigger(startEvent);
-      pageCoordinates.pageY = 500
-      moveEvent = $.Event('mousemove', pageCoordinates);
-      div.trigger(moveEvent);
-
-      expect(events.tap).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('doubletap', function() {
-    beforeEach(function() {
-      startEvent = $.Event('mousedown', pageCoordinates);
-      endEvent = $.Event('mouseup', pageCoordinates);
-    });
-
-    it('is correctly detected with an appropriate delay', function() {
-      div.trigger(startEvent);
-      div.trigger(endEvent);
-      waits(50);
-
-      runs(function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-
-        expect(events.doubletap).toHaveBeenCalled();
-        args = spyArgs(events.doubletap);
-        expect(args.type).toBe('doubletap');
-        expect(args.pageX).toBe(100);
-        expect(args.pageY).toBe(200);
+        spyOn(manager, 'onMove');
+        $(document.body).trigger($.Event('mousemove'));
+        expect(manager.onMove).toHaveBeenCalled();
       });
     });
 
-    it('will not trigger a tap', function() {
-      div.trigger(startEvent);
-      div.trigger(endEvent);
-      waits(50);
+    describe('after mouseup', function() {
+      it('stops listening for mousemove', function() {
+        $(document.body).trigger($.Event('mousedown'));
+        $(document.body).trigger($.Event('mouseup'));
 
-      runs(function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-
-        expect(events.tap).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('customizations', function() {
-    describe('getting a responsive tap', function() {
-      beforeEach(function() {
-        startEvent = $.Event('mousedown', pageCoordinates);
-        endEvent = $.Event('mouseup', pageCoordinates);
-
-        manager.RESPONSIVE_TAP = true;
-      });
-
-      afterEach(function() {
-        manager.RESPONSIVE_TAP = false; // returning it to its non-custom state
-      });
-
-      it('triggers the tap as soon as the touch ends', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        expect(events.tap).toHaveBeenCalled();
-      });
-
-      it('may also trigger a double tap', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        waits(50);
-        runs(function() {
-          div.trigger(startEvent);
-          div.trigger(endEvent);
-          expect(events.doubletap).toHaveBeenCalled();
-        });
-      });
-
-      it('when triggering a double tap, the first tap will be triggered too', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        waits(50);
-        runs(function() {
-          div.trigger(startEvent);
-          div.trigger(endEvent);
-          expect(events.tap).toHaveBeenCalled();
-          expect(events.doubletap).toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('scroll prevention on scrolling', function() {
-      it('provides a method for overriding to prevent scrolling on swipe', function() {
-        manager._preventScroll = function() { return true; };
-
-        startEvent = $.Event('mousedown', pageCoordinates);
-        div.trigger(startEvent);
-
-        pageCoordinates.pageY = 500
-        moveEvent = $.Event('mousemove', pageCoordinates);
-        spyOn(moveEvent, 'preventDefault');
-        div.trigger(moveEvent);
-
-        expect(events.swipe).toHaveBeenCalled();
-        expect(moveEvent.preventDefault).toHaveBeenCalled();
+        spyOn(manager, 'onMove');
+        $(document.body).trigger($.Event('mousemove'));
+        expect(manager.onMove).not.toHaveBeenCalled();
       });
     });
   });

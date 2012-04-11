@@ -125,55 +125,6 @@ describe('Wheel.TouchManager', function() {
     });
   });
 
-  describe('tapmove', function() {
-    beforeEach(function() {
-      startEvent = $.Event('touchstart', {
-        touches: touches
-      });
-
-      moveEvent = $.Event('touchmove', {
-        touches: touches
-      })
-    });
-
-    it('is triggered after a taphold', function() {
-      div.trigger(startEvent);
-      div.trigger(moveEvent);
-      waits(manager.HOLD_DELAY);
-
-      runs(function() {
-        expect(events.tapmove).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('tapend', function() {
-    beforeEach(function() {
-      startEvent = $.Event('touchstart', {
-        touches: touches
-      });
-
-      endEvent = $.Event('touchend', {
-        touches: touches
-      });
-    });
-
-    it('is triggered at the end of a tap hold', function() {
-      div.trigger(startEvent);
-      waits(manager.HOLD_DELAY + 100);
-      runs(function() {
-        div.trigger(endEvent);
-        expect(events.tapend).toHaveBeenCalled();
-      });
-    });
-
-    it('is triggered at the end of a tap', function() {
-      div.trigger(startEvent);
-      div.trigger(endEvent);
-      expect(events.tapend).toHaveBeenCalled();
-    });
-  });
-
   describe('tap', function() {
     describe('detection', function() {
       it("triggers after a delay with a rapid touchstart, touchend", function() {

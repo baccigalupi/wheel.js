@@ -25,6 +25,7 @@
 .dragging {
   opacity: 0.8;
   position: relative;
+  z-index: 10000;
 }
 
 // html 5 drag and drop

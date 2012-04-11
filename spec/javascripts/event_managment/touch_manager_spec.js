@@ -15,8 +15,10 @@ describe('Wheel.TouchManager', function() {
     }];
 
     events = {
-      taphold:  jasmine.createSpy('taphold'),
+      taphold:    jasmine.createSpy('taphold'),
       tap:        jasmine.createSpy('tap'),
+      tapmove:    jasmine.createSpy('tapmove'),
+      tapend:     jasmine.createSpy('tapend'),
       doubletap:  jasmine.createSpy('doubletap'),
       swipe:      jasmine.createSpy('swipe'),
       swipeleft:  jasmine.createSpy('swipeleft'),
@@ -27,7 +29,9 @@ describe('Wheel.TouchManager', function() {
 
     div = $('<div class="touch_tester"/>');
     div
-      .bind('taphold',  function(e) {events.taphold(e)})
+      .bind('taphold',    function(e) {events.taphold(e)})
+      .bind('tapmove',    function(e) {events.tapmove(e)})
+      .bind('tapend',     function(e) {events.tapend(e)})
       .bind('tap',        function(e) {events.tap(e)})
       .bind('doubletap',  function(e) {events.doubletap(e)})
       .bind('swipe',      function(e) {events.swipe(e)})
@@ -118,6 +122,55 @@ describe('Wheel.TouchManager', function() {
           expect(events.swipe).not.toHaveBeenCalled();
         });
       });
+    });
+  });
+
+  describe('tapmove', function() {
+    beforeEach(function() {
+      startEvent = $.Event('touchstart', {
+        touches: touches
+      });
+
+      moveEvent = $.Event('touchmove', {
+        touches: touches
+      })
+    });
+
+    it('is triggered after a taphold', function() {
+      div.trigger(startEvent);
+      div.trigger(moveEvent);
+      waits(manager.HOLD_DELAY);
+
+      runs(function() {
+        expect(events.tapmove).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('tapend', function() {
+    beforeEach(function() {
+      startEvent = $.Event('touchstart', {
+        touches: touches
+      });
+
+      endEvent = $.Event('touchend', {
+        touches: touches
+      });
+    });
+
+    it('is triggered at the end of a tap hold', function() {
+      div.trigger(startEvent);
+      waits(manager.HOLD_DELAY + 100);
+      runs(function() {
+        div.trigger(endEvent);
+        expect(events.tapend).toHaveBeenCalled();
+      });
+    });
+
+    it('is triggered at the end of a tap', function() {
+      div.trigger(startEvent);
+      div.trigger(endEvent);
+      expect(events.tapend).toHaveBeenCalled();
     });
   });
 

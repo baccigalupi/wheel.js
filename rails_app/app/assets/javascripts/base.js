@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require zepto
+//# require jquery-1.7.1
 //= require mustache
 //
 //= require ./wheel/wheel.js
@@ -18,7 +19,8 @@
 //
 //= require ./wheel/wheel/view
 //= require ./wheel/wheel/application
-//= require ./wheel/wheel/touch_manager
+//= require ./wheel/wheel/event_managers/touch_manager
+//= require ./wheel/wheel/event_managers/mouse_manager
 //
 //= require ./wheel/wheel/widgeteria/form
 //= require ./wheel/wheel/widgeteria/link

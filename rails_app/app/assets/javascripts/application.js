@@ -11,5 +11,4 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require ./application/app
-//= require ./application/touch_tester.js
 //= require_tree ./application

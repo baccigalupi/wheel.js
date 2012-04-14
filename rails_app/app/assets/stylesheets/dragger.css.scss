@@ -15,23 +15,32 @@
 }
 
 // non-html 5, drag and drop
-.dragger {
-  background-color: pink;
-}
-.dropper {
-  border: 3px dashed maroon;
+.drag_wrapper {
+  position: relative;
 }
 
-.dragging {
-  opacity: 0.8;
-  position: relative;
-  z-index: 10000;
+.draggable {
+  background-color: pink;
+  border: 3px dashed maroon;
+
+  &.dragger {
+    opacity: 0.8;
+    position: absolute;
+    float: left;
+    z-index: 10000;
+  }
+
+  &.drag_revert {
+    -webkit-transition-property: top, left;
+    -webkit-transition-duration: 0.5s;
+  }
 }
 
 // html 5 drag and drop
 [draggable] {
-  background-color: lightblue;
+  /*background-color: lightblue;*/
 }
 .html_draggable {
   border: 3px dashed blue;
+  background-color: lightblue;
 }

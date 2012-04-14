@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require zepto
+//= require ./wheel/wheel/lib/clone.zepto
 //# require jquery-1.7.1
 //= require mustache
 //

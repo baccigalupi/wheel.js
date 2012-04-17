@@ -1,3 +1,10 @@
+// drag manager is a class level object
+// keeps track of
+//  - drag element
+//  - helper
+//  - over elements
+//  - droppable elements
+
 var Dragger = Wheel.View.subclass({
   init: function() {
     $(document.body).append(this.$);
@@ -13,7 +20,7 @@ var Dragger = Wheel.View.subclass({
     // listen for mouse events and trigger corresponding drag
     var self = this;
     function onMove(e) {
-      e.preventDefault(); // doesn't text select elements on the page
+      e.preventDefault(); // doesn't select text elements on the page
       self.$dragElement.trigger($.Event('dragmove', e));
     };
 
@@ -24,6 +31,7 @@ var Dragger = Wheel.View.subclass({
       self.$body.unbind('mouseup', onEnd);
     };
 
+    this.$dropZones = this.$jsDrag;
     this.$jsDrag.on('mousedown', function(e) {
       e.preventDefault();
       self.$dragElement = $(this);
@@ -42,22 +50,31 @@ var Dragger = Wheel.View.subclass({
       })
       .on('dragend', function(e) {
         self.onDragend(e);
+      })
+      .on('dragover', function(e) {
+        self.onDragover(e);
+      })
+      .on('dragenter', function(e) {
+        self.onDragenter(e);
+      })
+      .on('dragleave', function(e) {
+        self.onDragleave(e);
       });
   },
 
   onDragstart: function(e) {
     this.$dragTarget = $(e.target);
-    this.$dragTargetOffset = this.$dragTarget.offset();
-    this.$dragTargetOffset.left -= parseInt(this.$dragTarget.css('margin-left')) || 0;
-    this.$dragTargetOffset.top -= parseInt(this.$dragTarget.css('margin-top')) || 0;
+    this.targetOffset = this.$dragTarget.offset();
+    this.targetOffset.left -= parseInt(this.$dragTarget.css('margin-left')) || 0;
+    this.targetOffset.top -= parseInt(this.$dragTarget.css('margin-top')) || 0;
 
     // clone a drag helper
     this.$dragger = this.$dragTarget.clone(false).wrap($('<div/>').addClass('drag_wrapper'));
     this.$dragger.addClass('dragger');
 
-    this.offset = {
-      x: e.pageX - this.$dragTargetOffset.left,
-      y: e.pageY - this.$dragTargetOffset.top
+    this.draggerOffset = {
+      x: e.pageX - this.targetOffset.left,
+      y: e.pageY - this.targetOffset.top
     };
 
     this.positionDragger(e);
@@ -66,31 +83,69 @@ var Dragger = Wheel.View.subclass({
 
   onDragmove: function(e) {
     this.positionDragger(e);
+    this.calculateDragOver(e);
   },
 
   onDragend: function(e) {
-    this.revertPosition();
+    this.revertDragger();
+  },
+
+  onDragenter: function(e) {
+    console.log('drag enter on', e.target);
+  },
+
+  onDragover: function(e) {
+    console.log('drag over on', e.target, e);
+  },
+
+  onDragleave: function(e) {
+    console.log('drag leave on', e.target);
   },
 
   positionDragger: function(e) {
     this.$dragger
-      .css('left', e.pageX - this.offset.x)
-      .css('top', e.pageY - this.offset.y);
+      .css('left', e.pageX - this.draggerOffset.x)
+      .css('top', e.pageY - this.draggerOffset.y);
   },
 
-  revertPosition: function(e) {
+  revertDragger: function(e) {
     this.$dragger.addClass('drag_revert');
     this.$dragger.removeClass('dragging');
-    this.$dragger.css('left', this.$dragTargetOffset.left);
-    this.$dragger.css('top', this.$dragTargetOffset.top);
-  
-    console.log(this.$dragger.css('left'), this.$dragger.css('top'), this.offset);
+    this.$dragger.css('left', this.targetOffset.left);
+    this.$dragger.css('top', this.targetOffset.top);
+    this.$over = null;
+
     // remove the drag revert class after animation
     duration = Wheel.Mixins.Animatrix.duration(this.$dragger);
     var self = this;
     setTimeout(function() {
       self.$dragger.remove();
     }, duration);
+  },
+
+  calculateDragOver: function(e) {
+    var self = this;
+    this.$dropZones.each(function(index, element) {
+      if (found) {return}
+      element = $(element);
+      var offset = $(element).offset(),
+          found = false;
+      // going to pretend there is only one dragOver element at a time
+      // which wouldn't be true for nested elements that are all dropzones
+      if ( e.pageX > offset.left && e.pageX < offset.left + offset.width
+            && e.pageY > offset.top && e.pageY < offset.left + offset.width ) {
+
+        if ( !self.$over || element[0] != self.$over[0] ) {
+          if (self.$over) {
+            self.$over.trigger($.Event('dragleave', e));
+          }
+          self.$over = element;
+          self.$over.trigger($.Event('dragenter', e));
+        }
+        self.$over.trigger($.Event('dragover', e));
+        found = true;
+      }
+    });
   },
 
   listenForNative: function() {
@@ -100,19 +155,13 @@ var Dragger = Wheel.View.subclass({
         $(this).attr('draggable', true);
       })
       .on('dragstart', function(e) {
-        console.log('starting drag on', e.target);
+        //console.log('dragstart on ', e.target);
       })
-      .on('dragenter', function(e) {
-        console.log('drag enter on', e.target);
-      })
-      .on('dragover', function(e) {
-        //console.log('drag over on', e.target);
-      })
-      .on('dragleave', function(e) {
-        console.log('drag leave on', e.target);
-      })
+      .on('dragenter', this.onDragenter)
+      .on('dragover', this.onDragover)
+      .on('dragleave', this.onDragleave)
       .on('dragend', function(e) {
-        console.log('dragend on', e.target);
+        //console.log('dragend on', e.target);
         $(this).removeAttr('draggable');
       })
   }

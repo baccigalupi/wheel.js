@@ -4,6 +4,9 @@
 //  - helper
 //  - over elements
 //  - droppable elements
+// Desirable interface:
+//  MyClass.mixin(Wheel.Draggable);
+//  myClass.$.draggable();
 
 var Dragger = Wheel.View.subclass({
   init: function() {
@@ -161,8 +164,11 @@ var Dragger = Wheel.View.subclass({
       .on('dragover', this.onDragover)
       .on('dragleave', this.onDragleave)
       .on('dragend', function(e) {
-        //console.log('dragend on', e.target);
+        console.log('dragend on', e.target);
         $(this).removeAttr('draggable');
+      })
+      .on('drop', function(e) {
+        console.log('dropping');
       })
   }
 }, {

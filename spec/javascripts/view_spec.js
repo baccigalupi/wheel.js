@@ -119,29 +119,62 @@ describe("Wheel.View", function () {
     });
   });
 
-  xdescribe('appenders', function() {
+  describe('appenders', function() {
+    var Pender, pender, Pendee;
+
+    beforeEach(function() {
+      Pender = Wheel.View.subclass({}, {
+        template: function() {
+          return "<div class='pender'/>"
+        }
+      });
+
+      Pendee = Wheel.View.subclass({}, {
+        template: function() {
+          return "<div class='pendee'/>"
+        }
+      });
+
+      pender = new Pender();
+    });
+
     describe('append', function() {
+      describe("single argument", function(){
+        it("can append a Wheel.View object", function() {
+          pender.append(new Pendee());
+          expect(pender.$.find('.pendee').length).toBe(1);
+        });
+
+        it('can append a dom element', function() {
+          pender.append("<div class='not_pendee'/>");
+          expect(pender.$.find('.not_pendee').length).toBe(1);
+        });
+      });
+
+      describe("array argument", function(){
+        it("can append an array of Wheel.View object", function() {
+          var pendees = Pendee.assemble([{},{}]);
+          pender.append(pendees);
+          expect(pender.$.find('.pendee').length).toBe(2);
+        });
+
+        it('can append an array of dom element', function() {
+          var pendees = ['<div class="foo"/>', '<div class="bar"/>'];
+          pender.append(pendees);
+          expect(pender.$.find('.foo').length).toBe(1);
+          expect(pender.$.find('.bar').length).toBe(1);
+        });
+      });
+    });
+
+    xdescribe('prepend', function() {
       describe("single argument", function(){
         it("can append a Wheel.View object");
         it('can append a dom element');
-        it('can append a wrapped dom element');
-        it('can append a string');
       });
       describe("array argument", function(){
         it("can append an array of Wheel.View object");
-        it('can append an array of wrapped dom element');
-      });
-    });
-    describe('prepend', function() {
-      describe("single argument", function(){
-        it("can prepend a Wheel.View object");
-        it('can prepend a dom element');
-        it('can prepend a wrapped dom element');
-        it('can prepend a string');
-      });
-      describe("array argument", function(){
-        it("can prepend an array of Wheel.View object");
-        it('can prepend an array of wrapped dom element');
+        it('can append an array of dom element');
       });
     });
   });
@@ -259,7 +292,41 @@ describe("Wheel.View", function () {
           expect(rendered).toMatch(/<li>Herman Melville<\/li>/)
           expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/)
         });
-      })
+      });
+
+      describe('auto appending', function() {
+        var parent;
+
+        it('will append itself to the parent option element', function() {
+          parent = $("<div class='parent'/>");
+          list = new Lister({parent: parent, model: {
+            title: 'Some Authors',
+            collection: [
+              {first_name: 'Edgar Allen', last_name: 'Poe'},
+              {first_name: 'Mark', last_name: 'Twain'}
+            ]
+          }});
+          expect(parent.find('ul.authors').length).toBe(1);
+        });
+
+        it('will append itself to a Wheel.View', function() {
+          parent = new Lister({model: {title: 'Favorite Authors', collection: [
+            {first_name: 'Herman', last_name: 'Melville'}
+          ]}});
+
+          list = new Lister({
+            parent: parent,
+            model: {
+              title: 'Other Authors',
+              collection: [
+                {first_name: 'Stephen', last_name: 'King'}
+              ]
+            }
+          });
+
+          expect(parent.$.find('ul.authors').length).toBe(2);
+        });
+      });
     });
 
     describe('assemble class method', function() {

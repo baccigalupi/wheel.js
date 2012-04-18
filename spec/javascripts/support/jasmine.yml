@@ -12,10 +12,14 @@
 #
 src_files:
     #- lib/vendor/jquery/jquery-1.7.1.js
-    - vendor/zepto/zepto.js
+    - vendor/requirejs/requirejs-1.0.7.js
+    - vendor/modernizr/modernizr-2.5.3.js
+    - vendor/zepto/zepto-1.0rc1.js
     - vendor/mustache/mustache.js
 
-    - lib/wheel.js
+    - lib/wheel/namespace.js
+    - lib/wheel/class.js
+    - lib/wheel/loader.js
     - lib/wheel/mixins/**/*.js
     - lib/wheel/view.js
     - lib/wheel/event_managers/touch_manager.js

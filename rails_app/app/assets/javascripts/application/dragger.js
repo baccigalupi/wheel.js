@@ -4,9 +4,6 @@
 //  - helper
 //  - over elements
 //  - droppable elements
-// Desirable interface:
-//  MyClass.mixin(Wheel.Draggable);
-//  myClass.$.draggable();
 
 var Dragger = Wheel.View.subclass({
   init: function() {

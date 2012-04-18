@@ -9,12 +9,14 @@ Menu/Selector
 Searcher
 Time Since
 Tooltip
+FormFor Model and similar rails like form builders
 
 Helpers
 ========
 Poller
 Touch/Mouse event manager
 Gestures
+Drag and Drop
 Modernizr stuff
 Cookie manager
 

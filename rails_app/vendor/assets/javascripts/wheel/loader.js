@@ -1,6 +1,6 @@
 Wheel.Loader = {
-  canZepto: function(agent) {
-    agent = agent || navigator.userAgent;
+  canZepto: function() {
+    var agent = navigator.userAgent;
     var is = false;
 
     if ( /AppleWebKit/i.test(agent) ) {

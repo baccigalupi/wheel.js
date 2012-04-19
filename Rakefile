@@ -55,3 +55,10 @@ task :compile do
   end
 end
 
+desc "Move current vendor js to test rails app vendor"
+task :copy_js_to_test_app do
+  `rm -rf rails_app/vendor/assets/javascripts`
+  `cp -r vendor/ rails_app/vendor/assets`
+  `cp -r lib/wheel rails_app/vendor/assets/javascripts`
+end
+

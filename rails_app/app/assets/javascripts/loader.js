@@ -10,19 +10,16 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require zepto
-//= require ./wheel/wheel/lib/clone.zepto
-//# require jquery-1.7.1
-//= require mustache
+//= require modernizr/modernizr.custom
 //
-//= require ./wheel/wheel.js
-//= require_tree ./wheel/wheel/mixins
-//
-//= require ./wheel/wheel/view
-//= require ./wheel/wheel/application
-//= require ./wheel/wheel/event_managers/touch_manager
-//= require ./wheel/wheel/event_managers/mouse_manager
-//
-//= require ./wheel/wheel/widgeteria/form
-//= require ./wheel/wheel/widgeteria/link
-//= require_tree ./wheel/wheel/widgeteria
+//= require wheel/namespace
+//= require wheel/class
+//= require wheel/loader
+//= require wheel/view
+
+Modernizr.load({
+  test: Wheel.Loader.canZepto(),
+  yep:  'assets/zepto/zepto-1.0rc1.js',
+  nope: 'assets/jquery/jquery-1.7.1.js',
+  both: 'assets/application.js'
+});

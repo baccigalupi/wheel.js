@@ -11,6 +11,10 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require app/dragger
+//
 
-
+$(document).ready(function() {
+  console.log('document ready');
+  var dragger = new Dragger();
+});
 

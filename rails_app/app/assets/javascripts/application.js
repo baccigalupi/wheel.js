@@ -10,11 +10,24 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require app/dragger
-//
+//  = require app/dragger
+//= require wheel/mixins/ajax
+//= require app/gather_tasks
+//= require app/assemble_tasks
 
 $(document).ready(function() {
-  console.log('document ready');
-  var dragger = new Dragger();
+  //var dragger = new Dragger();
+  gatheredTasks = GatherTask.gather('ul.found_tasks');
+
+  assembledTasks = AssembleTask.assemble([{
+    name: 'Kiss the kids',
+    id: 3
+  }, {
+    name: 'Kiss the cats',
+    id: 4
+  }]);
+
+  window.assembled = new Wheel.View('ul.generate_tasks');
+  window.assembled.append(assembledTasks);
 });
 

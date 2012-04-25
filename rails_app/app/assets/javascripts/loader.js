@@ -19,7 +19,7 @@
 
 Modernizr.load({
   test: Wheel.Loader.canZepto(),
-  yep:  'assets/zepto/zepto-1.0rc1.js',
+  yep:  'assets/jquery/jquery-1.7.1.js', //'assets/zepto/zepto-1.0rc1.js',
   nope: 'assets/jquery/jquery-1.7.1.js',
   both: 'assets/application.js'
 });

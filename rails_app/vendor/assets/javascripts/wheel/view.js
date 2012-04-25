@@ -84,7 +84,7 @@ Wheel.View = Wheel.Class.subclass({
     var set = [],
         klass = this;
     opts = opts || {};
-    dom = (dom instanceof $) ? dom : $(dom);
+    dom = $(dom);
 
     if (dom.is(this.cssSelector)) {
       set.push(new klass(dom, opts));

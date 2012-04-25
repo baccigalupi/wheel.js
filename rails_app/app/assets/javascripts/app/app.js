@@ -1,10 +1,10 @@
-var Application = Wheel.Application.subclass({
+var App = Wheel.Application.subclass({
   init: function() {
     //this.touchManager = new Wheel.MouseManager();
     this.dragger = new Dragger();
   }
 }, {
-  identifier: 'App'
+  identifier: 'app'
 });
 
 

@@ -19,7 +19,8 @@ src_files:
 
     - lib/wheel/namespace.js
     - lib/wheel/class.js
-    - lib/wheel/loader.js
+    - lib/wheel/utils/**/*.js
+    - lib/wheel/lib/cookie.js
     - lib/wheel/mixins/**/*.js
     - lib/wheel/view.js
     - lib/wheel/event_managers/touch_manager.js

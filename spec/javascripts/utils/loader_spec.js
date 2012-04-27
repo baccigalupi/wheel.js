@@ -1,4 +1,4 @@
-describe('Wheel.Loader.canZepto', function() {
+describe('Wheel.Utils.Loader.canZepto', function() {
   var browsers;
 
   describe('Desktop Safari ', function() {
@@ -17,7 +17,7 @@ describe('Wheel.Loader.canZepto', function() {
 
         var version = userAgent.match(/Version\/(5\.\d+.\d?)/)[1];
         it('should allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -39,7 +39,7 @@ describe('Wheel.Loader.canZepto', function() {
         version = version ? version[1] : 'other';
 
         it('should not allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -66,7 +66,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Chrome\/(\d+\.\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -86,7 +86,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Chrome\/(\d+\.\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should not allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -107,7 +107,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Firefox\/(\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -128,7 +128,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Firefox\/(\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should not allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -148,7 +148,7 @@ describe('Wheel.Loader.canZepto', function() {
         var brand = userAgent.match(/ipad|iphone/i)[0];
         version = version ? version[0] : userAgent;
         it('should allow '+ brand +' version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -166,7 +166,7 @@ describe('Wheel.Loader.canZepto', function() {
         version = version ? version[0] : userAgent;
         var brand = userAgent.match(/ipad|iphone/i)[0];
         it('should not allow '+ brand +' version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -185,7 +185,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Android (\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow  version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -202,7 +202,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/webOS\/(\d+\.\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -218,7 +218,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/webOS\/(\d+\.\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow not version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -228,12 +228,12 @@ describe('Wheel.Loader.canZepto', function() {
   describe('blackberry tablets', function() {
     it('should allow versions at or above 1.0.7', function() {
       var userAgent = "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 1.0.7; en-US) AppleWebKit/534.8+ (KHTML, like Gecko) Version/0.0.1 Safari/534.8+";
-      expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+      expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
     });
 
     it('should not allow versions below 1.0.7', function() {
       var userAgent = "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 1.0.6; en-US) AppleWebKit/534.8+ (KHTML, like Gecko) Version/0.0.1 Safari/534.8+";
-      expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+      expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
     });
   });
 
@@ -247,7 +247,7 @@ describe('Wheel.Loader.canZepto', function() {
       (function(userAgent) {
 
         it('should allow ' + userAgent, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -262,7 +262,7 @@ describe('Wheel.Loader.canZepto', function() {
       (function(userAgent) {
 
         it('should not allow version ' + userAgent, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);
@@ -283,7 +283,7 @@ describe('Wheel.Loader.canZepto', function() {
         var version = userAgent.match(/Version\/(\d+\.\d+)/);
         version = version ? version[0] : userAgent;
         it('should allow version ' + version, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( true );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( true );
         });
 
       })(browsers[i]);
@@ -301,7 +301,7 @@ describe('Wheel.Loader.canZepto', function() {
       (function(userAgent) {
 
         it('should allow not version ' + userAgent, function() {
-          expect( Wheel.Loader.canZepto(userAgent) ).toBe( false );
+          expect( Wheel.Utils.Loader.canZepto(userAgent) ).toBe( false );
         });
 
       })(browsers[i]);

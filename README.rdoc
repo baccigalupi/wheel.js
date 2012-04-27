@@ -1,19 +1,63 @@
-= Wheel
+= Wheel.js
 
+Do we need to reinvient the wheel with another front-end JavaScript framework? Apparently we do!
 
+Wheel.js a front-end framework cobbled together from a bunch of great tools. The reason
+to use Wheel.js over other frameworks is that Wheel.js is designed to address the needs of mobile
+web development first, not as an afterthought. Of course, it works great for desktop web too.
+
+=== The Mobile Problem Space
+* Touch events are awesome UI, but have detection, implementation gotchas
+* Connectivity can't be assumed, so your app has to thrive offline
+* Bandwidth is tiny, so your framework needs to be small and load itself intelligently
+* If you aren't optimizing your mobile web experience, you are loosing lots of audience
+
+=== Easy To Use
+Wheel.js is easy to use. It is focused on the things that are central to JavaScript application development,
+managing views. In Wheel.js, the View is King. And what is a View? It's not a template. That is a separate
+beastie, used by the View to render DOM. The View is the object responsible for interactions on a given
+bit of DOM.
+
+See the wiki for more on the amazing View king.
+
+=== Sensible Defaults
+* Zepto for applicable browsers
+* jQuery for ones that can't Zepto
+* Modernizr for detecting capabilities, and loading needed polyfills
+* Mustache for near logicless rendering
+* Object-oriented design through the whole stack, so you can override/customize anything anywhere!
+
+=== Customizable
+Yeah, just look at that last point. Everything is built like an object, so anything can be overriden and
+customized. My hope is that you won't have to dig deep into the internals of Wheel to go changing low-level
+methods. Things should just work, but when you have that special need, you also have complete ownership of
+the code.
+
+=== Stuff in the roadmap
+* Models with events
+* Drag and Drop HTML5 polyfill for mobile
+* LocalStorage cookie based polyfil
+* Local request queue stored in LocalStorage
+* Multi-touch gesture recognition (swipe, tap, and tap hold already exist)
+* Poller/Socket support
+* Rails Generators
+* Non-Rails usage and dependency managment
+
+== Installation
+Umm, yeah. The roadmap has this becoming a Rails plugin and a more general available package for non-Rails apps.
+Right now it is just a loose collection of files. If you are feeling adventurous, please checkout the /rails_app
+setup included in the projects.
+
+Currently the sprockets asset pipeline is creating a load script with some basic platform specific stuff.
+That script request other scripts depending on the environment and app requirements.
+
+So, yeah. Sorry, right now setup is not streamlined. But stay tuned. I am rolling in that direction.
 
 == Contributing to Wheel
-
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Talk to me, through github, or email, or wherever. I would love to hear your feedback.
+* Or checkout the pivotaltracker project: https://www.pivotaltracker.com/projects/536517
+* Or just fork this project, test and contribute. Don't forget the test part.
 
 == Copyright
 
-Copyright (c) 2012 Kane Baccigalupi. See LICENSE.txt for
-further details.
-
+Copyright (c) 2012 Kane Baccigalupi. See LICENSE.txt for further details.

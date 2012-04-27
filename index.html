@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Wheel.js by baccigalupi</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Wheel.js</h1>
+        <p></p>
+        <p class="view"><a href="https://github.com/baccigalupi/wheel.js">View the Project on GitHub <small>baccigalupi/wheel.js</small></a></p>
+        <ul>
+          <li><a href="https://github.com/baccigalupi/wheel.js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/baccigalupi/wheel.js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/baccigalupi/wheel.js">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Wheel.js</h1>
+
+<p>Do we need to reinvient the wheel with another front-end JavaScript framework? Apparently we do!</p>
+
+<p>Wheel.js a front-end framework cobbled together from a bunch of great tools. The reason
+to use Wheel.js over other frameworks is that Wheel.js is designed to address the needs of mobile
+web development first, not as an afterthought. Of course, it works great for desktop web too.</p>
+
+<h3>The Mobile Problem Space</h3>
+
+<ul>
+<li>Touch events are awesome UI, but have detection, implementation gotchas</li>
+<li>Connectivity can't be assumed, so your app has to thrive offline</li>
+<li>Bandwidth is tiny, so your framework needs to be small and load itself intelligently</li>
+<li>If you aren't optimizing your mobile web experience, you are loosing lots of audience</li>
+</ul><h3>Easy To Use</h3>
+
+<p>Wheel.js is easy to use. It is focused on the things that are central to JavaScript application development,
+managing views. In Wheel.js, the View is King. And what is a View? It's not a template. That is a separate
+beastie, used by the View to render DOM. The View is the object responsible for interactions on a given
+bit of DOM.</p>
+
+<p>See the wiki for more on the amazing View king.</p>
+
+<h3>Sensible Defaults</h3>
+
+<ul>
+<li>Zepto for applicable browsers</li>
+<li>jQuery for ones that can't Zepto</li>
+<li>Modernizr for detecting capabilities, and loading needed polyfills</li>
+<li>Mustache for near logicless rendering</li>
+<li>Object-oriented design through the whole stack, so you can override/customize anything anywhere!</li>
+</ul><h3>Customizable</h3>
+
+<p>Yeah, just look at that last point. Everything is built like an object, so anything can be overriden and
+customized. My hope is that you won't have to dig deep into the internals of Wheel to go changing low-level
+methods. Things should just work, but when you have that special need, you also have complete ownership of
+the code.</p>
+
+<h3>Stuff in the roadmap</h3>
+
+<ul>
+<li>Models with events</li>
+<li>Drag and Drop HTML5 polyfill for mobile</li>
+<li>LocalStorage cookie based polyfil</li>
+<li>Local request queue stored in LocalStorage</li>
+<li>Multi-touch gesture recognition (swipe, tap, and tap hold already exist)</li>
+<li>Poller/Socket support</li>
+<li>Rails Generators</li>
+<li>Non-Rails usage and dependency management</li>
+</ul><h2>Installation</h2>
+
+<p>Umm, yeah. The roadmap has this becoming a Rails plugin and a more general available package for non-Rails apps.
+Right now it is just a loose collection of files. If you are feeling adventurous, please checkout the /rails_app
+setup included in the projects.</p>
+
+<p>Currently the sprockets asset pipeline is creating a load script with some basic platform specific stuff.
+That script request other scripts depending on the environment and app requirements.</p>
+
+<p>So, yeah. Sorry, right now setup is not streamlined. But stay tuned. I am rolling in that direction.</p>
+
+<h2>Contributing to Wheel</h2>
+
+<ul>
+<li>Talk to me, through github, or email, or wherever. I would love to hear your feedback.</li>
+<li>Or checkout the pivotaltracker project: <a href="https://www.pivotaltracker.com/projects/536517">https://www.pivotaltracker.com/projects/536517</a>
+</li>
+<li>Or just fork this project, test and contribute. Don't forget the test part.</li>
+</ul><h2>Copyright</h2>
+
+<p>Copyright (c) 2012 Kane Baccigalupi. See LICENSE.txt for further details.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/baccigalupi">baccigalupi</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

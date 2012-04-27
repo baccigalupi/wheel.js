@@ -30,20 +30,23 @@
     return base;
   };
 
-  Wheel.Class.mashin = function(props) {
+  Wheel.ClassBuilder = function() {};
+
+  Wheel.ClassBuilder.mashin = function(props) {
     var prop;
     superExtend(this, props)
     return this;
   };
 
-  Wheel.Class.mixin = function(props) {
+  Wheel.ClassBuilder.mixin = function(props) {
     var prop;
     superExtend(this.prototype, props);
     return this;
   };
 
   var initializing = false;
-  Wheel.Class = function(iProps, cProps) {
+  Wheel.ClassBuilder.subclass = function(iProps, cProps) {
+    console.log('iProps', iProps, 'cProps',cProps);
     initializing = true;
     var proto = new this();
     initializing = false;
@@ -52,6 +55,8 @@
     function Class() {
       if (!initializing && this.initialize) {
         this.initialize.apply(this, arguments);
+      } else if (!initializing && this.init ) {
+        this.init.apply(this, arguments);
       }
     }
 
@@ -70,3 +75,8 @@
     return Class
   };
 })();
+
+Wheel.Class = function() {
+  console.log(arguments);
+  return Wheel.ClassBuilder.subclass(arguments[0], arguments[1]);
+};

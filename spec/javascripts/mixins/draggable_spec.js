@@ -1,4 +1,4 @@
-describe('Wheel.Mixins.Draggable', function() {
+xdescribe('Wheel.Mixins.Draggable', function() {
   var draggable,
   MyDraggable = Wheel.Class({
     init: function() {

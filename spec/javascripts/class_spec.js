@@ -55,17 +55,17 @@ describe("Wheel.Class", function() {
       });
 
       it("has a reference to its super class", function () {
-        expect(SubClass.superclass).toBe(Wheel.Class);
+        expect(SubClass.superclass).toBe(Wheel.ClassBuilder);
       });
 
       it("passes on the subclass method during inheritance", function () {
-        expect(SubClass.subclass).toBe(Wheel.Class);
+        expect(SubClass.subclass).toBe(Wheel.ClassBuilder.subclass);
       });
     });
 
     describe("identity", function () {
       it("is an instance of Wheel.Class", function () {
-        expect(subclass instanceof Wheel.Class).toBe(true);
+        expect(subclass instanceof Wheel.ClassBuilder).toBe(true);
       });
 
       it("is an instance of its class", function () {
@@ -83,6 +83,8 @@ describe("Wheel.Class", function() {
       });
 
       it('maintains a reference to old class variables', function () {
+        console.dir(Subby);
+        console.log(Subby.classy);
         expect(Subby.classy()).toBe('I am classy');
       });
 

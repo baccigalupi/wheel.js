@@ -1,4 +1,4 @@
-Wheel.Loader = {
+Wheel.Utils.Loader = {
   canZepto: function(agent) {
     agent = agent || navigator.userAgent;
     var is = false;
@@ -32,7 +32,7 @@ Wheel.Loader = {
     matches[1] = parseInt(matches[1]);
     matches[2] = parseInt(matches[2]);
     matches[3] = parseInt(matches[3]);
-    return matches[1] >= required[0] && 
+    return matches[1] >= required[0] &&
       ( matches[2] > required[1] || (matches[2] == required[1] && matches[3]>= required[2]) ) ;
   }
 };

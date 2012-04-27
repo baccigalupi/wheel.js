@@ -14,6 +14,7 @@
 //= require wheel/mixins/ajax
 //= require app/gather_tasks
 //= require app/assemble_tasks
+//= require app/view_is_king
 
 $(document).ready(function() {
   //var dragger = new Dragger();
@@ -29,5 +30,8 @@ $(document).ready(function() {
 
   window.assembled = new Wheel.View('ul.generate_tasks');
   window.assembled.append(assembledTasks);
+
+  window.nothing_links = MyViewClass.gather($(document.body));
+  window.nothinger_links = MyViewClass.assemble([{}]);
 });
 

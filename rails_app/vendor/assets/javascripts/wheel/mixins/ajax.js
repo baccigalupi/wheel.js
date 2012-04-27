@@ -35,10 +35,10 @@ Wheel.Mixins.Ajax = {
     }
   },
 
-  data: function() { return (this._super && this._super()) || {} },
-  onCompletion: function() { this._super && this._super() },
-  onSuccess: function() { this._super && this._super() },
-  onError: function() { this._super && this._super()}
+  data: function() { return {} },
+  onCompletion: function() {},
+  onSuccess: function() {},
+  onError: function() {}
 
   /* mixin expects these methods to be implemented in
    * the recepient class

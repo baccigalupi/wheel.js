@@ -1,4 +1,4 @@
-var WrittenWork = Wheel.Class.subclass({
+var WrittenWork = Wheel.Class({
   initialize: function(title, body) {
     this.title = title;
     this.body = body;

@@ -44,7 +44,7 @@ var Wheel = {
   };
 
   var initializing = false;
-  Wheel.Class.subclass = function(iProps, cProps) {
+  Wheel.Class = function(iProps, cProps) {
     initializing = true;
     var proto = new this();
     initializing = false;
@@ -125,7 +125,7 @@ Wheel.Mixins.Optionize = {
     }
   }
 };
-Wheel.View = Wheel.Class.subclass({
+Wheel.View = Wheel.Class({
   initialize: function(dom, opts) {
     this.initializeDom(dom, opts);
     this.init();
@@ -202,7 +202,7 @@ Wheel.View = Wheel.Class.subclass({
 });
 
 Wheel.View.mixin(Wheel.Mixins.Optionize);
-Wheel.Application = Wheel.Class.subclass({
+Wheel.Application = Wheel.Class({
   initialize: function() {
     var appName = this._class.name;
     if ( window[app] ) {

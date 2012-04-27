@@ -6,7 +6,7 @@ describe("Wheel.Class", function() {
   });
 
   beforeEach(function() {
-    SubClass = Wheel.Class.subclass({
+    SubClass = Wheel.Class({
       foo: 'bar',
       zardoz: function() {this.hasMoxy = true}
     }, {
@@ -59,7 +59,7 @@ describe("Wheel.Class", function() {
       });
 
       it("passes on the subclass method during inheritance", function () {
-        expect(SubClass.subclass).toBe(Wheel.Class.subclass);
+        expect(SubClass.subclass).toBe(Wheel.Class);
       });
     });
 
@@ -174,12 +174,12 @@ describe("Wheel.Class", function() {
     describe('mixing something into multiple classes', function () {
       var A, B, mix, a, b;
       beforeEach(function() {
-        A = Wheel.Class.subclass({
+        A = Wheel.Class({
           initialize: function() {
             this.it = 'a';
           }
         });
-        B = Wheel.Class.subclass({
+        B = Wheel.Class({
           initialize: function() {
             this.it = 'b';
           }

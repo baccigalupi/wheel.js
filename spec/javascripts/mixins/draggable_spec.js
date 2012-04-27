@@ -1,6 +1,6 @@
 describe('Wheel.Mixins.Draggable', function() {
   var draggable,
-  MyDraggable = Wheel.Class.subclass({
+  MyDraggable = Wheel.Class({
     init: function() {
       this.$draggable = this.$.find('draggable');
       this.$droppable = this.$.find('droppable');

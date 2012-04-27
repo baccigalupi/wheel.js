@@ -43,7 +43,7 @@
   };
 
   var initializing = false;
-  Wheel.Class.subclass = function(iProps, cProps) {
+  Wheel.Class = function(iProps, cProps) {
     initializing = true;
     var proto = new this();
     initializing = false;

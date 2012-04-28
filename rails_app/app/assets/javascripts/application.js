@@ -33,5 +33,6 @@ $(document).ready(function() {
 
   window.nothing_links = MyViewClass.gather($(document.body));
   window.nothinger_links = MyViewClass.assemble([{}]);
+  $(document.body).append(window.nothinger_links[0].$);
 });
 

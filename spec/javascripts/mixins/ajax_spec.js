@@ -131,6 +131,39 @@ describe("Wheel.Mixins.Ajax", function () {
       });
     });
 
+    describe('with arguments', function() {
+      it('arguments overwrite options sent', function() {
+        sender.send({
+          type: 'HEAD',
+          async: false
+        });
+
+        args = spy.argsForCall[0][0];
+        expect(args.type).toBe('HEAD');
+        expect(args.async).toBe(false);
+      });
+
+      it('will convert an httpMethod argument', function() {
+        sender.send({
+          httpMethod: 'HEAD',
+          async: false
+        });
+
+        args = spy.argsForCall[0][0];
+        expect(args.type).toBe('HEAD');
+        expect(args.async).toBe(false);
+      });
+
+      it('will convert data arguments', function() {
+        sender.send({
+          data: {foo: 'bar'}
+        });
+
+        args = spy.argsForCall[0][0];
+        expect(args.data).toEqual({foo: 'bar'});
+      });
+    });
+
     describe('response handling', function() {
       beforeEach(function() {
         sendWith('get');

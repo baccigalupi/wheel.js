@@ -83,8 +83,6 @@ describe("Wheel.Class", function() {
       });
 
       it('maintains a reference to old class variables', function () {
-        console.dir(Subby);
-        console.log(Subby.classy);
         expect(Subby.classy()).toBe('I am classy');
       });
 
@@ -208,5 +206,3 @@ describe("Wheel.Class", function() {
     });
   });
 });
-
-

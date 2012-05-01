@@ -8,9 +8,9 @@ describe("Wheel.Mixins.Ajax", function () {
       },
       send: function () { this.bar = 'foo'; },
       data: function() { return {}; },
-      onSuccess: function () {},
-      onCompletion: function () {},
-      onError: function () {}
+      onSuccess: function(response) { this.response = response; },
+      onCompletion: function(response) { this.response = response },
+      onError: function(response) { this.response = response }
     },{
       template: function() {
         return "<a class='click' href='http://csenderity.com'>Csender</a>"
@@ -187,24 +187,36 @@ describe("Wheel.Mixins.Ajax", function () {
     });
   });
 
-  describe('processError', function () {
-    beforeEach(function () {
-      spyOn(sender, 'onError');
+  describe('callbacks call down to the orgininal definition', function() {
+    it('onSuccess(response)', function() {
+      sender.onSuccess({status: 'all good'});
+      expect(sender.response).toEqual({status: 'all good'});
     });
 
-    it("passes the parsed error data on to the onError method", function () {
-      var xhr = {responseText: JSON.stringify({status: 'foo'})};
-      sender.processError(xhr);
-      expect(sender.onError).toHaveBeenCalledWith({status: 'foo'});
+    it('onCompletion(response)', function() {
+      sender.onCompletion({status: 'done!'});
+      expect(sender.response).toEqual({status: 'done!'});
     });
 
-    it("passes on other json when that fails", function () {
-      var xhr = {
-        responseText: "]<span> not json at all {",
-        statusCode: function(){ return 500; }
-      };
-      sender.processError(xhr);
-      expect(sender.onError).toHaveBeenCalledWith({status: 500, message: "]<span> not json at all {"});
+    describe('processError(xhr)', function () {
+      beforeEach(function () {
+        spyOn(sender, 'onError');
+      });
+
+      it("passes the parsed error data on to the onError method", function () {
+        var xhr = {responseText: JSON.stringify({status: 'foo'})};
+        sender.processError(xhr);
+        expect(sender.onError).toHaveBeenCalledWith({status: 'foo'});
+      });
+
+      it("passes on other json when that fails", function () {
+        var xhr = {
+          responseText: "]<span> not json at all {",
+          statusCode: function(){ return 500; }
+        };
+        sender.processError(xhr);
+        expect(sender.onError).toHaveBeenCalledWith({status: 500, message: "]<span> not json at all {"});
+      });
     });
   });
 });

@@ -12,16 +12,15 @@
 #
 src_files:
     #- lib/vendor/jquery/jquery-1.7.1.js
-    - vendor/javascripts/requirejs/requirejs-1.0.7.js
     - vendor/javascripts/modernizr/modernizr-2.5.3.js
     - vendor/javascripts/zepto/zepto-1.0rc1.js
     - vendor/javascripts/mustache/mustache.js
 
     - lib/wheel/namespace.js
     - lib/wheel/class.js
+    - lib/wheel/mixins/**/*.js
     - lib/wheel/utils/**/*.js
     - lib/wheel/lib/cookie.js
-    - lib/wheel/mixins/**/*.js
     - lib/wheel/view.js
     - lib/wheel/event_managers/touch_manager.js
     - lib/wheel/event_managers/mouse_manager.js

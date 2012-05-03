@@ -74,5 +74,4 @@ describe('Wheel.Class, inheritance', function() {
       expect(Jacket.print('foo')).toBe("<div class='jacket'><div class='wrapper'>`foo`</div></div>");
     });
   });
-
 });

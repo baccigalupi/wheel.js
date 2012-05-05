@@ -28,19 +28,19 @@ describe('Wheel.Class, mix and mash behavior', function() {
     beforeEach(function() {
       Base = Wheel.Class({
         print: methods.printBase,
-        value: methods.valueBase
+        value: methods.valueBase,
+        basey: function() {
+          this.base = 'I am base';
+        }
       });
       Base.mixin(methods);
 
       base = new Base();
     });
 
-    it('adds in new properties', function() {
-      expect(base.newProp).toBe('new prop');
-    });
-
-    it('adds in new methods', function() {
+    it('adds in new properties defined only in the mixin', function() {
       expect(base.newMethod()).toBe('new method');
+      expect(base.newProp).toBe('new prop');
     });
 
     it('super refs in the base class with map to the mixed in methods', function() {
@@ -50,6 +50,11 @@ describe('Wheel.Class, mix and mash behavior', function() {
     it('base class wins in cases where there is no _super defined', function() {
       base.value('foo');
       expect(base.val).toBe('foo 1');
+    });
+
+    it('maintains properties set on the class', function() {
+      base.basey();
+      expect(base.base).toBe('I am base');
     });
   });
 

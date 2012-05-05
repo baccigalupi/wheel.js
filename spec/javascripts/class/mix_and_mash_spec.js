@@ -9,6 +9,14 @@ describe('Wheel.Class, mix and mash behavior', function() {
           return "<p>" + value + "</p>";
         },
 
+        valueBase: function(value) {
+          this.val = value + ' 1';
+        },
+
+        value: function(value) {
+          this.val = value + ' 2';
+        },
+
         newMethod: function() {
           return 'new method';
         },
@@ -19,7 +27,8 @@ describe('Wheel.Class, mix and mash behavior', function() {
   describe('mixin, instance level', function() {
     beforeEach(function() {
       Base = Wheel.Class({
-        print: methods.printBase
+        print: methods.printBase,
+        value: methods.valueBase
       });
       Base.mixin(methods);
 
@@ -36,6 +45,11 @@ describe('Wheel.Class, mix and mash behavior', function() {
 
     it('super refs in the base class with map to the mixed in methods', function() {
       expect(base.print('foo')).toBe("<div class='base'><p>foo</p></div>");
+    });
+
+    it('base class wins in cases where there is no _super defined', function() {
+      base.value('foo');
+      expect(base.val).toBe('foo 1');
     });
   });
 

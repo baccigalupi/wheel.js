@@ -74,4 +74,31 @@ describe('Wheel.Class, inheritance', function() {
       expect(Jacket.print('foo')).toBe("<div class='jacket'><div class='wrapper'>`foo`</div></div>");
     });
   });
+
+  describe('the infinite loop problem', function() {
+    Wheel.Class('Base',{
+      init: function() {
+        this.class = this.class || [];
+        this.class.push(this._class.id)
+        this._super && this._super();
+      }
+    });
+
+    Base.subclass('Child',{
+      init: function() {
+        this.class = this.class || [];
+        this.class.push(this._class.id)
+        this._super && this._super();
+      }
+    });
+
+    it('parent class should not go in an infinite loop', function() {
+      var base = new Base();
+    });
+
+    // this is a problem ...
+    xit('child class should not go in an infinite loop', function() {
+      var child = new Child();
+    });
+  });
 });

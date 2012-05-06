@@ -2,7 +2,7 @@ describe('Wheel.Utils.CookieStorage', function() {
   var storage;
   beforeEach(function() {
     spyOn($, 'cookie');
-    storage = new Wheel.Utils.CookieStorage('localStorage');
+    storage = new Wheel.Utils.CookieStorage({name:'localStorage'});
   });
 
   describe('initialization', function() {

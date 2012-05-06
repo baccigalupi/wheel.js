@@ -36,14 +36,13 @@ describe('Wheel.Class(), helper function', function() {
 
     it('stores the proper prototype', function() {
       expect(typeof Work.prototype.init).toBe('function');
-      expect(typeof Work.prototype.initialize).toBe('undefined');
       expect(typeof Work.prototype.do).toBe('function');
     });
 
     it('indicates its inheritance structure', function() {
       var work = new Work();
       expect(work instanceof Work).toBe(true);
-      expect(work instanceof Wheel.ClassBuilder).toBe(true);
+      expect(work instanceof Wheel._Class).toBe(true);
     });
 
     describe('with more complex id structurs', function() {
@@ -100,14 +99,13 @@ describe('Wheel.Class(), helper function', function() {
 
     it('stores the proper prototype', function() {
       expect(typeof OtherWork.prototype.init).toBe('function');
-      expect(typeof OtherWork.prototype.initialize).toBe('undefined');
       expect(typeof OtherWork.prototype.do).toBe('function');
     });
 
     it('indicates its inheritance structure', function() {
       var work = new OtherWork();
       expect(work instanceof OtherWork).toBe(true);
-      expect(work instanceof Wheel.ClassBuilder).toBe(true);
+      expect(work instanceof Wheel._Class).toBe(true);
     });
   });
 });

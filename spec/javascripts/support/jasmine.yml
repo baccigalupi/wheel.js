@@ -18,6 +18,7 @@ src_files:
 
     - lib/wheel/namespace.js
     - lib/wheel/class.js
+    - lib/wheel/class/singleton.js
     - lib/wheel/mixins/**/*.js
     - lib/wheel/utils/**/*.js
     - lib/wheel/lib/cookie.js

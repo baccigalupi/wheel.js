@@ -1,7 +1,9 @@
 describe('Wheel.Utils.RequestQueue', function() {
   var app, queue, opts, context;
   beforeEach(function() {
-    app = {};
+    app = {
+      connected: jasmine.createSpy().andReturn(true)
+    };
 
     context = {
       _uid: 42
@@ -14,6 +16,8 @@ describe('Wheel.Utils.RequestQueue', function() {
       method: 'put',
       foo: 'bar'
     };
+
+    spyOn($, 'ajax');
   });
 
   describe('initialize', function() {
@@ -43,7 +47,7 @@ describe('Wheel.Utils.RequestQueue', function() {
       queue = Wheel.Utils.RequestQueue.create({app: app});
       queue.requests = [];
 
-      spyOn(queue, 'send');
+      spyOn(queue, 'start');
       queue.add(opts);
     });
 
@@ -51,38 +55,106 @@ describe('Wheel.Utils.RequestQueue', function() {
       expect(queue.requests).toEqual([opts]);
     });
 
-    it('calls "send"', function() {
-      expect(queue.send).toHaveBeenCalled();
+    it('calls "start"', function() {
+      expect(queue.start).toHaveBeenCalled();
     });
 
     it('puts new requests at the end of the array', function() {
       var last = {url: '/foo/us', context: {_uid: 66}};
       queue.add(last);
-      expect(queue.requests.shift()).toBe(last);
+      expect(queue.requests[1]).toBe(last);
     });
   });
 
-  describe('send()', function() {
+  describe('start()', function() {
     beforeEach(function() {
-      spyOn($, 'ajax');
+      queue = Wheel.Utils.RequestQueue.create({app: app});
       queue.requests = [opts];
+      queue.contexts = [];
+      spyOn(queue, 'send');
     });
 
-    it('does nothing if the number of requests is >= the limit', function() {
-      queue.requestCount = Wheel.Utils.RequestQueue.connectionLimit();
-      queue.send();
-      expect($.ajax).not.toHaveBeenCalled();
+    describe('nothing is sent', function() {
+      beforeEach(function() {
+        queue.app.connected.andReturn(true);
+        queue.requestCount = 0;
+      });
+
+      it('if the application is offline', function() {
+        queue.app.connected.andReturn(false);
+        queue.start();
+        expect(queue.send).not.toHaveBeenCalled();
+      });
+
+      it('if the number of requests is >= the limit', function() {
+        queue.requestCount = Wheel.Utils.RequestQueue.connectionLimit();
+        queue.start();
+        expect(queue.send).not.toHaveBeenCalled();
+      });
+
+      it('if there are no requests', function() {
+        queue.requests = [];
+        queue.start();
+        expect(queue.send).not.toHaveBeenCalled();
+      });
     });
 
-    it('does nothing if there are no requests', function() {
-      queue.requests = [];
-      queue.requestCount = 0;
-      queue.send();
-      expect($.ajax).not.toHaveBeenCalled();
+    describe('send is called', function() {
+      beforeEach(function() {
+        queue.contexts = [];
+        queue.requestCount = 0;
+      });
+
+      it('if conditions are met', function() {
+        queue.start();
+        expect(queue.send).toHaveBeenCalledWith(opts);
+      });
+
+      it('marks the request as in progress', function() {
+        queue.start();
+        expect(queue.requests[0]._inProgress).toBe(true);
+      });
+
+      it('will increment the requestCount', function() {
+        queue.start();
+        expect(queue.requestCount).toBe(1);
+      });
+
+      it('will add the context to the list', function() {
+        queue.start();
+        expect(queue.contexts[0]).toBe(42);
+      });
+
+      it('will call send repeatedly until request limit is reached', function() {
+        Wheel.Utils.RequestQueue._connectionLimit = 2;
+        queue.requests = [opts,
+          {url: '/go/foo'},
+          {url: '/not/going/nowhere'}
+        ]
+        queue.start();
+        expect(queue.send.argsForCall.length).toBe(2);
+        expect(queue.send.argsForCall[0][0].url).toEqual(opts.url);
+        expect(queue.send.argsForCall[1][0].url).toEqual('/go/foo');
+      });
     });
 
-    describe('context already in use', function() {
-      // figure this one out!
+    describe('requests will be skipped if', function() {
+      it('if request context is already in use', function() {
+        
+      });
+
+      it('if the request is marked as in progress', function() {
+        queue.requests[0]._inProgress = true;
+        queue.start()
+        expect(queue.send).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  xdescribe('send()', function() {
+    beforeEach(function() {
+      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue.requests = [opts];
     });
 
     describe('sends the request', function() {
@@ -90,11 +162,6 @@ describe('Wheel.Utils.RequestQueue', function() {
       beforeEach(function() {
         queue.requestCount = 0;
         queue.contexts = [];
-      });
-
-      it('will increment the requestCount', function() {
-        queue.send();
-        expect(queue.requestCount).toBe(1);
       });
 
       describe('contexts', function() {

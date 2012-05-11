@@ -122,7 +122,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
       it('will add the context to the list', function() {
         queue.start();
-        expect(queue.contexts[0]).toBe(42);
+        expect(queue.contexts[42]).toBe(true);
       });
 
       it('will call send repeatedly until request limit is reached', function() {
@@ -139,8 +139,15 @@ describe('Wheel.Utils.RequestQueue', function() {
     });
 
     describe('requests will be skipped if', function() {
+      beforeEach(function() {
+        queue.contexts = [];
+        queue.requestCount = 0;
+      });
+
       it('if request context is already in use', function() {
-        
+        queue.contexts = {42: true};
+        queue.start();
+        expect(queue.send).not.toHaveBeenCalled();
       });
 
       it('if the request is marked as in progress', function() {
@@ -151,43 +158,21 @@ describe('Wheel.Utils.RequestQueue', function() {
     });
   });
 
-  xdescribe('send()', function() {
+  describe('send()', function() {
     beforeEach(function() {
       queue = Wheel.Utils.RequestQueue.create({app: app});
-      queue.requests = [opts];
     });
 
     describe('sends the request', function() {
       var requestOpts;
       beforeEach(function() {
         queue.requestCount = 0;
-        queue.contexts = [];
-      });
-
-      describe('contexts', function() {
-        it('adds the context uid to the array', function() {
-          queue.send();
-          expect(queue.contexts).toEqual([42])
-        });
-
-        it('doesn\'t add anything if the context does not exist', function() {
-          opts.context = {};
-          queue.requests = [opts];
-          queue.send();
-          expect(queue.contexts).toEqual([]);
-        });
-
-        it('doesn\'t add anything if there is not context', function() {
-          delete opts.context;
-          queue.requests = [opts];
-          queue.send();
-          expect(queue.contexts).toEqual([]);
-        });
+        queue.contexts = {};
       });
 
       describe('basic attributes', function() {
         beforeEach(function() {
-          queue.send();
+          queue.send(opts);
           requestOpts = $.ajax.mostRecentCall.args[0];
         });
 
@@ -208,7 +193,7 @@ describe('Wheel.Utils.RequestQueue', function() {
         var response;
         beforeEach(function() {
           response = 'response';
-          queue.send();
+          queue.send(opts);
           requestOpts = $.ajax.mostRecentCall.args[0];
         });
 
@@ -233,8 +218,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
       describe('http method', function() {
         var send = function() {
-          queue.requests = [opts];
-          queue.send();
+          queue.send(opts);
           requestOpts = $.ajax.mostRecentCall.args[0];
         };
 

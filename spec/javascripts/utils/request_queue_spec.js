@@ -1,6 +1,7 @@
 describe('Wheel.Utils.RequestQueue', function() {
   var app, queue, opts, context;
   beforeEach(function() {
+    Wheel.Utils.RequestQueue.singleton = undefined;
     Wheel.Utils.RequestQueue._connectionLimit = 2;
     app = {
       connected: jasmine.createSpy().andReturn(true),

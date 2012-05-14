@@ -1,8 +1,10 @@
 describe('Wheel.Utils.RequestQueue', function() {
   var app, queue, opts, context;
   beforeEach(function() {
+    Wheel.Utils.RequestQueue._connectionLimit = 2;
     app = {
-      connected: jasmine.createSpy().andReturn(true)
+      connected: jasmine.createSpy().andReturn(true),
+      checkConnection: jasmine.createSpy()
     };
 
     context = {
@@ -30,29 +32,33 @@ describe('Wheel.Utils.RequestQueue', function() {
     });
 
     it('sets the request count to 0', function() {
-      expect(queue.requestCount).toBe(0);
+      expect(queue._requestCount).toBe(0);
     });
 
     it('has a requests array', function() {
-      expect(queue.requests).toEqual([]);
+      expect(queue._requests).toEqual([]);
     });
 
     it('has a contexts array', function() {
-      expect(queue.contexts).toEqual([]);
+      expect(queue._contexts).toEqual([]);
+    });
+
+    xit('listens on app for the "online" event and calls start', function() {
+      
     });
   });
 
   describe('add(opts)', function() {
     beforeEach(function() {
       queue = Wheel.Utils.RequestQueue.create({app: app});
-      queue.requests = [];
+      queue._requests = [];
 
       spyOn(queue, 'start');
       queue.add(opts);
     });
 
     it('adds the request opts to the requests', function() {
-      expect(queue.requests).toEqual([opts]);
+      expect(queue._requests).toEqual([opts]);
     });
 
     it('calls "start"', function() {
@@ -62,22 +68,22 @@ describe('Wheel.Utils.RequestQueue', function() {
     it('puts new requests at the end of the array', function() {
       var last = {url: '/foo/us', context: {_uid: 66}};
       queue.add(last);
-      expect(queue.requests[1]).toBe(last);
+      expect(queue._requests[1]).toBe(last);
     });
   });
 
   describe('start()', function() {
     beforeEach(function() {
       queue = Wheel.Utils.RequestQueue.create({app: app});
-      queue.requests = [opts];
-      queue.contexts = [];
+      queue._requests = [opts];
+      queue._contexts = [];
       spyOn(queue, 'send');
     });
 
     describe('nothing is sent', function() {
       beforeEach(function() {
         queue.app.connected.andReturn(true);
-        queue.requestCount = 0;
+        queue._requestCount = 0;
       });
 
       it('if the application is offline', function() {
@@ -87,13 +93,13 @@ describe('Wheel.Utils.RequestQueue', function() {
       });
 
       it('if the number of requests is >= the limit', function() {
-        queue.requestCount = Wheel.Utils.RequestQueue.connectionLimit();
+        queue._requestCount = Wheel.Utils.RequestQueue.connectionLimit();
         queue.start();
         expect(queue.send).not.toHaveBeenCalled();
       });
 
       it('if there are no requests', function() {
-        queue.requests = [];
+        queue._requests = [];
         queue.start();
         expect(queue.send).not.toHaveBeenCalled();
       });
@@ -101,8 +107,8 @@ describe('Wheel.Utils.RequestQueue', function() {
 
     describe('send is called', function() {
       beforeEach(function() {
-        queue.contexts = [];
-        queue.requestCount = 0;
+        queue._contexts = [];
+        queue._requestCount = 0;
       });
 
       it('if conditions are met', function() {
@@ -112,22 +118,22 @@ describe('Wheel.Utils.RequestQueue', function() {
 
       it('marks the request as in progress', function() {
         queue.start();
-        expect(queue.requests[0]._inProgress).toBe(true);
+        expect(queue._requests[0]._inProgress).toBe(true);
       });
 
       it('will increment the requestCount', function() {
         queue.start();
-        expect(queue.requestCount).toBe(1);
+        expect(queue._requestCount).toBe(1);
       });
 
       it('will add the context to the list', function() {
         queue.start();
-        expect(queue.contexts[42]).toBe(true);
+        expect(queue._contexts[42]).toBe(true);
       });
 
       it('will call send repeatedly until request limit is reached', function() {
         Wheel.Utils.RequestQueue._connectionLimit = 2;
-        queue.requests = [opts,
+        queue._requests = [opts,
           {url: '/go/foo'},
           {url: '/not/going/nowhere'}
         ]
@@ -140,18 +146,18 @@ describe('Wheel.Utils.RequestQueue', function() {
 
     describe('requests will be skipped if', function() {
       beforeEach(function() {
-        queue.contexts = [];
-        queue.requestCount = 0;
+        queue._contexts = [];
+        queue._requestCount = 0;
       });
 
       it('if request context is already in use', function() {
-        queue.contexts = {42: true};
+        queue._contexts = {42: true};
         queue.start();
         expect(queue.send).not.toHaveBeenCalled();
       });
 
       it('if the request is marked as in progress', function() {
-        queue.requests[0]._inProgress = true;
+        queue._requests[0]._inProgress = true;
         queue.start()
         expect(queue.send).not.toHaveBeenCalled();
       });
@@ -166,8 +172,8 @@ describe('Wheel.Utils.RequestQueue', function() {
     describe('sends the request', function() {
       var requestOpts;
       beforeEach(function() {
-        queue.requestCount = 0;
-        queue.contexts = {};
+        queue._requestCount = 0;
+        queue._contexts = {};
       });
 
       describe('basic attributes', function() {
@@ -186,6 +192,10 @@ describe('Wheel.Utils.RequestQueue', function() {
 
         it('passes on any other miscelaneous stuff', function() {
           expect(requestOpts.foo).toBe('bar');
+        });
+
+        it('is not sent with a context', function() {
+          expect(requestOpts.context).toBe(undefined);
         });
       });
 
@@ -267,42 +277,132 @@ describe('Wheel.Utils.RequestQueue', function() {
     });
   });
 
-  xdescribe('callbacks', function() {
+  describe('callbacks', function() {
+    beforeEach(function() {
+      queue = Wheel.Utils.RequestQueue.create({app: app});
+    });
+
     describe('onSucces(response, requestOpts)', function() {
-      it('if the success function exists it is called', function() {
-        
+      beforeEach(function() {
+        queue._contexts = {42: true};
+        queue._requests = [opts];
+      });
+
+      describe('calling the success function', function() {
+        it('it calls it with the response', function() {
+          opts.success = jasmine.createSpy();
+          queue.onSuccess('response', opts);
+          expect(opts.success).toHaveBeenCalledWith('response');
+        });
+
+        it('calls it without a context', function() {
+          opts.success = function() {
+            this.changedYa = true;
+          };
+          delete opts.context;
+          queue.onSuccess('response', opts);
+          expect(opts.changedYa).toBe(true);
+          expect(context.changedYa).toBe(undefined);
+        });
+
+        it('calls it with the right context', function() {
+          opts.success = function() {
+            this.changedYa = true;
+          };
+          queue.onSuccess('response', opts);
+          expect(opts.changedYa).toBe(undefined);
+          expect(context.changedYa).toBe(true);
+        });
       });
 
       it('if the succes function does not exist all is good', function() {
-        
+        queue.onSuccess('response', opts);
+        // no errors, then its all good
+      });
+
+      it('removes the context from the list', function() {
+        queue.onSuccess('response', opts);
+        expect(queue._contexts).toEqual({});
+      });
+
+      it('removes the request from the list', function() {
+        queue.onSuccess('response', opts);
+        expect(queue._requests).toEqual([]);
       });
     });
 
-    describe('onFailure(response, requestOpts)', function() {
-      it('if the success function exists it is called', function() {
-        
+    describe('onError(response, requestOpts)', function() {
+      beforeEach(function() {
+        queue._requests = [opts];
+        queue._contexts = {42: true};
       });
 
-      it('if the succes function does not exist all is good', function() {
-        
+      it('tests to see if the app is offline', function() {
+        queue.onError('response', opts);
+        expect(queue.app.checkConnection).toHaveBeenCalled();
       });
+
+      describe('if offline', function() {
+        beforeEach(function() {
+          opts.error = jasmine.createSpy();
+          queue.app.connected.andReturn(false);
+          queue.onError('response', opts);
+        });
+
+        it('does not call the callback', function() {
+          expect(opts.error).not.toHaveBeenCalled();
+        });
+
+        it('does not remove the context', function() {
+          expect(queue._contexts).toEqual({42: true});
+        });
+
+        it('does not remove the request', function() {
+          expect(queue._requests).toEqual([opts]);
+        });
+      });
+
+      describe('if online', function() {
+        beforeEach(function() {
+          opts.error = jasmine.createSpy();
+          queue.app.connected.andReturn(true);
+          queue.onError('response', opts);
+        });
+
+        it('if the callback function exists it is called', function() {
+          expect(opts.error).toHaveBeenCalledWith('response');
+        });
+
+        it('removes the context', function() {
+          expect(queue._contexts).toEqual({});
+        });
+
+        it('removes the request', function() {
+          expect(queue._requests).toEqual([]);
+        });
+      })
     });
 
     describe('onComplete(response, requestOpts)', function() {
-      it('if the success function exists it is called', function() {
-        
+      beforeEach(function() {
+        queue._requestCount = 2;
+        spyOn(queue, 'start');
       });
 
-      it('if the succes function does not exist all is good', function() {
-        
+      it('if the callback function exists it is called', function() {
+        opts.complete = jasmine.createSpy();
+        queue.onComplete('response', opts);
+        expect(opts.complete).toHaveBeenCalledWith('response');
       });
-      
-      it('triggers a "next" event', function() {
-        
+
+      it('calls start', function() {
+        queue.onComplete('response', opts);
+        expect(queue.start).toHaveBeenCalled();
       });
 
       it('decrements the requestCount', function() {
-        
+        queue.onComplete('response', opts);
+        expect(queue._requestCount).toBe(1);
       });
     });
   });

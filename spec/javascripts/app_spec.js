@@ -22,13 +22,6 @@ describe('Wheel.App', function() {
       });
     });
 
-    it('checks connection', function() {
-      spyOn(Wheel.App.prototype, 'checkConnection');
-      window.app = undefined;
-      new Wheel.App();
-      expect(Wheel.App.prototype.checkConnection).toHaveBeenCalled();
-    });
-
     it('creates a ConnectionChecker', function() {
       window.app = undefined;
       spyOn(Wheel.Utils.ConnectionChecker.prototype, 'init');
@@ -97,25 +90,28 @@ describe('Wheel.App', function() {
   });
 
   describe('checkConnection()', function() {
-    describe('when navigator.online', function() {
-      beforeEach(function() {
-        spyOn(app, 'connected');
-        window.navigator = {};
-      });
+    beforeEach(function() {
+      spyOn(app, 'connected');
+      window.navigator = {};
+    });
 
-      it('is false', function() {
+    describe('when navigator.onLine is defined', function() {
+      it('and is false', function() {
         window.navigator.onLine = false;
         app.checkConnection();
         expect(app.connected).toHaveBeenCalledWith(false);
       });
 
-      it('is true', function() {
+      it('and is true, it asks the connection checker anyways', function() {
         window.navigator.onLine = true;
+        spyOn(app.connectionChecker, 'test');
         app.checkConnection();
-        expect(app.connected).toHaveBeenCalledWith(true);
+        expect(app.connectionChecker.test).toHaveBeenCalled();
       });
+    });
 
-      it('not defined', function() {
+    describe('when navigator.onLine is not defined', function() {
+      it('asks he connection checker', function() {
         spyOn(app.connectionChecker, 'test');
         app.checkConnection();
         expect(app.connectionChecker.test).toHaveBeenCalled();

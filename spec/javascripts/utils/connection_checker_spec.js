@@ -2,6 +2,7 @@ describe('Wheel.Utils.ConnectionChecker', function() {
   var connectionChecker, app;
 
   beforeEach(function() {
+    Wheel.Utils.ConnectionChecker.singleton = undefined;
     app = {
       connected:  jasmine.createSpy()
     };
@@ -15,6 +16,10 @@ describe('Wheel.Utils.ConnectionChecker', function() {
 
   it('is initialized with an app', function() {
     expect(connectionChecker.app).toBe(app);
+  });
+
+  it('is a singleton', function() {
+    expect(Wheel.Utils.ConnectionChecker.singleton).toBe(connectionChecker);
   });
 
   describe('test()', function() {

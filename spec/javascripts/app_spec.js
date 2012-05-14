@@ -2,6 +2,7 @@ describe('Wheel.App', function() {
   var app;
   beforeEach(function() {
     window.app = undefined;
+    Wheel.App.singleton = undefined;
     app = new Wheel.App();
   });
 
@@ -23,10 +24,7 @@ describe('Wheel.App', function() {
     });
 
     it('creates a ConnectionChecker', function() {
-      window.app = undefined;
-      spyOn(Wheel.Utils.ConnectionChecker.prototype, 'init');
-      new Wheel.App();
-      expect(Wheel.Utils.ConnectionChecker.prototype.init).toHaveBeenCalled();
+      expect(app.connectionChecker instanceof Wheel.Utils.ConnectionChecker).toBe(true);
     });
   });
 

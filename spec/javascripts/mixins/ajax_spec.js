@@ -2,6 +2,10 @@ describe("Wheel.Mixins.Ajax", function () {
   var Sender, sender;
 
   beforeEach(function() {
+    Wheel.Utils.RequestQueue.singleton = {
+      send: jasmine.createSpy()
+    };
+
     Sender = Wheel.View.subclass({
       init: function () {
         this.url = 'http://csenderity.com';
@@ -28,9 +32,12 @@ describe("Wheel.Mixins.Ajax", function () {
   });
 
   describe("send", function () {
+    beforeEach(function() {
+      sender._requestQueue = Wheel.Utils.RequestQueue.singleton; // the spy
+    });
+
     describe('setting defaults', function() {
       beforeEach(function() {
-        spyOn($, 'ajax');
         sender.send();
       });
 
@@ -57,11 +64,11 @@ describe("Wheel.Mixins.Ajax", function () {
     });
 
     describe("requests", function() {
-      var args, spy, data;
+      var args, data;
       var sendWith = function(httpMethod) {
         sender.httpMethod = httpMethod;
         sender.send();
-        args = spy.argsForCall[0][0];
+        args = sender._requestQueue.send.argsForCall[0][0];
       };
 
       beforeEach(function() {
@@ -69,7 +76,6 @@ describe("Wheel.Mixins.Ajax", function () {
         sender.dataType = 'xml';
         data = {foo: 'bar'};
         sender.data = function() {return data};
-        spy = spyOn($, 'ajax');
       });
 
       describe('basic ajax attributes', function() {
@@ -81,8 +87,8 @@ describe("Wheel.Mixins.Ajax", function () {
           expect(sender.bar).toBe('foo');
         });
 
-        it("calls $.ajax", function () {
-          expect($.ajax).toHaveBeenCalled();
+        it("calls the request queue's send method", function () {
+          expect(sender._requestQueue.send).toHaveBeenCalled();
         });
 
         it("uses the right url", function() {
@@ -94,43 +100,6 @@ describe("Wheel.Mixins.Ajax", function () {
         });
       });
 
-      describe('ajax http type, and data', function() {
-        describe("standard http methods", function () {
-          it("sends data returned from the data() method", function () {
-            sendWith('get');
-            expect(args.data).toBe(data);
-          });
-
-          it("uses get if the httpMethod is get", function() {
-            sendWith('get');
-            expect(args.type).toBe('get');
-          });
-
-          it("uses post if the httpMethod is post", function() {
-            sendWith('post');
-            expect(args.type).toBe('post');
-          });
-        });
-
-        describe("non standard http methods", function () {
-          it("uses post", function() {
-            sendWith('delete');
-            expect(args.type).toBe('post');
-          });
-
-          it("adds a _method key/value to the data", function() {
-            sendWith('delete');
-            expect(args.data['_method']).toBe('delete');
-          });
-
-          it('does not overwrite existing _method data elements', function() {
-            sender.data = function() { return {'_method': 'put'} };
-            sendWith('delete');
-            expect(args.data['_method']).toBe('put');
-          });
-        });
-      });
-
       describe('with arguments', function() {
         it('arguments overwrite options sent', function() {
           sender.send({
@@ -138,7 +107,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = spy.argsForCall[0][0];
+          args = sender._requestQueue.send.argsForCall[0][0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -149,7 +118,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = spy.argsForCall[0][0];
+          args = sender._requestQueue.send.argsForCall[0][0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -159,7 +128,7 @@ describe("Wheel.Mixins.Ajax", function () {
             data: {foo: 'bar'}
           });
 
-          args = spy.argsForCall[0][0];
+          args = sender._requestQueue.send.argsForCall[0][0];
           expect(args.data).toEqual({foo: 'bar'});
         });
       });

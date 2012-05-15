@@ -5,7 +5,9 @@ describe('Wheel.Utils.RequestQueue', function() {
     Wheel.Utils.RequestQueue._connectionLimit = 2;
     app = {
       connected: jasmine.createSpy().andReturn(true),
-      checkConnection: jasmine.createSpy()
+      checkConnection: jasmine.createSpy(),
+      on: jasmine.createSpy(),
+      off: jasmine.createSpy()
     };
 
     context = {
@@ -21,6 +23,11 @@ describe('Wheel.Utils.RequestQueue', function() {
     };
 
     spyOn($, 'ajax');
+  });
+
+  it('it is a singleton', function() {
+    expect(Wheel.Utils.RequestQueue.create({app: app}) instanceof Wheel.Class.Singleton).toBe(true);
+    Wheel.Utils.RequestQueue.singleton = null;
   });
 
   describe('initialize', function() {
@@ -44,8 +51,105 @@ describe('Wheel.Utils.RequestQueue', function() {
       expect(queue._contexts).toEqual([]);
     });
 
-    xit('listens on app for the "online" event and calls start', function() {
-      
+    it('has the state "online"', function() {
+      expect(queue._state).toBe("online");
+    });
+
+    it('listens for offline events on app and calls "offline"', function() {
+      expect(queue.app.on).toHaveBeenCalledWith('offline', queue.offline, queue);
+    });
+  });
+
+  describe('offline()', function() {
+    beforeEach(function() {
+      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue.offline();
+    });
+
+    it('changes state', function() {
+      expect(queue._state).toBe('offline');
+    });
+
+    it('listens for app online events, and calls "restart"', function() {
+      expect(queue.app.on).toHaveBeenCalledWith('online', queue.restart, queue)
+    });
+  });
+
+  describe('restart()', function() {
+    beforeEach(function() {
+      queue = Wheel.Utils.RequestQueue.create({app: app});
+      spyOn(window, 'setTimeout');
+      queue.restart();
+    });
+
+    it('stops listening on application online', function() {
+      expect(queue.app.off).toHaveBeenCalledWith('online', queue.restart)
+    });
+
+    it('changes the state to "restarting"', function() {
+      expect(queue._state).toBe("restarting");
+    });
+
+    it('waits 5 seconds and calls _reset', function() {
+      spyOn(queue, '_reset');
+      expect(window.setTimeout).toHaveBeenCalled();
+      var args = window.setTimeout.mostRecentCall.args;
+      expect(args[1]).toBe(5000);
+      args[0]();
+      expect(queue._reset).toHaveBeenCalled();
+    });
+  });
+
+  describe('resetting', function() {
+    beforeEach(function() {
+      opts._inProgress = true;
+      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue._requestCount = 2;
+      queue._contexts = {42: true};
+      queue._requests = [opts];
+    });
+
+    describe('state is not "starting"', function() {
+      beforeEach(function() {
+        queue._reset();
+      });
+
+      it('does not clear the context', function() {
+        expect(queue._contexts).toEqual({42: true});
+      });
+
+      it('does not reset requests that are in progress', function() {
+        expect(queue._requests[0]._inProgress).toBe(true);
+      });
+
+      it('does not reset the request count', function() {
+        expect(queue._requestCount).toBe(2);
+      });
+    });
+
+
+    describe('state is "restarting"', function() {
+      beforeEach(function() {
+        spyOn(queue, 'start');
+        queue._state = 'restarting';
+        queue._reset();
+      });
+
+      it('clears the contexts', function() {
+        expect(queue._contexts).toEqual({});
+      });
+
+      it('resets the requests to not be in progress', function() {
+        expect(queue._requests[0]._inProgress).toBe(false);
+      });
+
+      it('resets the request count', function() {
+        expect(queue._requestCount).toBe(0);
+      });
+
+      it('calls start', function() {
+        expect(queue.start).toHaveBeenCalled();
+      });
     });
   });
 
@@ -85,6 +189,12 @@ describe('Wheel.Utils.RequestQueue', function() {
       beforeEach(function() {
         queue.app.connected.andReturn(true);
         queue._requestCount = 0;
+      });
+
+      it('if the state is not "online"', function() {
+        queue._state = 'foobar';
+        queue.start();
+        expect(queue.send).not.toHaveBeenCalled();
       });
 
       it('if the application is offline', function() {
@@ -429,10 +539,5 @@ describe('Wheel.Utils.RequestQueue', function() {
       Wheel.Utils.RequestQueue._connectionLimit = 12;
       expect(Wheel.Utils.RequestQueue.connectionLimit()).toBe(12);
     });
-  });
-
-  it('it is a singleton', function() {
-    expect(Wheel.Utils.RequestQueue.create() instanceof Wheel.Class.Singleton).toBe(true);
-    Wheel.Utils.RequestQueue.singleton = null;
   });
 });

@@ -1,4 +1,5 @@
 beforeEach(function() {
+  // beA matcher
 });
 
 function fail() {

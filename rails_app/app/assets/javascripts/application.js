@@ -11,12 +11,12 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //  = require app/dragger
-//= require wheel/mixins/ajax
 //= require app/gather_tasks
 //= require app/assemble_tasks
 //= require app/view_is_king
 
 $(document).ready(function() {
+  new Wheel.App();
   //var dragger = new Dragger();
   gatheredTasks = GatherTask.gather('ul.found_tasks');
 

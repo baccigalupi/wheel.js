@@ -23,42 +23,38 @@ end
 
 task :default => :jasmine
 
-desc 'Compile the wheel.js into one file'
-task :compile do
-  root_dir = File.dirname(__FILE__)
-
-  source = '';
-  source_dir = root_dir + "/lib"
-  [
-    source_dir + "/wheel.js",
-    source_dir + "/wheel/mixins/ajax.js",
-    source_dir + "/wheel/mixins/optionize.js",
-    source_dir + "/wheel/view.js",
-    source_dir + "/wheel/application.js",
-    source_dir + "/wheel/touch_manager.js",
-    source_dir + "/wheel/widgeteria/link.js",
-    source_dir + "/wheel/widgeteria/ajax_link.js",
-    source_dir + "/wheel/widgeteria/form.js"
-  ].each do |path|
-    source << File.read(path);
+# TODO: convert this to use sprockets, or rake-pipeline
+require File.dirname(__FILE__) + "/lib/builders/compiler"
+namespace :compile do
+  desc "Compile wheel_base.js manifest"
+  task :base do
+    Wheel::Compiler.make "wheel_base"
   end
 
-  destination_path = root_dir + "/package/wheel."
-  File.delete(destination_path + "min.js") if File.exist?(destination_path + "min.js");
-  File.delete(destination_path + ".js") if File.exist?(destination_path + ".js");
-
-  File.open(destination_path + ".js", 'w') do |f|
-    f.write source
+  desc "Compile wheel_app_jquery.js manifest"
+  task :jquery do
+    Wheel::Compiler.make "wheel_app_jquery"
   end
-  File.open(destination_path + "min.js", 'w') do |f|
-    f.write Uglifier.compile(source)
+
+  desc "Compile wheel_app_jquery.js manifest"
+  task :zepto do
+    Wheel::Compiler.make "wheel_app_zepto"
+  end
+
+  desc "Compile all the manifests"
+  task :all do
+    Rake::Task["compile:base"].execute
+    Rake::Task["compile:zepto"].execute
+    Rake::Task["compile:jquery"].execute
   end
 end
 
-desc "Move current vendor js to test rails app vendor"
-task :copy_js_to_test_app do
-  `rm -rf rails_app/vendor/assets/javascripts`
-  `cp -r vendor/ rails_app/vendor/assets`
-  `cp -r lib/wheel rails_app/vendor/assets/javascripts`
+namespace :play do
+  desc "Move all js to the local rails app"
+  task :copy do
+    `rm -rf rails_app/vendor/assets/javascripts`
+    `cp -r vendor/ rails_app/vendor/assets`
+    `cp -r lib/wheel rails_app/vendor/assets/javascripts`
+  end
 end
 

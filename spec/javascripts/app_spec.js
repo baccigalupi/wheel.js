@@ -26,6 +26,10 @@ describe('Wheel.App', function() {
     it('creates a ConnectionChecker', function() {
       expect(app.connectionChecker instanceof Wheel.Utils.ConnectionChecker).toBe(true);
     });
+
+    it('creates a RequestQueue', function() {
+      expect(app.requestQueue instanceof Wheel.Utils.RequestQueue).toBe(true);
+    });
   });
 
   describe('connected()', function() {

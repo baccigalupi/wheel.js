@@ -108,4 +108,4 @@ Wheel.View = Wheel.Class({
   }
 });
 
-Wheel.View.mixin(Wheel.Mixins.Optionize);
+Wheel.View.mixin(Wheel.Mixins.Events);

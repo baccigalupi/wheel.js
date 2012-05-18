@@ -10,16 +10,11 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require modernizr/modernizr.custom
-//
-//= require wheel/namespace
-//= require wheel/class
-//= require wheel/utils/loader
-//= require wheel/view
+//= require wheel/manifests/wheel_base.js
 
 Modernizr.load({
   test: Wheel.Utils.Loader.canZepto(),
-  yep:  'assets/jquery/jquery-1.7.1.js', //'assets/zepto/zepto-1.0rc1.js',
-  nope: 'assets/jquery/jquery-1.7.1.js',
+  yep:  'assets/wheel/manifests/wheel_app_zepto.js',
+  nope: 'assets/wheel/manifests/wheel_app_jquery.js',
   both: 'assets/application.js'
 });

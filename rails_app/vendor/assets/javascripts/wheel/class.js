@@ -4,27 +4,51 @@
  *
  */
 (function(){
-  var superExtend = function(base, props) {
+  Function.prototype.bind = Function.prototype.bind || function(context) {
+    var func = this 
+    return function() {
+      return func.apply(context, arguments)
+    }
+  };
+
+  // taken from Ember.js!
+  var wrap = function(func, superFunc) {
+    function K() {}
+
+    var newFunc = function() {
+      var ret, sup = this._super;
+      this._super = superFunc || K;
+      ret = func.apply(this, arguments);
+      this._super = sup;
+      return ret;
+    };
+
+    newFunc.base = func;
+    return newFunc;
+  };
+
+  var superExtend = function(base, props, mashing) {
+    if (!props) { return base }
+
     for(prop in props) {
       // don't copy intrinsic properties
-      if ( prop.match(/prototype|arguments|__proto__/) ) { return; }
+      if ( prop.match(/prototype|__proto__|superclass/) ) { continue; }
 
-      if ( base[prop] && (typeof props[prop] == 'function' ) &&
-           /\b_super\b/.test(props[prop]) ) {
-        base[prop] = (function(name, func, _super){
-          return function() {
-            // store this in case we are calling through multiple methods
-            // that use super, that way each is restored after super is used
-            var exSuper = this._super;
-            this._super = _super;
-            var returned = func.apply(this, arguments);
-            // and the restoration here!
-            this._super = exSuper;
-            return returned;
-          };
-        })(prop, props[prop], base[prop]);
+      var bottom, top;
+      if (mashing) {
+        bottom = props[prop];
+        top = base[prop];
       } else {
-        base[prop] = props[prop];
+        bottom = base[prop];
+        top = props[prop];
+      }
+
+      if ( bottom && top && (typeof top == 'function') ) {
+        base[prop] = (function(func, _super){
+          return wrap(func, _super);
+        })(top, bottom);
+      } else if (top || bottom) {
+        base[prop] = top || bottom;
       }
     }
     return base;
@@ -33,29 +57,37 @@
   Wheel._Class = function() {};
 
   Wheel._Class.mashin = function(props) {
-    var prop;
-    superExtend(this, props)
+    superExtend(this, props, true)
     return this;
   };
 
   Wheel._Class.mixin = function(props) {
-    var prop;
-    superExtend(this.prototype, props);
+    superExtend(this.prototype, props, true);
     return this;
   };
 
   var initializing = false;
-  Wheel._Class.subclass = function(iProps, cProps) {
+  Wheel._Class.subclass = function() {
+    var id, proto, iProps, cProps;
+    if (typeof arguments[0] == 'string') {
+      id = arguments[0];
+      iProps = arguments[1];
+      cProps = arguments[2];
+    } else {
+      iProps = arguments[0];
+      cProps = arguments[1];
+    }
+
     initializing = true;
-    var proto = new this();
+    proto = new this();
     initializing = false;
 
     // high level constructor
     function Class() {
-      if (!initializing && this.initialize) {
-        this.initialize.apply(this, arguments);
-      } else if (!initializing && this.init ) {
-        this.init.apply(this, arguments);
+      if (!initializing) {
+        if (this.initialize) {
+          this.initialize.apply(this, arguments);
+        }
       }
     }
 
@@ -66,15 +98,56 @@
       Class[prop] = this[prop];
     }
 
-    Class.mashin(cProps);
+    superExtend(Class, cProps);
     Class.prototype = superExtend(proto, iProps);
     Class.superclass = this;
     Class.prototype.constructor = Class;
+    Class.prototype.superclass = this.prototype;
     Class.prototype._class = Class.prototype.constructor; // more intuitive access
+
+    if (id) {
+      Class.id = id;
+      eval(id + "= Class");
+    }
     return Class
   };
 })();
 
-Wheel.Class = function() {
-  return Wheel._Class.subclass(arguments[0], arguments[1]);
+Wheel.Base = Wheel._Class.subclass({
+  initialize: function(opts) {
+    this._uid = this._class.uid();
+    this.optionize(opts);
+    this.init();
+  },
+
+  optionize: function(opts) {
+    var opt;
+    for( opt in opts ) {
+      this[opt] = opts[opt];
+    }
+  },
+
+  init: function() {
+    // overloaded by subclasses
+  }
+}, {
+  uid: function() {
+    Wheel.Base._uid = Wheel.Base._uid || 0;
+    return ++ Wheel.Base._uid;
+  },
+
+  create: function() {
+    var klass = this;
+
+    function creator(args) {
+      return klass.apply(this, args);
+    }
+    creator.prototype = klass.prototype;
+
+    return new creator(arguments);
+  }
+});
+
+Wheel.Class = function(one, two, three) {
+  return Wheel.Base.subclass(one, two, three);
 };

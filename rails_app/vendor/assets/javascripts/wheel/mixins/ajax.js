@@ -1,30 +1,20 @@
 Wheel.Mixins.Ajax = {
-  init: function() {
-    this._super();
-    this.httpMethod = this.httpMethod || 'get';
-    this.dataType = this.dataType || 'json';
-  },
+  send: function (overrides) {
+    this._requestQueue = this._requestQueue || Wheel.Utils.RequestQueue.singleton;
+    var data = this.data() || {};
 
-  send: function () {
-    this._super && this._super();
-
-    var json = this.data() || {},
-        type = this.httpMethod;
-    if ( type.match(/delete|put/i) && !json._method ) {
-      json._method = type;
-      type = 'post';
-    }
-
-    $.ajax({
+    var opts = {
       url: this.url,
       context: this,
-      data: json,
-      type: type,
-      dataType: this.dataType,
+      data: data,
+      type: (overrides && overrides.httpMethod) || this.httpMethod,
+      dataType: this.dataType || 'json',
       success: this.onSuccess,
       error: this.processError,
       complete: this.onCompletion
-    });
+    };
+    overrides && $.extend(opts, overrides);
+    this._requestQueue.send(opts);
   },
 
   processError: function (xhr) {
@@ -35,17 +25,9 @@ Wheel.Mixins.Ajax = {
     }
   },
 
+  // reimplement these in classes
   data: function() { return {} },
-  onCompletion: function() {},
-  onSuccess: function() {},
-  onError: function() {}
-
-  /* mixin expects these methods to be implemented in
-   * the recepient class
-   *
-        data: function() { return {}; },
-        onSuccess: function () {},
-        onCompletion: function () {},
-        onError: function () {}
-   */
+  onCompletion: function(response) {},
+  onSuccess:    function(response) {},
+  onError:      function(response) {}
 };

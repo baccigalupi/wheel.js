@@ -786,8 +786,10 @@ Wheel.Utils.RequestQueue = Wheel.Class.Singleton.subclass({
 
   onComplete: function(response, opts) {
     this._requestCount --;
-    this._callback(response, opts, 'complete');
-    this.start();
+    if (this.app.connected()) {
+      this._callback(response, opts, 'complete');
+      this.start();
+    }
   },
 
   _clearRequest: function(opts) {
@@ -819,6 +821,7 @@ Wheel.App = Wheel.Class.Singleton.subclass({
     window.app = this;
     this.listen();
     this.connectionChecker = Wheel.Utils.ConnectionChecker.create({app: this});
+    this.requestQueue = Wheel.Utils.RequestQueue.create({app: this});
   },
 
   listen: function() {

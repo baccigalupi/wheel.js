@@ -1889,8 +1889,6 @@ var Mustache = (typeof module !== "undefined" && module.exports) || {};
   }
 
 })(Mustache);
-//= require wheel/mixins/optionize.js
-//= require mustache/mustache.js
 Wheel.View = Wheel.Class({
   initialize: function(dom, opts) {
     this.initializeDom(dom, opts);
@@ -2005,6 +2003,7 @@ Wheel.App = Wheel.Class.Singleton.subclass({
     window.app = this;
     this.listen();
     this.connectionChecker = Wheel.Utils.ConnectionChecker.create({app: this});
+    this.requestQueue = Wheel.Utils.RequestQueue.create({app: this});
   },
 
   listen: function() {

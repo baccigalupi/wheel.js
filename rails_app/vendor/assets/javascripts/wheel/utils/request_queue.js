@@ -97,8 +97,10 @@ Wheel.Utils.RequestQueue = Wheel.Class.Singleton.subclass({
 
   onComplete: function(response, opts) {
     this._requestCount --;
-    this._callback(response, opts, 'complete');
-    this.start();
+    if (this.app.connected()) {
+      this._callback(response, opts, 'complete');
+      this.start();
+    }
   },
 
   _clearRequest: function(opts) {

@@ -20,7 +20,7 @@ module Wheel
         if file.match /^wheel\//
           source << File.read("#{root_dir}/lib/#{file}")
         else
-          source << File.read("#{root_dir}/vendor/#{file}")
+          source << File.read("#{root_dir}/vendor/javascripts/#{file}")
         end
       end
 

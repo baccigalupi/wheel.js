@@ -13,11 +13,9 @@
 //  = require app/dragger
 //= require app/gather_tasks
 //= require app/assemble_tasks
-//= require app/view_is_king
 
 $(document).ready(function() {
   new Wheel.App();
-  //var dragger = new Dragger();
   gatheredTasks = GatherTask.gather('ul.found_tasks');
 
   assembledTasks = AssembleTask.assemble([{
@@ -30,9 +28,5 @@ $(document).ready(function() {
 
   window.assembled = new Wheel.View('ul.generate_tasks');
   window.assembled.append(assembledTasks);
-
-  window.nothing_links = MyViewClass.gather($(document.body));
-  window.nothinger_links = MyViewClass.assemble([{}]);
-  $(document.body).append(window.nothinger_links[0].$);
 });
 

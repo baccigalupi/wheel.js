@@ -16,14 +16,17 @@ var AssembleTask = Wheel.View.subclass({
 
   // the 'send' method will call these during ajaxy stuff
   onCompletion: function() {
+    console.log('completed');
     this.$.removeClass('sending');
   },
 
   onSuccess: function() {
+    console.log('finished');
     this.$.addClass('finished');
   },
 
   onError: function() {
+    console.log('error');
     this.$.addClass('error');
   }
 }, {

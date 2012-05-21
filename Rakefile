@@ -21,6 +21,20 @@ rescue LoadError
   end
 end
 
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "wheel.js"
+  gem.homepage = "http://github.com/baccigalupi/wheel.js"
+  gem.license = "MIT"
+  gem.summary = %Q{MV* JavaScript framework tailored to Rails}
+  gem.description = %Q{MV* JavaScript framework tailored to Rails, making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app.}
+  gem.email = "baccigalupi@gmail.com"
+  gem.authors = ["Kane Baccigalupi"]
+  # dependencies defined in Gemfile
+end
+Jeweler::RubygemsDotOrgTasks.new
+
 task :default => :jasmine
 
 # TODO: convert this to use sprockets, or rake-pipeline

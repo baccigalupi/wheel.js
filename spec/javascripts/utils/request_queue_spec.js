@@ -500,20 +500,43 @@ describe('Wheel.Utils.RequestQueue', function() {
         spyOn(queue, 'start');
       });
 
-      it('if the callback function exists it is called', function() {
-        opts.complete = jasmine.createSpy();
-        queue.onComplete('response', opts);
-        expect(opts.complete).toHaveBeenCalledWith('response');
+      describe('app is offline', function() {
+        beforeEach(function() {
+          queue.app.connected.andReturn(false);
+        });
+
+        it('does not call the callback', function() {
+          opts.complete = jasmine.createSpy();
+          queue.onComplete('response', opts);
+          expect(opts.complete).not.toHaveBeenCalled();
+        });
+
+        it('decrements the requestCount', function() {
+          queue.onComplete('response', opts);
+          expect(queue._requestCount).toBe(1);
+        });
       });
 
-      it('calls start', function() {
-        queue.onComplete('response', opts);
-        expect(queue.start).toHaveBeenCalled();
-      });
+      describe('app is online', function() {
+        beforeEach(function() {
+          queue.app.connected.andReturn(true);
+        });
 
-      it('decrements the requestCount', function() {
-        queue.onComplete('response', opts);
-        expect(queue._requestCount).toBe(1);
+        it('if the callback function exists it is called', function() {
+          opts.complete = jasmine.createSpy();
+          queue.onComplete('response', opts);
+          expect(opts.complete).toHaveBeenCalledWith('response');
+        });
+
+        it('calls start', function() {
+          queue.onComplete('response', opts);
+          expect(queue.start).toHaveBeenCalled();
+        });
+
+        it('decrements the requestCount', function() {
+          queue.onComplete('response', opts);
+          expect(queue._requestCount).toBe(1);
+        });
       });
     });
   });

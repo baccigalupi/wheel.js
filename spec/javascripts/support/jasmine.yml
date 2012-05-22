@@ -17,9 +17,9 @@ src_files:
     - vendor/javascripts/mustache/mustache.js
 
     - lib/wheel/namespace.js
+    - lib/wheel/mixins/**/*.js
     - lib/wheel/class.js
     - lib/wheel/class/singleton.js
-    - lib/wheel/mixins/**/*.js
     - lib/wheel/utils/**/*.js
     - lib/wheel/lib/cookie.js
     - lib/wheel/view.js

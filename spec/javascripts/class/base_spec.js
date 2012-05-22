@@ -24,9 +24,9 @@ describe('Wheel.Base', function() {
   });
 
   describe('class methods', function() {
-    it('.create() is a helper to avoid failing to use the "new" keyword', function() {
+    it('.build() is a helper to avoid failing to use the "new" keyword', function() {
       spyOn(Wheel.Base.prototype, 'initialize');
-      var base = Wheel.Base.create({my: 'opts'});
+      var base = Wheel.Base.build({my: 'opts'});
       expect(Wheel.Base.prototype.initialize).toHaveBeenCalledWith({my: 'opts'});
       expect(base instanceof Wheel.Base).toBe(true);
     });

@@ -26,13 +26,13 @@ describe('Wheel.Utils.RequestQueue', function() {
   });
 
   it('it is a singleton', function() {
-    expect(Wheel.Utils.RequestQueue.create({app: app}) instanceof Wheel.Class.Singleton).toBe(true);
+    expect(Wheel.Utils.RequestQueue.build({app: app}) instanceof Wheel.Class.Singleton).toBe(true);
     Wheel.Utils.RequestQueue.singleton = null;
   });
 
   describe('initialize', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
     });
 
     it('stores a reference to the app', function() {
@@ -62,7 +62,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('offline()', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
       queue.offline();
     });
 
@@ -77,7 +77,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('restart()', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
       spyOn(window, 'setTimeout');
       queue.restart();
     });
@@ -103,7 +103,7 @@ describe('Wheel.Utils.RequestQueue', function() {
   describe('resetting', function() {
     beforeEach(function() {
       opts._inProgress = true;
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
       queue._requestCount = 2;
       queue._contexts = {42: true};
       queue._requests = [opts];
@@ -155,7 +155,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('add(opts)', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
       queue._requests = [];
 
       spyOn(queue, 'start');
@@ -179,7 +179,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('start()', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
       queue._requests = [opts];
       queue._contexts = [];
       spyOn(queue, 'send');
@@ -277,7 +277,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('send()', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
     });
 
     describe('sends the request', function() {
@@ -390,7 +390,7 @@ describe('Wheel.Utils.RequestQueue', function() {
 
   describe('callbacks', function() {
     beforeEach(function() {
-      queue = Wheel.Utils.RequestQueue.create({app: app});
+      queue = Wheel.Utils.RequestQueue.build({app: app});
     });
 
     describe('onSucces(response, requestOpts)', function() {

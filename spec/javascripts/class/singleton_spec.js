@@ -7,7 +7,7 @@ describe('Wheel.Class.Singleton', function() {
       }
     });
 
-    instance = Singularity.create();
+    instance = Singularity.build();
   });
 
   it('stores itself on the class', function() {
@@ -26,7 +26,7 @@ describe('Wheel.Class.Singleton', function() {
     });
 
     it('helper method .create will return the original instance', function() {
-      expect(Singularity.create()).toBe(instance);
+      expect(Singularity.build()).toBe(instance);
     });
   });
 });

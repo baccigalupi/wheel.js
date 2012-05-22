@@ -4,7 +4,7 @@ describe('Wheel.Model', function() {
     Task = Wheel.Model.subclass({
       properties: ['name', 'due_at', 'state']
     });
-    task = Task.create();
+    task = Task.build();
   });
 
   describe('state', function() {
@@ -14,7 +14,7 @@ describe('Wheel.Model', function() {
       });
 
       it('is true if the object has an id', function() {
-        task = Task.create({id: 1});
+        task = Task.build({id: 1});
         expect(task.isNew()).toBe(true);
       });
     });
@@ -37,7 +37,7 @@ describe('Wheel.Model', function() {
 
     describe('with initialization arguments', function() {
       beforeEach(function() {
-        task = Task.create({
+        task = Task.build({
           name: 'Do some meta',
           state: 0,
           due_at: null,
@@ -60,7 +60,7 @@ describe('Wheel.Model', function() {
   describe('_attrAccessor(propName)', function() {
     var owner;
     beforeEach(function() {
-      task = Task.create({
+      task = Task.build({
         name: 'Do some meta',
         state: 0,
         due_at: null

@@ -380,10 +380,4 @@ describe("Wheel.View", function () {
       });
     });
   });
-
-  describe('events', function() {
-    it('are mixed in', function() {
-      expect(Wheel.View.prototype.on).toBe(Wheel.Mixins.Events.on);
-    });
-  });
 });

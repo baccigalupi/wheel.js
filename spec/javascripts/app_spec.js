@@ -6,10 +6,6 @@ describe('Wheel.App', function() {
     app = new Wheel.App();
   });
 
-  it('mixes in Events', function() {
-    expect(Wheel.App.prototype.on).toBe(Wheel.Mixins.Events.on);
-  });
-
   describe('initialize()', function() {
     describe('singleton-ness', function() {
       it('will store the new instance to window', function() {

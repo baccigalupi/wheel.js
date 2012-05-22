@@ -4,12 +4,12 @@ describe('Wheel.Model', function() {
     Task = Wheel.Model.subclass({
       properties: ['name', 'due_at', 'state']
     });
+    task = Task.create();
   });
 
   describe('state', function() {
     describe('isNew', function() {
       it('is false if the object has an id', function() {
-        task = Task.create();
         expect(task.isNew()).toBe(false);
       });
 
@@ -19,24 +19,41 @@ describe('Wheel.Model', function() {
       });
     });
 
-    xdescribe('isChanged', function() {
-      it('', function() {
-        
+    describe('isChanged', function() {
+      it('reflects whatever _dirty says', function() {
+        expect(task.isChanged()).toBe(false);
+        task._dirty = true;
+        expect(task.isChanged()).toBe(true);
       });
     });
   });
 
-  xdescribe('properties', function() {
-    beforeEach(function() {
-      task = Task.create({
-        name: 'Do some meta',
-        state: 0,
-        due_at: null
-      });
+  describe('properties', function() {
+    it('builds accesors', function() {
+      expect(typeof task.name).toBe('function');
+      expect(typeof task.state).toBe('function');
+      expect(typeof task.due_at).toBe('function');
     });
 
-    it('builds a reader for the attribute', function() {
-      expect(task.name()).toBe('Do some meta');
+    describe('with initialization arguments', function() {
+      beforeEach(function() {
+        task = Task.create({
+          name: 'Do some meta',
+          state: 0,
+          due_at: null,
+          normalOpt: "I'm normal"
+        });
+      });
+
+      it('initialization will set the correct attributes', function() {
+        expect(typeof task.name).toBe('function');
+        expect(typeof task.state).toBe('function');
+        expect(typeof task.due_at).toBe('function');
+      });
+
+      it('processes non-property initialization options normally', function() {
+        expect(task.normalOpt).toBe("I'm normal");
+      });
     });
   });
 

@@ -21,7 +21,7 @@ src_files:
     - lib/wheel/class.js
     - lib/wheel/class/singleton.js
     - lib/wheel/utils/**/*.js
-    - lib/wheel/lib/cookie.js
+    - lib/wheel/lib/**/*js
     - lib/wheel/view.js
     - lib/wheel/event_managers/touch_manager.js
     - lib/wheel/event_managers/mouse_manager.js

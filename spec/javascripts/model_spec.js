@@ -128,11 +128,21 @@ describe('Wheel.Model', function() {
     });
   });
 
-  xdescribe('save', function() {
-    describe('object has not been saved', function() {
-      it('sends a post request', function() {
-        
-      });
+  describe('CRUD', function() {
+    describe('create', function() {
+      
+    });
+
+    describe('read', function() {
+      
+    });
+
+    describe('update', function() {
+      
+    });
+
+    describe('destroy', function() {
+      
     });
   });
 });

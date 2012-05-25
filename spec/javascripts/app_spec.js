@@ -26,6 +26,18 @@ describe('Wheel.App', function() {
     it('creates a RequestQueue', function() {
       expect(app.requestQueue instanceof Wheel.Utils.RequestQueue).toBe(true);
     });
+
+    describe('creates an eventManager', function() {
+      it('that is touch when Modernizr says so', function() {
+        spyOn(Modernizr, 'touch').andReturn(true);
+        expect(app.eventManager instanceof Wheel.TouchManager).toBe(true);
+      });
+
+      it('that is mouse otherwise', function() {
+        spyOn(Modernizr, 'touch').andReturn(false);
+        expect(app.eventManager instanceof Wheel.MouseManager).toBe(true);
+      });
+    });
   });
 
   describe('connected()', function() {
@@ -114,6 +126,16 @@ describe('Wheel.App', function() {
         app.checkConnection();
         expect(app.connectionChecker.test).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('class namespaces', function() {
+    it('has a View hash', function() {
+      expect(Wheel.App.View).toEqual({});
+    });
+
+    it('has a Model hash', function() {
+      expect(Wheel.App.Model).toEqual({});
     });
   });
 });

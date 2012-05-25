@@ -63,6 +63,13 @@ namespace :compile do
   end
 end
 
+desc "Move assets to the wheelie asset package"
+task :wheelie do
+  `rm -rf ../wheelie/app/assets/javascripts/wheel`
+  `cp -r ./lib/wheel/ ../wheelie/app/assets/javascripts/wheel`
+  `cp -r ./vendor/javascripts/ ../wheelie/app/assets/javascripts/wheel/vendor`
+end
+
 namespace :play do
   desc "Move all js to the local rails app"
   task :copy do

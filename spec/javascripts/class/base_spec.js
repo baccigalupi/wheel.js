@@ -45,5 +45,62 @@ describe('Wheel.Base', function() {
         expect(Wheel.Base._uid).toBe(43);
       });
     });
+
+    describe('adding behavior to the subclass method', function() {
+      beforeEach(function() {
+        Wheel.Base._subclass('BaseIt', {
+          volume: 'high',
+        }, {
+          classy: true
+        });
+
+        BaseIt._subclass('BaseUp', {
+          volume: function() {
+            return this._super + 'er';
+          }
+        }, {
+          classy: function() {
+            return this._super && "I am classy";
+          }
+        });
+      });
+
+      it('Wheel.Base._subclass should work the same as Wheel.Base.subclass', function() {
+        var baseUp = BaseUp.build();
+        expect(baseUp instanceof BaseUp).toBe(true);
+        expect(baseUp instanceof BaseIt).toBe(true);
+        expect(baseUp instanceof Wheel.Base).toBe(true);
+
+        expect(baseUp.volume()).toBe('higher');
+        expect(BaseUp.classy()).toBe("I am classy");
+      });
+
+      it('.subclass can be overwritten to include ._subclass', function() {
+        BaseUp.subclass('DownLow', {}, {
+          subclass: function(name, iprops, cprops) {
+            var klass = this._subclass(name, iprops, cprops);
+            klass.foo = 'bar';
+            return klass;
+          }
+        });
+
+        DownLow.subclass('UberLow', {tone: 'uber base'}, {classy: function() {
+          return this._super() + '. You know it!';
+        }});
+
+        var uberLow = UberLow.build();
+
+        expect(uberLow instanceof UberLow).toBe(true);
+        expect(uberLow instanceof DownLow).toBe(true);
+        expect(uberLow instanceof BaseUp).toBe(true);
+        expect(uberLow instanceof BaseIt).toBe(true);
+        expect(uberLow instanceof Wheel.Base).toBe(true);
+
+        expect(uberLow.tone).toBe('uber base');
+        expect(uberLow.volume()).toBe('higher');
+        expect(UberLow.classy()).toBe("I am classy. You know it!");
+        expect(UberLow.foo).toBe("bar");
+      });
+    });
   });
 });

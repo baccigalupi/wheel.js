@@ -4,10 +4,13 @@ describe('Wheel.Model', function() {
     Task = Wheel.Model.subclass({}, {
       properties: ['name', 'due_at', 'state']
     });
-    task = Task.build();
   });
 
   describe('state', function() {
+    beforeEach(function() {
+      task = Task.build();
+    });
+
     describe('isNew', function() {
       it('is false if the object has an id', function() {
         expect(task.isNew()).toBe(false);
@@ -29,30 +32,41 @@ describe('Wheel.Model', function() {
   });
 
   describe('properties', function() {
-    it('builds accesors', function() {
-      expect(typeof task.name).toBe('function');
-      expect(typeof task.state).toBe('function');
-      expect(typeof task.due_at).toBe('function');
+    describe('after subclassing', function() {
+      it('already has built the accessors', function() {
+        expect(typeof Task.prototype.name).toBe('function');
+        expect(typeof Task.prototype.state).toBe('function');
+        expect(typeof Task.prototype.due_at).toBe('function');
+      });
     });
 
-    describe('with initialization arguments', function() {
-      beforeEach(function() {
-        task = Task.build({
-          name: 'Do some meta',
-          state: 0,
-          due_at: null,
-          normalOpt: "I'm normal"
-        });
-      });
-
-      it('initialization will set the correct attributes', function() {
+    describe('on the instance', function() {
+      it('has accesors', function() {
+        task = Task.build();
         expect(typeof task.name).toBe('function');
         expect(typeof task.state).toBe('function');
         expect(typeof task.due_at).toBe('function');
       });
 
-      it('processes non-property initialization options normally', function() {
-        expect(task.normalOpt).toBe("I'm normal");
+      describe('with initialization arguments', function() {
+        beforeEach(function() {
+          task = Task.build({
+            name: 'Do some meta',
+            state: 0,
+            due_at: null,
+            normalOpt: "I'm normal"
+          });
+        });
+
+        it('initialization will set the correct attributes', function() {
+          expect(typeof task.name).toBe('function');
+          expect(typeof task.state).toBe('function');
+          expect(typeof task.due_at).toBe('function');
+        });
+
+        it('processes non-property initialization options normally', function() {
+          expect(task.normalOpt).toBe("I'm normal");
+        });
       });
     });
   });
@@ -129,6 +143,10 @@ describe('Wheel.Model', function() {
   });
 
   xdescribe('CRUD', function() {
+    beforeEach(function() {
+      task = Task.build();
+    });
+
     describe('url detection', function() {
       
     });

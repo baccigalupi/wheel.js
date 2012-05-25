@@ -148,7 +148,9 @@ describe('Wheel.Model', function() {
     });
 
     describe('url detection', function() {
-      
+      it('infers the url from the class id', function() {
+        expect(task.url()).toBe('/tasks');
+      });
     });
 
     describe('create', function() {

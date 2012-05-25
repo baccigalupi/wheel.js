@@ -57,7 +57,7 @@ describe('Wheel.Model', function() {
     });
   });
 
-  describe('_attrAccessor(propName)', function() {
+  describe('Model.attrAccessor(propName)', function() {
     var owner;
     beforeEach(function() {
       task = Task.build({
@@ -67,7 +67,7 @@ describe('Wheel.Model', function() {
       });
       owner = {name: "Kane"};
 
-      task._attrAccessor('owner');
+      Task.attrAccessor('owner');
     });
 
     it('creates a prototype function with that name', function() {
@@ -119,7 +119,7 @@ describe('Wheel.Model', function() {
     });
 
     it('can handle multiple declarations in the same class', function() {
-      task._attrAccessor('tags');
+      Task.attrAccessor('tags');
       var tags = ['neato', 'jazzy']
       task.tags(tags);
       task.owner(owner);
@@ -128,7 +128,11 @@ describe('Wheel.Model', function() {
     });
   });
 
-  describe('CRUD', function() {
+  xdescribe('CRUD', function() {
+    describe('url detection', function() {
+      
+    });
+
     describe('create', function() {
       
     });

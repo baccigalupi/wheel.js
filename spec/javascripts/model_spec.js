@@ -1,7 +1,7 @@
 describe('Wheel.Model', function() {
   var task, Task;
   beforeEach(function() {
-    Task = Wheel.Model.subclass({
+    Task = Wheel.Model.subclass({}, {
       properties: ['name', 'due_at', 'state']
     });
     task = Task.build();

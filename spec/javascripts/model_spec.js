@@ -1,7 +1,7 @@
 describe('Wheel.Model', function() {
-  var task, Task;
+  var task;
   beforeEach(function() {
-    Task = Wheel.Model.subclass({}, {
+    Wheel.Model.subclass('Task', {}, {
       properties: ['name', 'due_at', 'state']
     });
   });
@@ -142,14 +142,45 @@ describe('Wheel.Model', function() {
     });
   });
 
-  xdescribe('CRUD', function() {
+  describe('CRUD', function() {
     beforeEach(function() {
       task = Task.build();
     });
 
-    describe('url detection', function() {
-      it('infers the url from the class id', function() {
-        expect(task.url()).toBe('/tasks');
+    describe('path detection', function() {
+      describe('basePath', function() {
+        it('guesses a rest pattern from the class name', function() {
+          expect(Task.basePath()).toBe('/tasks');
+        });
+
+        it('can work with more complicated naming conventions', function() {
+          window.Foo = {};
+          Wheel.Model.subclass('Foo.Bar');
+          expect(Foo.Bar.basePath()).toBe('/bars')
+        });
+
+        it('raises an error if there is no id and no baseUrl', function() {
+          var Foo = Wheel.Model.subclass();
+          var raised = false;
+          try {
+            Foo.basePath();
+          } catch(e) {
+            raised = true;
+            expect(e).toMatch(/no 'id'/i);
+          }
+          expect(raised).toBe(true);
+        });
+      });
+
+      describe('instance paths', function() {
+        it('for new records is the class baseUrl', function() {
+          expect(task.path()).toBe(Task.basePath());
+        });
+
+        it('for records with ids will include the id', function() {
+          task.id = 32;
+          expect(task.path()).toBe('/tasks/32');
+        });
       });
     });
 

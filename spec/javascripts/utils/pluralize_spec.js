@@ -68,6 +68,7 @@ describe('Wheel.Utils.pluralize(word)', function() {
     ["crisis"      , "crises"]
   ];
 
+  // This is a really simple implementation that does not address things that don't get pluralized
   $.each(WORDS, function(i, words) {
     (function(baseWord, pluralizedWord) {
       it('converts ' + baseWord + ' to ' + pluralizedWord, function() {

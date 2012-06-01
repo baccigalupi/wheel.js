@@ -1,6 +1,7 @@
 describe('Wheel.App', function() {
   var app;
   beforeEach(function() {
+    spyOn(Wheel.Utils.ConnectionChecker.prototype, 'on');
     window.app = undefined;
     Wheel.App.singleton = undefined;
     app = new Wheel.App();
@@ -37,6 +38,23 @@ describe('Wheel.App', function() {
         spyOn(Modernizr, 'touch').andReturn(false);
         expect(app.eventManager instanceof Wheel.MouseManager).toBe(true);
       });
+    });
+  });
+
+  describe('listen()', function() {
+    it('binds to "offline" and "online" events calling connected', function() {
+      expect(Wheel.Utils.ConnectionChecker.prototype.on).toHaveBeenCalled();
+
+      var offlineFunction = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[0][1];
+      var onlineFunction = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[1][1];
+      spyOn(app, 'connected');
+
+      offlineFunction();
+      expect(app.connected).toHaveBeenCalledWith(false);
+
+      app.connected.reset();
+      onlineFunction();
+      expect(app.connected).toHaveBeenCalledWith(true);
     });
   });
 

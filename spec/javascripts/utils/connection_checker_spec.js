@@ -3,19 +3,13 @@ describe('Wheel.Utils.ConnectionChecker', function() {
 
   beforeEach(function() {
     Wheel.Utils.ConnectionChecker.singleton = undefined;
-    app = {
-      connected:  jasmine.createSpy()
-    };
-    connectionChecker = new Wheel.Utils.ConnectionChecker({app: app});
+    connectionChecker = Wheel.Utils.ConnectionChecker.build();
+    spyOn(connectionChecker, 'trigger');
     spyOn($, 'ajax');
   });
 
   afterEach(function() {
     connectionChecker.interval && clearInterval(connectionChecker.interval);
-  });
-
-  it('is initialized with an app', function() {
-    expect(connectionChecker.app).toBe(app);
   });
 
   it('is a singleton', function() {
@@ -34,9 +28,9 @@ describe('Wheel.Utils.ConnectionChecker', function() {
   });
 
   describe('onSuccess(response)', function() {
-    it('calls app.online()', function() {
+    it('triggers a "online" event on itself', function() {
       connectionChecker.onSuccess('response');
-      expect(app.connected).toHaveBeenCalledWith(true);
+      expect(connectionChecker.trigger).toHaveBeenCalledWith('online');
     });
   });
 
@@ -46,9 +40,9 @@ describe('Wheel.Utils.ConnectionChecker', function() {
       spyOn(Wheel.Utils.ConnectionChecker.prototype, 'startPoll');
     });
 
-    it('calls app.connected(false)', function() {
+    it('triggers a "offline" event on itself', function() {
       connectionChecker.onError('response');
-      expect(app.connected).toHaveBeenCalledWith(false);
+      expect(connectionChecker.trigger).toHaveBeenCalledWith('offline');
     });
 
     it('calls "startPoll"', function() {

@@ -184,16 +184,28 @@ describe('Wheel.Model', function() {
       });
     });
 
-    describe('create', function() {
-      
+    describe('save', function() {
+      describe('saving a new object', function() {
+        
+      });
+
+      describe('saving an existing object', function() {
+        
+      });
+    });
+
+    describe('class level create', function() {
+        
     });
 
     describe('read', function() {
-      
-    });
+      describe('reload', function() {
+        
+      });
 
-    describe('update', function() {
-      
+      describe('class level get', function() {
+        
+      });
     });
 
     describe('destroy', function() {

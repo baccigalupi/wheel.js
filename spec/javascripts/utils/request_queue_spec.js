@@ -301,6 +301,15 @@ describe('Wheel.Utils.RequestQueue', function() {
           expect(requestOpts.url).toBe('/foo/u');
         });
 
+        it('will call the url if it is a function', function() {
+          opts.url = function() {
+            return "/foo/new";
+          };
+          queue.send(opts);
+          requestOpts = $.ajax.mostRecentCall.args[0];
+          expect(requestOpts.url).toBe('/foo/new');
+        });
+
         it('passes on any other miscelaneous stuff', function() {
           expect(requestOpts.foo).toBe('bar');
         });

@@ -42,19 +42,28 @@ describe('Wheel.App', function() {
   });
 
   describe('listen()', function() {
-    it('binds to "offline" and "online" events calling connected', function() {
-      expect(Wheel.Utils.ConnectionChecker.prototype.on).toHaveBeenCalled();
-
-      var offlineFunction = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[0][1];
-      var onlineFunction = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[1][1];
+    beforeEach(function() {
       spyOn(app, 'connected');
+    });
 
-      offlineFunction();
-      expect(app.connected).toHaveBeenCalledWith(false);
+    describe('binding to connectionChecker', function() {
+      it('calls on', function() {
+        expect(Wheel.Utils.ConnectionChecker.prototype.on).toHaveBeenCalled();
+      });
 
-      app.connected.reset();
-      onlineFunction();
-      expect(app.connected).toHaveBeenCalledWith(true);
+      it('binds to online', function() {
+        expect(Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[0][0]).toBe('offline');
+        var callback = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[0][1];
+        callback();
+        expect(app.connected).toHaveBeenCalledWith(false);
+      });
+
+      it('binds to online', function() {
+        expect(Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[1][0]).toBe('online');
+        var callback = Wheel.Utils.ConnectionChecker.prototype.on.argsForCall[1][1];
+        callback();
+        expect(app.connected).toHaveBeenCalledWith(true);
+      });
     });
   });
 
@@ -81,6 +90,12 @@ describe('Wheel.App', function() {
         app._connected = undefined;
         app.connected(true);
         expect(app.trigger).toHaveBeenCalledWith('online');
+      });
+
+      it('there is no state change, but app is offline', function() {
+        app._connected = false;
+        app.connected(false);
+        expect(app.trigger).toHaveBeenCalledWith('offline-beacon');
       });
 
       it('the state changes from true to false', function() {

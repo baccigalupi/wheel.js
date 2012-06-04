@@ -38,6 +38,23 @@ describe('Wheel.Model', function() {
         expect(typeof Task.prototype.state).toBe('function');
         expect(typeof Task.prototype.due_at).toBe('function');
       });
+
+      describe('.allProperties', function() {
+        beforeEach(function() {
+          Task.subclass('SpecialTask', {}, {
+            properties: ['specialness_rating']
+          });
+        });
+
+        it('knows its own properties', function() {
+          expect(Wheel.Model.allProperties()).toEqual([]);
+          expect(Task.allProperties()).toEqual(['name', 'due_at', 'state']);
+        });
+
+        it('it includes superclass properties', function() {
+          expect(SpecialTask.allProperties()).toEqual(['name', 'due_at', 'state', 'specialness_rating']);
+        });
+      });
     });
 
     describe('on the instance', function() {
@@ -66,6 +83,21 @@ describe('Wheel.Model', function() {
 
         it('processes non-property initialization options normally', function() {
           expect(task.normalOpt).toBe("I'm normal");
+        });
+      });
+
+      it('has an accessor for getting all properties', function() {
+        task = Task.build({
+          name: 'Do some meta',
+          state: 0,
+          due_at: null,
+          normalOpt: "I'm normal"
+        });
+
+        expect(task.properties()).toEqual({
+          name: 'Do some meta',
+          state: 0,
+          due_at: null
         });
       });
     });
@@ -147,6 +179,10 @@ describe('Wheel.Model', function() {
       task = Task.build();
     });
 
+    it('mixes in Ajax', function() {
+      expect(Task.prototype.send).toBe(Wheel.Mixins.Ajax.send);
+    });
+
     describe('path detection', function() {
       describe('basePath', function() {
         it('guesses a rest pattern from the class name', function() {
@@ -186,7 +222,9 @@ describe('Wheel.Model', function() {
 
     describe('save', function() {
       describe('saving a new object', function() {
-        
+        it('data sent includes all the properties', function() {
+          
+        });
       });
 
       describe('saving an existing object', function() {

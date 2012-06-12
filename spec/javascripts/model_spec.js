@@ -246,6 +246,10 @@ describe('Wheel.Model', function() {
             expect(args.url).toEqual(task.url);
           });
 
+          it('sends a post request', function() {
+            expect(args.type).toBe('post');
+          });
+
           it('success callback points to the onSave handler', function() {
             expect(args.success).toBe(task.onSave);
           });
@@ -288,6 +292,10 @@ describe('Wheel.Model', function() {
         it('adds the data and url to the request queue', function() {
           expect(args.url).toBe(task.url);
           expect(args.data).toEqual(task.properties());
+        });
+
+        it('sends the request via put', function() {
+          expect(args.type).toBe('put');
         });
 
         it('success handler is onUpdate', function() {
@@ -380,7 +388,7 @@ describe('Wheel.Model', function() {
         });
       });
 
-      describe('class level get', function() {
+      xdescribe('class level get', function() {
         it('fails', function() {
           fail();
         });
@@ -393,9 +401,32 @@ describe('Wheel.Model', function() {
       });
     });
 
-    describe('destroy', function() {
-      it('fails', function() {
-        fail();
+    describe('delete', function() {
+      var args;
+      beforeEach(function() {
+        spyOn(Task, 'trigger')
+        task.id = 42;
+        task.delete();
+        args = queue.add.mostRecentCall.args[0];
+      });
+
+      it('does nothing if the model is new', function() {
+        task.id = null;
+        queue.add.reset();
+        task.delete();
+        expect(queue.add).not.toHaveBeenCalled();
+      });
+
+      it('sends a request to the server', function() {
+        expect(args.url).toBe(task.url);
+      });
+
+      it('sends the request as a delete', function() {
+        expect(args.type).toBe('delete');
+      });
+
+      it('triggers a delete event on the class', function() {
+        expect(Task.trigger).toHaveBeenCalledWith('delete:42');
       });
     });
   });

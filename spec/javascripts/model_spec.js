@@ -184,7 +184,7 @@ describe('Wheel.Model', function() {
       expect(Task.on).toBe(Wheel.Mixins.Events.on);
     });
 
-    describe('path detection', function() {
+    describe('url detection', function() {
       describe('basePath', function() {
         it('guesses a rest pattern from the class name', function() {
           expect(Task.basePath()).toBe('/tasks');
@@ -209,14 +209,14 @@ describe('Wheel.Model', function() {
         });
       });
 
-      describe('instance paths', function() {
+      describe('instance urls', function() {
         it('for new records is the class baseUrl', function() {
-          expect(task.path()).toBe(Task.basePath());
+          expect(task.url()).toBe(Task.basePath());
         });
 
         it('for records with ids will include the id', function() {
           task.id = 32;
-          expect(task.path()).toBe('/tasks/32');
+          expect(task.url()).toBe('/tasks/32');
         });
       });
     });
@@ -337,16 +337,66 @@ describe('Wheel.Model', function() {
 
     describe('read', function() {
       describe('reload', function() {
-        
+        var args;
+        beforeEach(function() {
+          task.id = 42;
+          spyOn(Task, 'trigger');
+          task.reload();
+          args = queue.add.mostRecentCall.args[0];
+        });
+
+        it('does nothing if there is no id', function() {
+          task.id = null;
+          queue.add.reset();
+          task.reload();
+          expect(queue.add).not.toHaveBeenCalled();
+        });
+
+        it('makes a request to the url', function() {
+          expect(queue.add).toHaveBeenCalled();
+          expect(args.url).toBe(task.url);
+        });
+
+        describe('success', function() {
+          var now;
+          beforeEach(function() {
+            //spyOn(Task, 'trigger');
+            spyOn(task, 'trigger');
+            now = Date.now();
+            args.success.bind(task)({due_at: now});
+          });
+
+          it('resets properties', function() {
+            expect(task.due_at()).toBe(now);
+          });
+
+          it('triggers the reloaded event on self', function() {
+            expect(task.trigger).toHaveBeenCalledWith('reloaded');
+          });
+
+          it('triggers an update on the class', function() {
+            expect(Task.trigger).toHaveBeenCalledWith('update:42', task);
+          });
+        });
       });
 
       describe('class level get', function() {
-        
+        it('fails', function() {
+          fail();
+        });
+      });
+
+      xdescribe('all', function() {
+        it('fails', function() {
+          fail();
+        });
       });
     });
 
     describe('destroy', function() {
-      
+      it('fails', function() {
+        fail();
+      });
     });
   });
 });

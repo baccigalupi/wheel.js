@@ -1,6 +1,11 @@
 describe('Wheel.Model', function() {
-  var task;
+  var task, queue;
   beforeEach(function() {
+    queue = {
+      add: jasmine.createSpy()
+    };
+    Wheel.Utils.RequestQueue.singleton = queue;
+
     Wheel.Model.subclass('Task', {}, {
       properties: ['name', 'due_at', 'state']
     });
@@ -13,20 +18,12 @@ describe('Wheel.Model', function() {
 
     describe('isNew', function() {
       it('is false if the object has an id', function() {
-        expect(task.isNew()).toBe(false);
+        expect(task.isNew()).toBe(true);
       });
 
       it('is true if the object has an id', function() {
         task = Task.build({id: 1});
-        expect(task.isNew()).toBe(true);
-      });
-    });
-
-    describe('isChanged', function() {
-      it('reflects whatever _dirty says', function() {
-        expect(task.isChanged()).toBe(false);
-        task._dirty = true;
-        expect(task.isChanged()).toBe(true);
+        expect(task.isNew()).toBe(false);
       });
     });
   });
@@ -183,6 +180,10 @@ describe('Wheel.Model', function() {
       expect(Task.prototype.send).toBe(Wheel.Mixins.Ajax.send);
     });
 
+    it('mashes in Events', function() {
+      expect(Task.on).toBe(Wheel.Mixins.Events.on);
+    });
+
     describe('path detection', function() {
       describe('basePath', function() {
         it('guesses a rest pattern from the class name', function() {
@@ -221,19 +222,117 @@ describe('Wheel.Model', function() {
     });
 
     describe('save', function() {
+      var args;
+      beforeEach(function() {
+        task = Task.build({
+          state: 0,
+          name: 'do something',
+          due_at: new Date()
+        });
+      });
+
       describe('saving a new object', function() {
-        it('data sent includes all the properties', function() {
-          
+        beforeEach(function() {
+          task.save();
+          args = queue.add.mostRecentCall.args[0];
+        });
+
+        describe('options passed to the request queue', function() {
+          it('data should be the properties', function() {
+            expect(args.data).toEqual(task.properties());
+          });
+
+          it('url should be correct', function() {
+            expect(args.url).toEqual(task.url);
+          });
+
+          it('success callback points to the onSave handler', function() {
+            expect(args.success).toBe(task.onSave);
+          });
+        });
+
+        describe('onSave(response)', function() {
+          beforeEach(function() {
+            spyOn(Task, 'on').andCallThrough();
+            spyOn(task, 'sync');
+            task.onSave({
+              id: 42
+            });
+          });
+
+          it('adds the id attribute from the response', function() {
+            expect(task.id).toBe(42);
+          });
+
+          it('starts listening for updates on the class', function() {
+            expect(Task.on).toHaveBeenCalled();
+            expect(Task.on.mostRecentCall.args[0]).toBe('update:42');
+          });
+
+          it('calls sync when the event gets triggered', function() {
+            var object = {foo: 'bar'}
+            Task.trigger('update:42', object);
+            expect(task.sync).toHaveBeenCalledWith(object);
+          });
         });
       });
 
       describe('saving an existing object', function() {
-        
+        beforeEach(function() {
+          spyOn(Task, 'trigger');
+          task.id = 42;
+          task.save();
+          args = queue.add.mostRecentCall.args[0];
+        });
+
+        it('adds the data and url to the request queue', function() {
+          expect(args.url).toBe(task.url);
+          expect(args.data).toEqual(task.properties());
+        });
+
+        it('success handler is onUpdate', function() {
+          expect(args.success).toBe(task.onUpdate);
+        });
+
+        it('triggers an update event on the class', function() {
+          expect(Task.trigger).toHaveBeenCalledWith('update:42', task);
+        });
+      });
+    });
+
+    describe('sync()', function() {
+      var other;
+      beforeEach(function() {
+        other = Task.build({name: 'do something grand!', state: null});
+        task.sync(other);
+      });
+
+      it('replaces existing properties', function() {
+        expect(task.name()).toBe('do something grand!');
+      });
+
+      it('clears properties', function() {
+        expect(task.state()).toBe(null);
       });
     });
 
     describe('class level create', function() {
-        
+      var opts, fakeTask;
+      beforeEach(function() {
+        opts = {name: 'get the milk'}
+        fakeTask = {save: jasmine.createSpy()};
+        spyOn(Task, 'build').andReturn(fakeTask);
+      });
+
+      it('makes a new object with the right properties', function() {
+        Task.create(opts);
+        expect(Task.build).toHaveBeenCalledWith(opts);
+      });
+
+      it('saves the object', function() {
+        Task.create(opts);
+        expect(fakeTask.save).toHaveBeenCalled();
+      });
     });
 
     describe('read', function() {

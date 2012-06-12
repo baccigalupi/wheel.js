@@ -315,7 +315,7 @@ describe('Wheel.Utils.RequestQueue', function() {
         });
 
         it('is not sent with a context', function() {
-          expect(requestOpts.context).toBe(undefined);
+          expect(requestOpts.context).toBe(null);
         });
       });
 

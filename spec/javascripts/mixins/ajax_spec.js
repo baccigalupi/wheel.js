@@ -3,7 +3,7 @@ describe("Wheel.Mixins.Ajax", function () {
 
   beforeEach(function() {
     Wheel.Utils.RequestQueue.singleton = {
-      send: jasmine.createSpy()
+      add: jasmine.createSpy()
     };
 
     Sender = Wheel.View.subclass({
@@ -68,7 +68,7 @@ describe("Wheel.Mixins.Ajax", function () {
       var sendWith = function(httpMethod) {
         sender.httpMethod = httpMethod;
         sender.send();
-        args = sender._requestQueue.send.argsForCall[0][0];
+        args = sender._requestQueue.add.argsForCall[0][0];
       };
 
       beforeEach(function() {
@@ -88,7 +88,7 @@ describe("Wheel.Mixins.Ajax", function () {
         });
 
         it("calls the request queue's send method", function () {
-          expect(sender._requestQueue.send).toHaveBeenCalled();
+          expect(sender._requestQueue.add).toHaveBeenCalled();
         });
 
         it("uses the right url", function() {
@@ -107,7 +107,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = sender._requestQueue.send.argsForCall[0][0];
+          args = sender._requestQueue.add.argsForCall[0][0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -118,7 +118,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = sender._requestQueue.send.argsForCall[0][0];
+          args = sender._requestQueue.add.argsForCall[0][0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -128,7 +128,7 @@ describe("Wheel.Mixins.Ajax", function () {
             data: {foo: 'bar'}
           });
 
-          args = sender._requestQueue.send.argsForCall[0][0];
+          args = sender._requestQueue.add.argsForCall[0][0];
           expect(args.data).toEqual({foo: 'bar'});
         });
       });

@@ -31,7 +31,7 @@ describe('Wheel.App', function() {
     describe('creates an eventManager', function() {
       it('that is touch when Modernizr says so', function() {
         spyOn(Modernizr, 'touch').andReturn(true);
-        expect(app.eventManager instanceof Wheel.TouchManager).toBe(true);
+        expect(app.eventManager instanceof Wheel.EventManager).toBe(true);
       });
 
       it('that is mouse otherwise', function() {

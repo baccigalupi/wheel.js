@@ -8,15 +8,8 @@ describe('Wheel.MouseManager', function() {
   // more integration-y.
 
   describe('ancestry', function() {
-    it('is a TouchManager', function() {
-      expect(manager instanceof Wheel.MouseManager).toBe(true);
-    });
-  });
-
-  describe('normalizing the event', function() {
-    it('just returns the original event', function() {
-      e = {'isWeird': true};
-      expect(manager.normalizeEvent(e)).toBe(e);
+    it('is a EventManager', function() {
+      expect(manager instanceof Wheel.EventManager).toBe(true);
     });
   });
 

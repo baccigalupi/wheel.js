@@ -8,6 +8,7 @@ describe('Wheel.TouchManager', function() {
     // reset the manager
     manager.clearTimeout();
     manager.touch = {};
+    manager.multi = undefined;
 
     touches = [{
       pageX: 100,
@@ -24,7 +25,9 @@ describe('Wheel.TouchManager', function() {
       swipeleft:  jasmine.createSpy('swipeleft'),
       swiperight: jasmine.createSpy('swiperight'),
       swipeup:    jasmine.createSpy('swipeup'),
-      swipedown:  jasmine.createSpy('swipedown')
+      swipedown:  jasmine.createSpy('swipedown'),
+      pinch:      jasmine.createSpy('pinch'),
+      zoom:       jasmine.createSpy('zoom')
     };
 
     div = $('<div class="touch_tester"/>');
@@ -38,7 +41,9 @@ describe('Wheel.TouchManager', function() {
       .bind('swipeleft',  function(e) {events.swipeleft(e)})
       .bind('swiperight', function(e) {events.swiperight(e)})
       .bind('swipeup',    function(e) {events.swipeup(e)})
-      .bind('swipedown',  function(e) {events.swipedown(e)});
+      .bind('swipedown',  function(e) {events.swipedown(e)})
+      .bind('pinch',      function(e) {events.pinch(e)})
+      .bind('zoom',       function(e) {events.zoom(e)})
 
     $(document.body).append(div);
   });
@@ -262,7 +267,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(startEvent);
       div.trigger(endEvent);
       waits(50);
- 
+
       runs(function() {
         div.trigger(startEvent);
         div.trigger(endEvent);
@@ -285,6 +290,189 @@ describe('Wheel.TouchManager', function() {
         div.trigger(endEvent);
 
         expect(events.tap).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('multi-touch gestures', function() {
+    var multiTouches, zoom, swipe;
+    beforeEach(function() {
+      multiTouches = [{
+        pageX: 100,
+        pageY: 200
+      }, {
+        pageX: 225,
+        pageY: 305
+      }];
+
+      swipe = {
+        start: [{
+          pageX: 50,
+          pageY: 50
+        }, {
+          pageX: 150,
+          pageY: 40
+        }],
+        move: [{
+          pageX: 60,
+          pageY: 400
+        }, {
+          pageX: 140,
+          pageY: 275
+        }]
+      };
+    });
+
+    it('will be in multi-touch mode if there are more than one touches at touch down', function() {
+      startEvent = $.Event('touchstart', {touches: multiTouches});
+      div.trigger(startEvent);
+      expect(manager.multi).toEqual({x1: 225, y1: 305});
+    });
+
+    it('will be in multi-touch mode if there are more than one touches at touch move', function() {
+      startEvent = $.Event('touchstart', {touches: touches});
+      moveEvent = $.Event('touchmove', {touches: multiTouches});
+
+      div.trigger(startEvent);
+      div.trigger(moveEvent);
+
+      expect(manager.multi).toEqual({x1: 225, y1: 305});
+    });
+
+    describe('pinch', function() {
+      var pinch;
+      beforeEach(function() {
+        pinch = {
+          start: [{
+            pageX: 10,
+            pageY: 300
+          }, {
+            pageX: 200,
+            pageY: 10
+          }],
+          move: [{
+            pageX: 10,
+            pageY: 300
+          }, {
+            pageX: 100,
+            pageY: 100
+          }]
+        };
+      });
+
+      describe('when distance is less than tolerance', function() {
+        beforeEach(function() {
+          startEvent = $.Event('touchstart', {touches: multiTouches});
+          div.trigger(startEvent);
+          multiTouches[1] = {
+            pageX: 235,
+            pageY: 305
+          };
+          moveEvent = $.Event('touchmove', {touches: multiTouches});
+          div.trigger(moveEvent);
+          endEvent = $.Event('touchend', {touches: multiTouches});
+        });
+
+        it('does not trigger a pinch', function() {
+          expect(events.pinch).not.toHaveBeenCalled();
+        });
+
+        it('does not trigger a tap', function() {
+          div.trigger(endEvent);
+          expect(events.tap).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when distance is within tolerance', function() {
+        beforeEach(function() {
+          startEvent = $.Event('touchstart', {touches: pinch.start});
+          div.trigger(startEvent);
+          moveEvent = $.Event('touchmove', {touches: pinch.move});
+          div.trigger(moveEvent);
+          endEvent = $.Event('touchend', {touches: pinch.move});
+        });
+
+        describe('helper methods', function() {
+          describe('#_multiDistance', function() {
+            it('calculates the original distance correctly', function() {
+              expect(Math.floor(manager._multiDistance(1))).toBe(346);
+            });
+
+            it('calculates the final distance correctly', function() {
+              expect(Math.floor(manager._multiDistance(2))).toBe(219);
+            });
+          });
+        });
+
+        it('does trigger a pinch', function() {
+          expect(events.pinch).toHaveBeenCalled();
+        });
+
+        it('does not trigger a tap', function() {
+          div.trigger(endEvent);
+          expect(events.tap).not.toHaveBeenCalled();
+        });
+
+        it('does not trigger a swipe', function() {
+          expect(events.swipe).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when more scolling is happening that pinching', function() {
+         beforeEach(function() {
+          startEvent = $.Event('touchstart', {touches: swipe.start});
+          div.trigger(startEvent);
+          moveEvent = $.Event('touchmove', {touches: swipe.move});
+          div.trigger(moveEvent);
+        });
+
+        it('does not trigger pinch', function() {
+          expect(events.pinch).not.toHaveBeenCalled();
+        });
+
+        it('triggers a swipe', function() {
+          expect(events.swipe).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('zoom', function() {
+      var zoom;
+      beforeEach(function() {
+        zoom = {
+          start: [{
+            pageX: 50,
+            pageY: 100
+          }, {
+            pageX: 200,
+            pageY: 30
+          }],
+          move: [{
+            pageX: 50,
+            pageY: 100
+          }, {
+            pageX: 250,
+            pageY: 10
+          }]
+        };
+      });
+
+      describe('gesture within tolerance', function() {
+        beforeEach(function() {
+          startEvent = $.Event('touchstart', {touches: zoom.start});
+          div.trigger(startEvent);
+          moveEvent = $.Event('touchmove', {touches: zoom.move});
+          div.trigger(moveEvent);
+          endEvent = $.Event('touchend', {touches: zoom.move});
+        });
+
+        it('triggers a zoom', function() {
+          expect(events.zoom).toHaveBeenCalled();
+        });
+
+        it('does not trigger a swipe', function() {
+          expect(events.swipe).not.toHaveBeenCalled();
+        });
       });
     });
   });

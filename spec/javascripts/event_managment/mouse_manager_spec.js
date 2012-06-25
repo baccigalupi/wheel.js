@@ -49,5 +49,47 @@ describe('Wheel.MouseManager', function() {
       });
     });
   });
+
+  describe('drag events', function() {
+    describe('when dragstart in triggered on an element', function() {
+      var $target;
+      beforeEach(function() {
+        $target = $('<div/>');
+        spyOn($target, 'trigger');
+        spyOn($target, 'on');
+        $target.trigger('dragstart');
+      });
+
+      it('listens on body for mousemove', function() {
+        expect($target.on).toHaveBeenCalled();
+        expect($target.on.mostRecentCall.args[0]).toBe('mousemove');
+      });
+
+      describe('mousemove events', function() {
+        var moveEvent;
+        beforeEach(function() {
+          moveEvent = {pageX: 100, pageY: 200};
+          $target.on.mostRecentCall.args[1](moveEvent);
+        });
+
+        it('triggers dragmove on the original target', function() {
+          expect($target.trigger).toHaveBeenCalled();
+          expect($target.trigger.mostRecentCall.args[0]).toBe('dragmove');
+          expect($target.trigger.mostRecentCall.args[1].pageX).toBe(100);
+          expect($target.trigger.mostRecentCall.args[1].pageY).toBe(200);
+        });
+      });
+
+      xdescribe('mouseup', function() {
+        it('triggers dragend on the original target', function() {
+          
+        });
+
+        it('unbinds mousemove', function() {
+          
+        });
+      });
+    });
+  });
 });
 

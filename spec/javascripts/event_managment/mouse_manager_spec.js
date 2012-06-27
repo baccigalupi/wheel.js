@@ -1,11 +1,12 @@
 describe('Wheel.MouseManager', function() {
-  var manager = new Wheel.MouseManager();
+  var manager;
+  beforeEach(function() {
+    manager = new Wheel.MouseManager();
+  });
 
-  // TODO: figure out how to trigger MouseEvents with
-  // given specified pageX and pageY. Then switch to
-  // shared examples. Current specs test differences in
-  // classes after inheritance, and I would like something
-  // more integration-y.
+  afterEach(function() {
+    manager.$.remove();
+  });
 
   describe('ancestry', function() {
     it('is a EventManager', function() {
@@ -16,7 +17,7 @@ describe('Wheel.MouseManager', function() {
   describe('listening', function() {
     beforeEach(function() {
       // reset the manager
-      manager.clearTimeout();
+      manager._clearTimeout();
       manager.touch = {};
     });
 
@@ -52,44 +53,32 @@ describe('Wheel.MouseManager', function() {
 
   describe('drag events', function() {
     describe('when dragstart in triggered on an element', function() {
-      var $target;
+      var $target, spy, dragmove, dragend;
       beforeEach(function() {
         $target = $('<div/>');
-        spyOn($target, 'trigger');
-        spyOn($target, 'on');
+        $('body').append($target);
+        dragmove = jasmine.createSpy();
+        dragend = jasmine.createSpy();
+        $target.on('dragmove', dragmove);
+        $target.on('dragend', dragend);
         $target.trigger('dragstart');
       });
 
-      it('listens on body for mousemove', function() {
-        expect($target.on).toHaveBeenCalled();
-        expect($target.on.mostRecentCall.args[0]).toBe('mousemove');
+      it('listens on mousemove and triggers dragmove', function() {
+        $target.trigger('mousemove');
+        expect(dragmove).toHaveBeenCalled();
       });
 
-      describe('mousemove events', function() {
-        var moveEvent;
-        beforeEach(function() {
-          moveEvent = {pageX: 100, pageY: 200};
-          $target.on.mostRecentCall.args[1](moveEvent);
-        });
-
-        it('triggers dragmove on the original target', function() {
-          expect($target.trigger).toHaveBeenCalled();
-          expect($target.trigger.mostRecentCall.args[0]).toBe('dragmove');
-          expect($target.trigger.mostRecentCall.args[1].pageX).toBe(100);
-          expect($target.trigger.mostRecentCall.args[1].pageY).toBe(200);
-        });
+      it('stops listening for mousemove on mouseup', function() {
+        $target.trigger('mouseup');
+        $target.trigger('mousemove');
+        expect(dragmove).not.toHaveBeenCalled();
       });
 
-      xdescribe('mouseup', function() {
-        it('triggers dragend on the original target', function() {
-          
-        });
-
-        it('unbinds mousemove', function() {
-          
-        });
+      it('triggers dragend on mouseup', function() {
+        $target.trigger('mouseup');
+        expect(dragend).toHaveBeenCalled();
       });
     });
   });
 });
-

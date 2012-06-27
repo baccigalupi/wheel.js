@@ -1,14 +1,11 @@
 describe('Wheel.TouchManager', function() {
-  var manager = new Wheel.TouchManager(),
+  var manager,
       div, events, touches, moves,
       startEvent, moveEvent, endEvent,
       spy, args;
 
   beforeEach(function() {
-    // reset the manager
-    manager._clearTimeout();
-    manager.touch = {};
-    manager.multi = undefined;
+    manager = new Wheel.TouchManager();
 
     touches = [{
       pageX: 100,
@@ -46,6 +43,10 @@ describe('Wheel.TouchManager', function() {
       .bind('zoom',       function(e) {events.zoom(e)})
 
     $(document.body).append(div);
+  });
+
+  afterEach(function() {
+    manager.$.remove();
   });
 
   describe('taphold', function() {
@@ -316,6 +317,7 @@ describe('Wheel.TouchManager', function() {
     });
 
     it('will not trigger a tap', function() {
+      manager.RESPONSIVE_TAP = false;
       div.trigger(startEvent);
       div.trigger(endEvent);
       waits(50);
@@ -509,6 +511,37 @@ describe('Wheel.TouchManager', function() {
         it('does not trigger a swipe', function() {
           expect(events.swipe).not.toHaveBeenCalled();
         });
+      });
+    });
+  });
+
+  describe('drag events', function() {
+    describe('when dragstart in triggered on an element', function() {
+      var $target, spy, dragmove, dragend;
+      beforeEach(function() {
+        $target = $('<div/>');
+        $('body').append($target);
+        dragmove = jasmine.createSpy();
+        dragend = jasmine.createSpy();
+        $target.on('dragmove', dragmove);
+        $target.on('dragend', dragend);
+        $target.trigger($.Event('dragstart', {touches: touches}));
+      });
+
+      it('listens on touchmove and triggers dragmove', function() {
+        $target.trigger($.Event('touchmove', {touches: touches}));
+        expect(dragmove).toHaveBeenCalled();
+      });
+
+      it('stops listening for touchmove on touchend', function() {
+        $target.trigger($.Event('touchend', {touches: touches}));
+        $target.trigger($.Event('touchmove', {touches: touches}));
+        expect(dragmove).not.toHaveBeenCalled();
+      });
+
+      it('triggers dragend on touchend', function() {
+        $target.trigger($.Event('touchend', {touches: touches}));
+        expect(dragend).toHaveBeenCalled();
       });
     });
   });

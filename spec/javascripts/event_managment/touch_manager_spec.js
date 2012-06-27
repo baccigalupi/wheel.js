@@ -40,7 +40,7 @@ describe('Wheel.TouchManager', function() {
       .bind('swipeup',    function(e) {events.swipeup(e)})
       .bind('swipedown',  function(e) {events.swipedown(e)})
       .bind('pinch',      function(e) {events.pinch(e)})
-      .bind('zoom',       function(e) {events.zoom(e)})
+      .bind('zoom',       function(e) {events.zoom(e)});
 
     $(document.body).append(div);
   });
@@ -63,7 +63,7 @@ describe('Wheel.TouchManager', function() {
 
         runs(function() {
           expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
+          args = events.taphold.mostRecentCall.args[0];
           expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(100);
           expect(args.pageY).toBe(200);
@@ -73,7 +73,7 @@ describe('Wheel.TouchManager', function() {
       it('touch moves in x by a small amount', function() {
         div.trigger(startEvent);
 
-        touches[0].pageX = 105
+        touches[0].pageX = 105;
         moveEvent = $.Event('touchmove', {
           touches: touches
         });
@@ -83,7 +83,7 @@ describe('Wheel.TouchManager', function() {
 
         runs(function() {
           expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
+          args = events.taphold.mostRecentCall.args[0];
           expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(105);
           expect(args.pageY).toBe(200);
@@ -103,7 +103,7 @@ describe('Wheel.TouchManager', function() {
 
         runs(function() {
           expect(events.taphold).toHaveBeenCalled();
-          args = spyArgs(events.taphold);
+          args = events.taphold.mostRecentCall.args[0];
           expect(args.type).toBe('taphold');
           expect(args.pageX).toBe(100);
           expect(args.pageY).toBe(205);
@@ -216,7 +216,7 @@ describe('Wheel.TouchManager', function() {
     it('dectects swipes after a distance has been moved, without a touchend', function() {
       div.trigger(startEvent);
 
-      touches[0].pageX = touches[0].pageX + manager.SWIPE_TOLERANCE + 1
+      touches[0].pageX = touches[0].pageX + manager.SWIPE_TOLERANCE + 1;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -230,7 +230,7 @@ describe('Wheel.TouchManager', function() {
     it('triggers swiperight', function() {
       div.trigger(startEvent);
 
-      touches[0].pageX = 300
+      touches[0].pageX = 300;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -244,7 +244,7 @@ describe('Wheel.TouchManager', function() {
     it('triggers swipeleft', function() {
       div.trigger(startEvent);
 
-      touches[0].pageX = -200
+      touches[0].pageX = -200;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -258,7 +258,7 @@ describe('Wheel.TouchManager', function() {
     it('triggers swipeup', function() {
       div.trigger(startEvent);
 
-      touches[0].pageY = 0
+      touches[0].pageY = 0;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -272,7 +272,7 @@ describe('Wheel.TouchManager', function() {
     it('triggers swipedown', function() {
       div.trigger(startEvent);
 
-      touches[0].pageY = 500
+      touches[0].pageY = 500;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -285,7 +285,7 @@ describe('Wheel.TouchManager', function() {
 
     it('tap will not be triggered', function() {
       div.trigger(startEvent);
-      touches[0].pageY = 500
+      touches[0].pageY = 500;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
@@ -517,39 +517,55 @@ describe('Wheel.TouchManager', function() {
 
   describe('drag events', function() {
     describe('when dragstart in triggered on an element', function() {
-      var $target, spy, dragmove, dragend;
+      var dragmove, dragend;
       beforeEach(function() {
-        $target = $('<div/>');
-        $('body').append($target);
         dragmove = jasmine.createSpy();
         dragend = jasmine.createSpy();
-        $target.on('dragmove', dragmove);
-        $target.on('dragend', dragend);
-        $target.trigger($.Event('dragstart', {touches: touches}));
+        div.on('dragmove', dragmove);
+        div.on('dragend', dragend);
+        div.trigger($.Event('touchstart', {touches: touches}));
+        div.trigger($.Event('dragstart', {touches: touches}));
       });
 
       it('listens on touchmove and triggers dragmove', function() {
-        $target.trigger($.Event('touchmove', {touches: touches}));
+        div.trigger($.Event('touchmove', {touches: touches}));
         expect(dragmove).toHaveBeenCalled();
       });
 
       it('dragmove creates an event that passes on the page data', function() {
-        $target.trigger($.Event('touchmove', {pageX: 150, pageY: 275}));
+        div.trigger($.Event('touchmove', {pageX: 150, pageY: 275}));
         var event = dragmove.mostRecentCall.args[0];
         expect(event.pageX).toBe(150);
         expect(event.pageY).toBe(275);
       });
 
-
       it('stops listening for touchmove on touchend', function() {
-        $target.trigger($.Event('touchend', {touches: touches}));
-        $target.trigger($.Event('touchmove', {touches: touches}));
+        div.trigger($.Event('touchend', {touches: touches}));
+        div.trigger($.Event('touchmove', {touches: touches}));
         expect(dragmove).not.toHaveBeenCalled();
       });
 
       it('triggers dragend on touchend', function() {
-        $target.trigger($.Event('touchend', {touches: touches}));
+        div.trigger($.Event('touchend', {touches: touches}));
         expect(dragend).toHaveBeenCalled();
+      });
+    });
+
+    describe('other events are not triggered', function() {
+      beforeEach(function() {
+        div.on('touchstart', function(e) {
+          div.trigger($.Event('dragstart', {touches: e.touches}));
+        });
+        startEvent = $.Event('touchstart', {touches: touches});
+        div.trigger(startEvent);
+      });
+
+      it('swipe', function() {
+        touches[0].pageX = touches[0].pageX + manager.SWIPE_TOLERANCE + 1;
+        moveEvent = $.Event('touchmove', {touches: touches});
+        div.trigger(moveEvent);
+
+        expect(events.swipe).not.toHaveBeenCalled();
       });
     });
   });

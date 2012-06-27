@@ -29,4 +29,55 @@ describe('Wheel.Templates', function() {
       expect(Wheel.Templates.Baz).toBe("<ul><li>baz</li></ul>");
     });
   });
+
+  describe('requesting them from the server', function() {
+    var response;
+    beforeEach(function() {
+      response = {
+        'MyApp.Tasks': '<ul class="tasks"></ul>',
+        'MyApp.Task': '<li class="task">{{name}}</li>'
+      };
+      spyOn($, 'ajax').andReturn(response);
+
+      Wheel.Templates.retrieve();
+    });
+
+    describe('the request', function() {
+      var opts;
+      beforeEach(function() {
+        opts = $.ajax.mostRecentCall.args[0];
+      });
+
+      it('sends to a default url if no url is provided', function() {
+        expect($.ajax).toHaveBeenCalled();
+        expect(opts.url).toBe('/templates');
+      });
+
+      it('sends to the url provided as an arguments', function() {
+        Wheel.Templates.retrieve('/js_templates');
+        opts = $.ajax.mostRecentCall.args[0];
+        expect(opts.url).toBe('/js_templates');
+      });
+
+      it('the success method is "onSuccess"', function() {
+        spyOn(Wheel.Templates, 'onSuccess');
+        opts.success(response);
+        expect(Wheel.Templates.onSuccess).toHaveBeenCalledWith(response);
+      });
+    });
+
+    describe('processing the response', function() {
+      beforeEach(function() {
+        $.ajax.mostRecentCall.args[0].success(response);
+      });
+
+      it('correctly builds the namespace', function() {
+        expect(Wheel.Templates.MyApp).toBeTruthy();
+      });
+
+      it('sets the value to the right templates', function() {
+        expect(Wheel.Templates.MyApp.Tasks).toBe(response['MyApp.Tasks']);
+      });
+    });
+  });
 });

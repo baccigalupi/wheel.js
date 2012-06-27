@@ -6,13 +6,13 @@ describe('Wheel.TouchManager', function() {
 
   beforeEach(function() {
     // reset the manager
-    manager.clearTimeout();
+    manager._clearTimeout();
     manager.touch = {};
     manager.multi = undefined;
 
     touches = [{
       pageX: 100,
-      pageY: 200,
+      pageY: 200
     }];
 
     events = {
@@ -131,42 +131,77 @@ describe('Wheel.TouchManager', function() {
   });
 
   describe('tap', function() {
+    it('defaults to being responsive', function() {
+      expect(manager.RESPONSIVE_TAP).toBe(true);
+    });
+
     describe('detection', function() {
-      it("triggers after a delay with a rapid touchstart, touchend", function() {
-        startEvent = $.Event('touchstart', {touches: touches});
-        endEvent = $.Event('touchend', {touches: touches});
+      describe('unresponsively', function() {
+        beforeEach(function() {
+          manager.RESPONSIVE_TAP = false;
+        });
 
-        div.trigger(startEvent);
-        div.trigger(endEvent);
+        it("triggers after a delay with a rapid touchstart, touchend", function() {
+          startEvent = $.Event('touchstart', {touches: touches});
+          endEvent = $.Event('touchend', {touches: touches});
 
-        waits(manager.DOUBLE_DELAY);
+          div.trigger(startEvent);
+          div.trigger(endEvent);
 
-        runs(function() {
-          expect(events.tap).toHaveBeenCalled();
-          args = spyArgs(events.tap);
-          expect(args.type).toBe('tap');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(200);
+          waits(manager.DOUBLE_DELAY);
+
+          runs(function() {
+            expect(events.tap).toHaveBeenCalled();
+            args = spyArgs(events.tap);
+            expect(args.type).toBe('tap');
+            expect(args.pageX).toBe(100);
+            expect(args.pageY).toBe(200);
+          });
+        });
+
+        it("triggers after a delay less than taphold", function() {
+          startEvent = $.Event('touchstart', {touches: touches});
+          endEvent = $.Event('touchend', {touches: touches});
+
+          div.trigger(startEvent);
+          waits(manager.HOLD_DELAY - 50);
+          runs(function() {
+            div.trigger(endEvent);
+          });
+
+          waits(manager.DOUBLE_DELAY);
+          runs(function() {
+            expect(events.tap).toHaveBeenCalled();
+            args = spyArgs(events.tap);
+            expect(args.type).toBe('tap');
+            expect(args.pageX).toBe(100);
+            expect(args.pageY).toBe(200);
+          });
         });
       });
 
-      it("triggers after a delay less than taphold", function() {
-        startEvent = $.Event('touchstart', {touches: touches});
-        endEvent = $.Event('touchend', {touches: touches});
-
-        div.trigger(startEvent);
-        waits(manager.HOLD_DELAY - 50);
-        runs(function() {
-          div.trigger(endEvent);
+      describe('responsive', function() {
+        beforeEach(function() {
+          manager.RESPONSIVE_TAP = true;
         });
 
-        waits(manager.DOUBLE_DELAY);
-        runs(function() {
+        it('triggers twice consecutively', function() {
+          startEvent = $.Event('touchstart', {touches: touches});
+          endEvent =   $.Event('touchend', {touches: touches});
+
+          div.trigger(startEvent);
+          div.trigger(endEvent);
+
           expect(events.tap).toHaveBeenCalled();
-          args = spyArgs(events.tap);
-          expect(args.type).toBe('tap');
-          expect(args.pageX).toBe(100);
-          expect(args.pageY).toBe(200);
+
+          events.tap.reset();
+          waits(manager.DOUBLE_DELAY);
+          runs(function() {
+            div.trigger(startEvent);
+            div.trigger(endEvent);
+
+            expect(events.tap).toHaveBeenCalled();
+          });
         });
       });
     });
@@ -297,6 +332,7 @@ describe('Wheel.TouchManager', function() {
   describe('multi-touch gestures', function() {
     var multiTouches, zoom, swipe;
     beforeEach(function() {
+      manager.RESPONSIVE_TAP = true;
       multiTouches = [{
         pageX: 100,
         pageY: 200
@@ -478,48 +514,6 @@ describe('Wheel.TouchManager', function() {
   });
 
   describe('customizations', function() {
-    describe('getting a responsive tap', function() {
-      beforeEach(function() {
-        startEvent = $.Event('touchstart', {touches: touches});
-        endEvent = $.Event('touchend', {touches: touches});
-
-        manager.RESPONSIVE_TAP = true;
-      });
-
-      afterEach(function() {
-        manager.RESPONSIVE_TAP = false; // returning it to its non-custom state
-      });
-
-      it('triggers the tap as soon as the touch ends', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        expect(events.tap).toHaveBeenCalled();
-      });
-
-      it('may also trigger a double tap', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        waits(50);
-        runs(function() {
-          div.trigger(startEvent);
-          div.trigger(endEvent);
-          expect(events.doubletap).toHaveBeenCalled();
-        });
-      });
-
-      it('when triggering a double tap, the first tap will be triggered too', function() {
-        div.trigger(startEvent);
-        div.trigger(endEvent);
-        waits(50);
-        runs(function() {
-          div.trigger(startEvent);
-          div.trigger(endEvent);
-          expect(events.tap).toHaveBeenCalled();
-          expect(events.doubletap).toHaveBeenCalled();
-        });
-      });
-    });
-
     describe('scroll prevention on scrolling', function() {
       it('provides a method for overriding to prevent scrolling on swipe', function() {
         manager.preventScroll = function() { return true; };
@@ -527,7 +521,7 @@ describe('Wheel.TouchManager', function() {
         startEvent = $.Event('touchstart', {touches: touches});
         div.trigger(startEvent);
 
-        touches[0].pageY = 500
+        touches[0].pageY = 500;
         moveEvent = $.Event('touchmove', { touches: touches });
         spyOn(moveEvent, 'preventDefault');
         div.trigger(moveEvent);

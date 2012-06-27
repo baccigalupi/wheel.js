@@ -533,6 +533,14 @@ describe('Wheel.TouchManager', function() {
         expect(dragmove).toHaveBeenCalled();
       });
 
+      it('dragmove creates an event that passes on the page data', function() {
+        $target.trigger($.Event('touchmove', {pageX: 150, pageY: 275}));
+        var event = dragmove.mostRecentCall.args[0];
+        expect(event.pageX).toBe(150);
+        expect(event.pageY).toBe(275);
+      });
+
+
       it('stops listening for touchmove on touchend', function() {
         $target.trigger($.Event('touchend', {touches: touches}));
         $target.trigger($.Event('touchmove', {touches: touches}));

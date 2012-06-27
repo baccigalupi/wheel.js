@@ -64,8 +64,8 @@ describe('Wheel.MouseManager', function() {
         $target.trigger('dragstart');
       });
 
-      it('listens on mousemove and triggers dragmove', function() {
-        $target.trigger('mousemove');
+      it('listens on mousemove and triggers dragmove with correct page data', function() {
+        $target.trigger($.Event('mousemove', {pageX: 150, pageY: 275}));
         expect(dragmove).toHaveBeenCalled();
       });
 

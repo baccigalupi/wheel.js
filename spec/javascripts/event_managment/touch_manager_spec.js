@@ -539,12 +539,6 @@ describe('Wheel.TouchManager', function() {
         expect(event.pageY).toBe(275);
       });
 
-      it('stops listening for touchmove on touchend', function() {
-        div.trigger($.Event('touchend', {touches: touches}));
-        div.trigger($.Event('touchmove', {touches: touches}));
-        expect(dragmove).not.toHaveBeenCalled();
-      });
-
       it('triggers dragend on touchend', function() {
         div.trigger($.Event('touchend', {touches: touches}));
         expect(dragend).toHaveBeenCalled();

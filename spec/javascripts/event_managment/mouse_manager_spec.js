@@ -1,17 +1,14 @@
 describe('Wheel.MouseManager', function() {
-  var manager;
+  var manager, div;
   beforeEach(function() {
+    div = $('<div class="touch_tester"/>');
+    $(document.body).append(div);
     manager = new Wheel.MouseManager();
   });
 
   afterEach(function() {
     manager.$.remove();
-  });
-
-  describe('ancestry', function() {
-    it('is a EventManager', function() {
-      expect(manager instanceof Wheel.EventManager).toBe(true);
-    });
+    div.remove();
   });
 
   describe('listening', function() {
@@ -53,30 +50,23 @@ describe('Wheel.MouseManager', function() {
 
   describe('drag events', function() {
     describe('when dragstart in triggered on an element', function() {
-      var $target, spy, dragmove, dragend;
+      var dragmove, dragend;
       beforeEach(function() {
-        $target = $('<div/>');
-        $('body').append($target);
-        dragmove = jasmine.createSpy();
-        dragend = jasmine.createSpy();
-        $target.on('dragmove', dragmove);
-        $target.on('dragend', dragend);
-        $target.trigger('dragstart');
+        dragmove = jasmine.createSpy('dragmove');
+        dragend = jasmine.createSpy('dragend');
+        div.on('dragmove', dragmove);
+        div.on('dragend', dragend);
+        div.trigger($.Event('mousedown', {pageX: 100, pageY: 205}));
+        div.trigger($.Event('dragstart', {pageX: 100, pageY: 205}));
       });
 
       it('listens on mousemove and triggers dragmove with correct page data', function() {
-        $target.trigger($.Event('mousemove', {pageX: 150, pageY: 275}));
+        div.trigger($.Event('mousemove', {pageX: 150, pageY: 275}));
         expect(dragmove).toHaveBeenCalled();
       });
 
-      it('stops listening for mousemove on mouseup', function() {
-        $target.trigger('mouseup');
-        $target.trigger('mousemove');
-        expect(dragmove).not.toHaveBeenCalled();
-      });
-
       it('triggers dragend on mouseup', function() {
-        $target.trigger('mouseup');
+        div.trigger('mouseup');
         expect(dragend).toHaveBeenCalled();
       });
     });

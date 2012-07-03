@@ -56,6 +56,17 @@ describe('Wheel.TouchManager', function() {
       });
     });
 
+    it('will not detect a touchhold if the start event includes the "ctrl" key', function() {
+      startEvent.ctrlKey = true;
+      div.trigger(startEvent);
+
+      waits(manager.HOLD_DELAY + 10);
+
+      runs(function() {
+        expect(events.taphold).not.toHaveBeenCalled();
+      });
+    });
+
     describe('detection happens when', function() {
       it('the touch is not moved after 750 ms', function() {
         div.trigger(startEvent);

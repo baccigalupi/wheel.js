@@ -56,14 +56,16 @@ describe('Wheel.TouchManager', function() {
       });
     });
 
-    it('will not detect a touchhold if the start event includes the "ctrl" key', function() {
-      startEvent.ctrlKey = true;
-      div.trigger(startEvent);
+    describe('"ctrl" key with long taps', function() {
+      it('will not trigger a touchhold if the start event includes the "ctrl" key', function() {
+        startEvent.ctrlKey = true;
+        div.trigger(startEvent);
 
-      waits(manager.HOLD_DELAY + 10);
+        waits(manager.HOLD_DELAY + 10);
 
-      runs(function() {
-        expect(events.taphold).not.toHaveBeenCalled();
+        runs(function() {
+          expect(events.taphold).not.toHaveBeenCalled();
+        });
       });
     });
 

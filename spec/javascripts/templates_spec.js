@@ -59,10 +59,10 @@ describe('Wheel.Templates', function() {
         expect(opts.url).toBe('/js_templates');
       });
 
-      it('the success method is "onSuccess"', function() {
-        spyOn(Wheel.Templates, 'onSuccess');
+      it('the success method is "onRetrieval"', function() {
+        spyOn(Wheel.Templates, 'onRetrieval');
         opts.success(response);
-        expect(Wheel.Templates.onSuccess).toHaveBeenCalledWith(response);
+        expect(Wheel.Templates.onRetrieval).toHaveBeenCalledWith(response);
       });
     });
 

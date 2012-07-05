@@ -1,32 +1,78 @@
 describe('Wheel.Templates', function() {
-  describe('gathering from dom script tags', function() {
-    var templates;
+  var templates;
+  beforeEach(function() {
+    Wheel.Templates.singleton = null;
+    templates = Wheel.Templates.build();
+  });
+
+  it('is a singleton', function() {
+    expect(templates instanceof Wheel.Class.Singleton).toBeTruthy();
+  });
+
+  describe('initialization', function() {
     beforeEach(function() {
-      templates = [
+      hash = {
+        'Something.Tasks': '<ul class="tasks"></ul>',
+        'Something.Task': '<li class="task">{{name}}</li>'
+      };
+      Wheel.Templates.singleton = null;
+      templates = Wheel.Templates.build(hash);
+    });
+
+    it('will append what is passed as an argument', function() {
+      expect(templates.Something.Tasks).toBe(hash['Something.Tasks']);
+      expect(templates.Something.Task).toBe(hash['Something.Task']);
+    });
+  });
+
+  describe('appending a hash of values', function() {
+    var hash;
+    beforeEach(function() {
+      hash = {
+        'Whatever.Tasks': '<ul class="tasks"></ul>',
+        'Whatever.Task': '<li class="task">{{name}}</li>'
+      };
+      templates.append(hash);
+    });
+
+    it('adds the namespace', function() {
+      expect(typeof templates.Whatever).toBe('object');
+    });
+
+    it('adds the templates', function() {
+      expect(templates.Whatever.Tasks).toBe(hash['Whatever.Tasks']);
+      expect(templates.Whatever.Task).toBe(hash['Whatever.Task']);
+    });
+  });
+
+  describe('gathering from dom script tags', function() {
+    var temps;
+    beforeEach(function() {
+      temps = [
         $("<script type='text/html' class='template' name='Foo.Bar'><div>foo &amp; bar</div></script>"),
         $("<script type='text/html' class='template' name='Baz'><ul><li>baz</li></ul></script>")
       ];
 
-      $.each(templates, function(i, template) {
+      $.each(temps, function(i, template) {
         $('body').append(template);
       });
 
-      Wheel.Templates.gather();
+      templates.gather();
     });
 
     afterEach(function() {
-      $.each(templates, function(i, e) {
+      $.each(temps, function(i, e) {
         $(e).remove();
       });
     });
 
     it('stores templates via key according to the name attribute', function() {
-      expect(Wheel.Templates.Baz).not.toBeFalsy();
-      expect(Wheel.Templates.Foo.Bar).not.toBeFalsy();
+      expect(templates.Baz).not.toBeFalsy();
+      expect(templates.Foo.Bar).not.toBeFalsy();
     });
 
     it('stores the template as html', function() {
-      expect(Wheel.Templates.Baz).toBe("<ul><li>baz</li></ul>");
+      expect(templates.Baz).toBe("<ul><li>baz</li></ul>");
     });
   });
 
@@ -39,7 +85,7 @@ describe('Wheel.Templates', function() {
       };
       spyOn($, 'ajax').andReturn(response);
 
-      Wheel.Templates.retrieve();
+      templates.retrieve();
     });
 
     describe('the request', function() {
@@ -54,15 +100,15 @@ describe('Wheel.Templates', function() {
       });
 
       it('sends to the url provided as an arguments', function() {
-        Wheel.Templates.retrieve('/js_templates');
+        templates.retrieve('/js_templates');
         opts = $.ajax.mostRecentCall.args[0];
         expect(opts.url).toBe('/js_templates');
       });
 
-      it('the success method is "onRetrieval"', function() {
-        spyOn(Wheel.Templates, 'onRetrieval');
+      it('the success method is "append"', function() {
+        spyOn(templates, 'append');
         opts.success(response);
-        expect(Wheel.Templates.onRetrieval).toHaveBeenCalledWith(response);
+        expect(templates.append).toHaveBeenCalledWith(response);
       });
     });
 
@@ -72,11 +118,11 @@ describe('Wheel.Templates', function() {
       });
 
       it('correctly builds the namespace', function() {
-        expect(Wheel.Templates.MyApp).toBeTruthy();
+        expect(templates.MyApp).toBeTruthy();
       });
 
       it('sets the value to the right templates', function() {
-        expect(Wheel.Templates.MyApp.Tasks).toBe(response['MyApp.Tasks']);
+        expect(templates.MyApp.Tasks).toBe(response['MyApp.Tasks']);
       });
     });
   });

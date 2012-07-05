@@ -150,6 +150,44 @@ describe('Wheel.TouchManager', function() {
     });
 
     describe('detection', function() {
+      // TODO: the tests are leaky, and when repsonsive is after unresponsive
+      // the tolerance test fails
+      describe('responsive', function() {
+        beforeEach(function() {
+          manager.RESPONSIVE_TAP = true;
+        });
+
+        it('triggers twice consecutively', function() {
+          startEvent = $.Event('touchstart', {touches: touches});
+          endEvent =   $.Event('touchend',   {changedTouches: touches});
+
+          div.trigger(startEvent);
+          div.trigger(endEvent);
+
+          expect(events.tap).toHaveBeenCalled();
+
+          events.tap.reset();
+          waits(manager.DOUBLE_DELAY);
+          runs(function() {
+            div.trigger(startEvent);
+            div.trigger(endEvent);
+
+            expect(events.tap).toHaveBeenCalled();
+          });
+        });
+
+        it('does not trigger if the distance moved is outside the tap tolerance', function() {
+          startEvent = $.Event('touchstart', {touches: touches});
+          div.trigger(startEvent);
+          touches[0].pageX = touches[0].pageX + manager.TAP_TOLERANCE + 1;
+          endEvent = $.Event('touchend', {changedTouches: touches});
+          events.tap.reset();
+          div.trigger(endEvent);
+
+          expect(events.tap).not.toHaveBeenCalled();
+        });
+      });
+
       describe('unresponsively', function() {
         beforeEach(function() {
           manager.RESPONSIVE_TAP = false;
@@ -157,7 +195,7 @@ describe('Wheel.TouchManager', function() {
 
         it("triggers after a delay with a rapid touchstart, touchend", function() {
           startEvent = $.Event('touchstart', {touches: touches});
-          endEvent = $.Event('touchend', {touches: touches});
+          endEvent = $.Event('touchend', {changedTouches: touches});
 
           div.trigger(startEvent);
           div.trigger(endEvent);
@@ -175,7 +213,7 @@ describe('Wheel.TouchManager', function() {
 
         it("triggers after a delay less than taphold", function() {
           startEvent = $.Event('touchstart', {touches: touches});
-          endEvent = $.Event('touchend', {touches: touches});
+          endEvent = $.Event('touchend', {changedTouches: touches});
 
           div.trigger(startEvent);
           waits(manager.HOLD_DELAY - 50);
@@ -193,31 +231,6 @@ describe('Wheel.TouchManager', function() {
           });
         });
       });
-
-      describe('responsive', function() {
-        beforeEach(function() {
-          manager.RESPONSIVE_TAP = true;
-        });
-
-        it('triggers twice consecutively', function() {
-          startEvent = $.Event('touchstart', {touches: touches});
-          endEvent =   $.Event('touchend', {touches: touches});
-
-          div.trigger(startEvent);
-          div.trigger(endEvent);
-
-          expect(events.tap).toHaveBeenCalled();
-
-          events.tap.reset();
-          waits(manager.DOUBLE_DELAY);
-          runs(function() {
-            div.trigger(startEvent);
-            div.trigger(endEvent);
-
-            expect(events.tap).toHaveBeenCalled();
-          });
-        });
-      });
     });
   });
 
@@ -226,7 +239,7 @@ describe('Wheel.TouchManager', function() {
       startEvent = $.Event('touchstart', {touches: touches});
     });
 
-    it('dectects swipes after a distance has been moved, without a touchend', function() {
+    it('detects swipes after a distance has been moved, without a touchend', function() {
       div.trigger(startEvent);
 
       touches[0].pageX = touches[0].pageX + manager.SWIPE_TOLERANCE + 1;
@@ -236,8 +249,8 @@ describe('Wheel.TouchManager', function() {
       expect(events.swipe).toHaveBeenCalled();
       args = spyArgs(events.swipe);
       expect(args.type).toBe('swipe');
-      expect(args.pageX).toBe(201);
-      expect(args.pageY).toBe(200);
+      expect(args.pageX).toBe(touches[0].pageX);
+      expect(args.pageY).toBe(touches[0].pageY);
     });
 
     it('triggers swiperight', function() {
@@ -256,15 +269,16 @@ describe('Wheel.TouchManager', function() {
 
     it('triggers swipeleft', function() {
       div.trigger(startEvent);
+      var pageX = touches[0].pageX - manager.SWIPE_TOLERANCE - 1;
 
-      touches[0].pageX = -200;
+      touches[0].pageX = pageX;
       moveEvent = $.Event('touchmove', {touches: touches});
       div.trigger(moveEvent);
 
       expect(events.swipeleft).toHaveBeenCalled();
       args = spyArgs(events.swipeleft);
       expect(args.type).toBe('swipeleft');
-      expect(args.pageX).toBe(-200);
+      expect(args.pageX).toBe(pageX);
       expect(args.pageY).toBe(200);
     });
 
@@ -309,7 +323,7 @@ describe('Wheel.TouchManager', function() {
   describe('doubletap', function() {
     beforeEach(function() {
       startEvent = $.Event('touchstart', {touches: touches});
-      endEvent = $.Event('touchend', {touches: touches});
+      endEvent = $.Event('touchend', {changedTouches: touches});
     });
 
     it('is correctly detected with an appropriate delay', function() {
@@ -421,7 +435,7 @@ describe('Wheel.TouchManager', function() {
           };
           moveEvent = $.Event('touchmove', {touches: multiTouches});
           div.trigger(moveEvent);
-          endEvent = $.Event('touchend', {touches: multiTouches});
+          endEvent = $.Event('touchend', {changedTouches: multiTouches});
         });
 
         it('does not trigger a pinch', function() {
@@ -440,7 +454,7 @@ describe('Wheel.TouchManager', function() {
           div.trigger(startEvent);
           moveEvent = $.Event('touchmove', {touches: pinch.move});
           div.trigger(moveEvent);
-          endEvent = $.Event('touchend', {touches: pinch.move});
+          endEvent = $.Event('touchend', {changedTouches: pinch.move});
         });
 
         describe('helper methods', function() {
@@ -514,7 +528,7 @@ describe('Wheel.TouchManager', function() {
           div.trigger(startEvent);
           moveEvent = $.Event('touchmove', {touches: zoom.move});
           div.trigger(moveEvent);
-          endEvent = $.Event('touchend', {touches: zoom.move});
+          endEvent = $.Event('touchend', {changedTouches: zoom.move});
         });
 
         it('triggers a zoom', function() {
@@ -546,14 +560,14 @@ describe('Wheel.TouchManager', function() {
       });
 
       it('dragmove creates an event that passes on the page data', function() {
-        div.trigger($.Event('touchmove', {pageX: 150, pageY: 275}));
+        div.trigger($.Event('touchmove', {touches: [{pageX: 150, pageY: 275}]}));
         var event = dragmove.mostRecentCall.args[0];
         expect(event.pageX).toBe(150);
         expect(event.pageY).toBe(275);
       });
 
       it('triggers dragend on touchend', function() {
-        div.trigger($.Event('touchend', {touches: touches}));
+        div.trigger($.Event('touchend', {changedTouches: touches}));
         expect(dragend).toHaveBeenCalled();
       });
     });

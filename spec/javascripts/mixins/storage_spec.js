@@ -2,9 +2,9 @@ describe('Wheel.Mixins.Storage', function() {
   describe('as a mixin, it namespaces the key for class and instance', function() {
     var Classy, classy;
     beforeEach(function() {
-      Classy = Wheel.Class()
-        .mashin({id: 'Classy'})
-        .mixin(Wheel.Mixins.Storage);
+      Classy = Wheel.Class();
+      Classy.id = 'Classy';
+      Classy.mixin(Wheel.Mixins.Storage);
 
       classy = new Classy();
       classy.id = 3;

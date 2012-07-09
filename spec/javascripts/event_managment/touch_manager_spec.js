@@ -191,6 +191,7 @@ describe('Wheel.TouchManager', function() {
       describe('unresponsively', function() {
         beforeEach(function() {
           manager.RESPONSIVE_TAP = false;
+          events.tap.reset();
         });
 
         it("triggers after a delay with a rapid touchstart, touchend", function() {
@@ -204,7 +205,7 @@ describe('Wheel.TouchManager', function() {
 
           runs(function() {
             expect(events.tap).toHaveBeenCalled();
-            args = spyArgs(events.tap);
+            args = spyArgs(events.tap)[0];
             expect(args.type).toBe('tap');
             expect(args.pageX).toBe(100);
             expect(args.pageY).toBe(200);
@@ -224,7 +225,7 @@ describe('Wheel.TouchManager', function() {
           waits(manager.DOUBLE_DELAY);
           runs(function() {
             expect(events.tap).toHaveBeenCalled();
-            args = spyArgs(events.tap);
+            args = spyArgs(events.tap)[0];
             expect(args.type).toBe('tap');
             expect(args.pageX).toBe(100);
             expect(args.pageY).toBe(200);
@@ -247,7 +248,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(moveEvent);
 
       expect(events.swipe).toHaveBeenCalled();
-      args = spyArgs(events.swipe);
+      args = spyArgs(events.swipe)[0];
       expect(args.type).toBe('swipe');
       expect(args.pageX).toBe(touches[0].pageX);
       expect(args.pageY).toBe(touches[0].pageY);
@@ -261,7 +262,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(moveEvent);
 
       expect(events.swiperight).toHaveBeenCalled();
-      args = spyArgs(events.swiperight);
+      args = spyArgs(events.swiperight)[0];
       expect(args.type).toBe('swiperight');
       expect(args.pageX).toBe(300);
       expect(args.pageY).toBe(200);
@@ -276,7 +277,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(moveEvent);
 
       expect(events.swipeleft).toHaveBeenCalled();
-      args = spyArgs(events.swipeleft);
+      args = spyArgs(events.swipeleft)[0];
       expect(args.type).toBe('swipeleft');
       expect(args.pageX).toBe(pageX);
       expect(args.pageY).toBe(200);
@@ -290,7 +291,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(moveEvent);
 
       expect(events.swipeup).toHaveBeenCalled();
-      args = spyArgs(events.swipeup);
+      args = spyArgs(events.swipeup)[0];
       expect(args.type).toBe('swipeup');
       expect(args.pageX).toBe(100);
       expect(args.pageY).toBe(0);
@@ -304,7 +305,7 @@ describe('Wheel.TouchManager', function() {
       div.trigger(moveEvent);
 
       expect(events.swipedown).toHaveBeenCalled();
-      args = spyArgs(events.swipedown);
+      args = spyArgs(events.swipedown)[0];
       expect(args.type).toBe('swipedown');
       expect(args.pageX).toBe(100);
       expect(args.pageY).toBe(500);
@@ -336,7 +337,7 @@ describe('Wheel.TouchManager', function() {
         div.trigger(endEvent);
 
         expect(events.doubletap).toHaveBeenCalled();
-        args = spyArgs(events.doubletap);
+        args = spyArgs(events.doubletap)[0];
         expect(args.type).toBe('doubletap');
         expect(args.pageX).toBe(100);
         expect(args.pageY).toBe(200);

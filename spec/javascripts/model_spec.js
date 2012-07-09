@@ -193,7 +193,7 @@ describe('Wheel.Model', function() {
         it('can work with more complicated naming conventions', function() {
           window.Foo = {};
           Wheel.Model.subclass('Foo.Bar');
-          expect(Foo.Bar.basePath()).toBe('/bars')
+          expect(Foo.Bar.basePath()).toBe('/bars');
         });
 
         it('raises an error if there is no id and no baseUrl', function() {
@@ -274,7 +274,7 @@ describe('Wheel.Model', function() {
           });
 
           it('calls sync when the event gets triggered', function() {
-            var object = {foo: 'bar'}
+            var object = {foo: 'bar'};
             Task.trigger('update:42', object);
             expect(task.sync).toHaveBeenCalledWith(object);
           });
@@ -327,7 +327,7 @@ describe('Wheel.Model', function() {
     describe('class level create', function() {
       var opts, fakeTask;
       beforeEach(function() {
-        opts = {name: 'get the milk'}
+        opts = {name: 'get the milk'};
         fakeTask = {save: jasmine.createSpy()};
         spyOn(Task, 'build').andReturn(fakeTask);
       });
@@ -404,7 +404,7 @@ describe('Wheel.Model', function() {
     describe('delete', function() {
       var args;
       beforeEach(function() {
-        spyOn(Task, 'trigger')
+        spyOn(Task, 'trigger');
         task.id = 42;
         task.delete();
         args = queue.add.mostRecentCall.args[0];

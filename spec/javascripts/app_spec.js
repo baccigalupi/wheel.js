@@ -4,7 +4,7 @@ describe('Wheel.App', function() {
     spyOn(Wheel.Utils.ConnectionChecker.prototype, 'on');
     window.app = undefined;
     Wheel.App.singleton = undefined;
-    app = new Wheel.App();
+    app = Wheel.App.build();
   });
 
   describe('initialize()', function() {
@@ -15,29 +15,39 @@ describe('Wheel.App', function() {
 
       it('will not call init if there is already an app on window', function() {
         spyOn(Wheel.App.prototype, 'init');
-        new Wheel.App();
+        Wheel.App.build();
         expect(Wheel.App.prototype.init).not.toHaveBeenCalled();
       });
     });
 
     it('creates a ConnectionChecker', function() {
-      expect(app.connectionChecker instanceof Wheel.Utils.ConnectionChecker).toBe(true);
+      expect(app.connectionChecker).toBeA(Wheel.Utils.ConnectionChecker);
     });
 
     it('creates a RequestQueue', function() {
-      expect(app.requestQueue instanceof Wheel.Utils.RequestQueue).toBe(true);
+      expect(app.requestQueue).toBeA(Wheel.Utils.RequestQueue);
     });
 
     describe('creates an eventManager', function() {
+      beforeEach(function() {
+        Wheel.App.singleton = null;
+      });
+
       it('that is touch when Modernizr says so', function() {
-        spyOn(Modernizr, 'touch').andReturn(true);
-        expect(app.eventManager instanceof Wheel.EventManager).toBe(true);
+        Modernizr.touch = true;
+        app = Wheel.App.build();
+        expect(app.eventManager).toBeA(Wheel.TouchManager);
       });
 
       it('that is mouse otherwise', function() {
-        spyOn(Modernizr, 'touch').andReturn(false);
-        expect(app.eventManager instanceof Wheel.MouseManager).toBe(true);
+        Modernizr.touch = false;
+        app = Wheel.App.build();
+        expect(app.eventManager).toBeA(Wheel.MouseManager);
       });
+    });
+
+    it('creates a Templates object', function() {
+      expect(app.templates).toBeA(Wheel.Templates);
     });
   });
 

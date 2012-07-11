@@ -185,7 +185,7 @@ describe("Wheel.View", function () {
     beforeEach(function() {
       Builder = Wheel.View.subclass({}, {
         template: function() {
-          return "<div class='builder'></div>"
+          return "<div class='builder'></div>";
         }
       });
 
@@ -218,7 +218,7 @@ describe("Wheel.View", function () {
             "    <li>{{first_name}} {{last_name}}</li>" +
             "  {{/collection}}" +
             "  </ul></div>" +
-            "</div>"
+            "</div>";
           }
         });
       });
@@ -234,8 +234,8 @@ describe("Wheel.View", function () {
         });
 
         it("renders passed in attributes", function () {
-          expect(rendered).toMatch(/<li>Herman Melville<\/li>/)
-          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/)
+          expect(rendered).toMatch(/<li>Herman Melville<\/li>/);
+          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/);
         });
 
         it("renders methods correctly", function () {
@@ -258,8 +258,8 @@ describe("Wheel.View", function () {
 
         it("renders correctly", function () {
           expect(rendered).toMatch(/<h1>Some Authors<\/h1>/);
-          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/)
-          expect(rendered).toMatch(/<li>Mark Twain<\/li>/)
+          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/);
+          expect(rendered).toMatch(/<li>Mark Twain<\/li>/);
         });
       });
 
@@ -277,7 +277,7 @@ describe("Wheel.View", function () {
                   {first_name: 'Edgar Allen', last_name: 'Poe'},
                   {first_name: 'Mark', last_name: 'Twain'}
                 ]
-              }
+              };
             }
           });
 
@@ -287,10 +287,10 @@ describe("Wheel.View", function () {
 
         it("renders correctly", function () {
           expect(rendered).toMatch(/<h1>America! It's Authors!<\/h1>/);
-          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/)
-          expect(rendered).toMatch(/<li>Mark Twain<\/li>/)
-          expect(rendered).toMatch(/<li>Herman Melville<\/li>/)
-          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/)
+          expect(rendered).toMatch(/<li>Edgar Allen Poe<\/li>/);
+          expect(rendered).toMatch(/<li>Mark Twain<\/li>/);
+          expect(rendered).toMatch(/<li>Herman Melville<\/li>/);
+          expect(rendered).toMatch(/<li>Nathaniel Hawthorne<\/li>/);
         });
       });
 
@@ -327,6 +327,24 @@ describe("Wheel.View", function () {
           expect(parent.$.find('ul.authors').length).toBe(2);
         });
       });
+
+      describe('rendering non-default templates', function() {
+        var View;
+        it('fails', function() {
+          var templates = {
+            'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
+            'default': '<div class="thing">Thingy</div>'
+          };
+          View = Wheel.View.subclass('View');
+          View.templates = function() {
+            return templates;
+          };
+
+          var view = View.build();
+
+          expect(view.render('create').attr('class')).toBe('new_thing');
+        });
+      });
     });
 
     describe('assemble class method', function() {
@@ -335,7 +353,7 @@ describe("Wheel.View", function () {
       beforeEach(function(){
         ListItem = Wheel.View.subclass({},{
           template: function() {
-            return "<li class='list_item'>{{first_name}} {{last_name}}</li>"
+            return "<li class='list_item'>{{first_name}} {{last_name}}</li>";
           }
         });
       });
@@ -377,6 +395,68 @@ describe("Wheel.View", function () {
           expect(list[1].$.hasClass('list_item')).toBe(true);
           expect(list[1].$.text()).toBe("Nathaniel Hawthorne");
         });
+      });
+    });
+  });
+
+  describe('templates', function() {
+    var View, repository;
+
+    it('repository defaults to the apps templates object', function() {
+      repository = {foo: 'bar'};
+      window.app = {
+        templates: repository
+      };
+
+      View = Wheel.View.subclass();
+      expect(View.templateRepository()).toBe(repository);
+    });
+
+    it('asks the Templates respitory for templates related to its class', function() {
+      repository = {
+        'View': {
+          'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
+          'default': '<div class="thing">Thingy</div>'
+        }
+      };
+      View = Wheel.View.subclass('View');
+      View.templateRepository = function() { return repository; };
+      expect(View.templates()).toEqual(repository['View']);
+    });
+
+    describe('#templates', function() {
+      var fullRepo = {
+        'View': {
+          'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
+          'default': '<div class="thing">Thingy</div>'
+        }
+      };
+
+      beforeEach(function() {
+        View = Wheel.View.subclass('View');
+        View.templateRepository = function() { return repository; };
+      });
+
+      it('will return the #templates if it is a string', function() {
+        repository = { View: "<div class='thingy'>Thingy</div>" };
+
+        expect(View.template()).toBe(repository['View']);
+      });
+
+      it('will return the default view if templates is a hash', function() {
+        repository = fullRepo;
+        expect(View.template()).toBe(repository['View']['default']);
+      });
+
+      it('will return an alternate view when passed a key argument', function() {
+        repository = fullRepo;
+        expect(View.template('create')).toBe(repository['View']['create']);
+      });
+
+      it('view class can customize its default template', function() {
+        repository = fullRepo;
+        View.defaultTemplate = 'create';
+        expect(View.template()).toBe(repository['View']['create']);
       });
     });
   });

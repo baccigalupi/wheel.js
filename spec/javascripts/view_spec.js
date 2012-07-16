@@ -342,7 +342,7 @@ describe("Wheel.View", function () {
 
           var view = View.build();
 
-          expect(view.render('create').attr('class')).toBe('new_thing');
+          expect(view.renderTemplate('create').attr('class')).toBe('new_thing');
         });
       });
     });

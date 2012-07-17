@@ -364,7 +364,7 @@ describe("Wheel.View", function () {
         Wrap.gather(dom);
       } catch (e) {
         raises = true;
-        expect(e).toBe("Define a cssSelector on the class to use the 'gather' class method");
+        expect(e).toBe("Define a selector on the class to use the 'gather' class method");
       }
       expect(raises).toBe(true);
     });
@@ -372,7 +372,7 @@ describe("Wheel.View", function () {
     describe('with a selector defined', function () {
       var gathered;
       beforeEach(function() {
-        Wrap.cssSelector = 'li.item';
+        Wrap.selector = 'li.item';
       });
 
       describe('given a parent element', function () {
@@ -423,7 +423,7 @@ describe("Wheel.View", function () {
         dom = $(dom);
         dom.css('display', 'none');
         $(document.body).append(dom);
-        Wrap.cssSelector = 'li.item';
+        Wrap.selector = 'li.item';
         gathered = Wrap.gather({foo: 'bar'});
         wrap = gathered[0];
       });

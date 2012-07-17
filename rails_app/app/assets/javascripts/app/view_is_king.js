@@ -8,7 +8,7 @@ var MyViewClass = Wheel.View.subclass(
     }
   },
   {
-    cssSelector: '.useless_and_chatty',
+    selector: '.useless_and_chatty',
     template: function() {
       return "<a href='/no_hacer_lo'>Just don't do it!</a>"
     }

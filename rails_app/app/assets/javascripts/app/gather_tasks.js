@@ -27,7 +27,7 @@ var GatherTask = Wheel.View.subclass({
     this.$.addClass('error');
   }
 }, {
-  cssSelector: '.task'
+  selector: '.task'
 });
 
 GatherTask.mixin(Wheel.Mixins.Ajax);

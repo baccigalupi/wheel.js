@@ -6,7 +6,7 @@ describe('Wheel.Widgeteria.Link', function() {
 
     Linker = Wheel.Widgeteria.Link.subclass({
     }, {
-      cssSelector: 'a.clunker'
+      selector: 'a.clunker'
     });
 
     linker = Linker.build(dom);

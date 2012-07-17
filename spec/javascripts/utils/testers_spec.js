@@ -59,13 +59,31 @@ describe('Wheel type testers', function() {
     });
   });
 
+  describe('Wheel.is$', function() {
+    it('should be true if it is a jQuery/Zepto object', function() {
+      expect(Wheel.is$($('div'))).toBe(true);
+    });
+
+    it('should be false for dom', function() {
+      expect(Wheel.is$($('div')[0])).toBe(false);
+    });
+  });
+
   describe('Wheel.isObject', function() {
     it('should be true if it is an object', function() {
       expect(Wheel.isObject({})).toBe(true);
     });
 
-    it('should be false if it is something else', function() {
+    it('should be false if it is a function', function() {
       expect(Wheel.isObject(function(){})).toBe(false);
+    });
+
+    it('should be false if it is an array', function() {
+      expect(Wheel.isObject([])).toBe(false);
+    });
+
+    it('should be fales if it is a $', function() {
+      expect(Wheel.isObject($('div'))).toBe(false);
     });
   });
 });

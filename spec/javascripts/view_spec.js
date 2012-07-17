@@ -417,5 +417,30 @@ describe("Wheel.View", function () {
         });
       });
     });
+
+    describe('when not given a dom', function() {
+      beforeEach(function() {
+        dom = $(dom);
+        dom.css('display', 'none');
+        $(document.body).append(dom);
+        Wrap.cssSelector = 'li.item';
+        gathered = Wrap.gather({foo: 'bar'});
+        wrap = gathered[0];
+      });
+
+      afterEach(function() {
+        dom.remove();
+      });
+
+      it('will use the document to search', function() {
+        expect(gathered.length).toBe(2);
+        expect(wrap).toBeA(Wrap);
+        expect(wrap.$.is('li.item')).toBe(true);
+      });
+
+      it('will still get its data', function() {
+        expect(wrap.foo).toBe('bar');
+      });
+    });
   });
 });

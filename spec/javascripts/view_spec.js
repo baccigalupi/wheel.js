@@ -43,80 +43,6 @@ describe("Wheel.View", function () {
         expect(wrap.$.hasClass('wrap')).toBe(true);
       });
     });
-
-    describe("gather", function() {
-      var dom;
-      beforeEach(function () {
-        dom =
-        "  <ul class='lister'>" +
-        "    <li class='item'>one</li>" +
-        "    <li class='seperator'></li>" +
-        "    <li class='item'>two</li>" +
-        "  </ul>";
-      });
-
-      describe("failure", function () {
-        it("requires a selector", function () {
-          var raises = false;
-          try {
-            Wrap.gather(dom);
-          } catch (e) {
-            raises = true;
-            expect(e).toBe("Define a cssSelector on the class to use the 'gather' class method");
-          }
-          expect(raises).toBe(true);
-        });
-      });
-
-      describe('success', function () {
-        var gathered;
-        beforeEach(function() {
-          Wrap.cssSelector = 'li.item';
-        });
-
-        describe('given a parent element', function () {
-          beforeEach(function() {
-            gathered = Wrap.gather(dom);
-          });
-
-          it("finds the right number of elements", function () {
-            expect(gathered.length).toBe(2);
-          });
-
-          it("creates the right kind of object", function () {
-            expect(gathered[0] instanceof Wrap).toBe(true);
-            expect(gathered[1] instanceof Wrap).toBe(true);
-          });
-
-          it("creates objects with the correct dom", function() {
-            expect(gathered[0].$.is('li.item')).toBeTruthy();
-            expect(gathered[1].$.is('li.item')).toBeTruthy();
-            expect(gathered[0].$.text()).toBe('one');
-            expect(gathered[1].$.text()).toBe('two');
-          });
-        });
-
-        describe('given the element itself', function() {
-          var wrap;
-          beforeEach(function() {
-            gathered = Wrap.gather($(dom).find('li.item')[0]);
-            wrap = gathered[0];
-          });
-
-          it('returns only one object in the array', function() {
-            expect(gathered.length).toBe(1);
-          });
-
-          it('the object is the right type', function() {
-            expect(wrap instanceof Wrap).toBeTruthy();
-          });
-
-          it('the object has the right dom', function() {
-            expect(wrap.$.is('li.item')).toBeTruthy();
-          });
-        });
-      });
-    });
   });
 
   describe('appenders', function() {
@@ -125,13 +51,13 @@ describe("Wheel.View", function () {
     beforeEach(function() {
       Pender = Wheel.View.subclass({}, {
         template: function() {
-          return "<div class='pender'/>"
+          return "<div class='pender'/>";
         }
       });
 
       Pendee = Wheel.View.subclass({}, {
         template: function() {
-          return "<div class='pendee'/>"
+          return "<div class='pendee'/>";
         }
       });
 
@@ -153,7 +79,10 @@ describe("Wheel.View", function () {
 
       describe("array argument", function(){
         it("can append an array of Wheel.View object", function() {
-          var pendees = Pendee.assemble([{},{}]);
+          var pendees = [
+            Pendee.build({}),
+            Pendee.build({})
+          ];
           pender.append(pendees);
           expect(pender.$.find('.pendee').length).toBe(2);
         });
@@ -330,70 +259,25 @@ describe("Wheel.View", function () {
 
       describe('rendering non-default templates', function() {
         var View;
-        it('fails', function() {
+        beforeEach(function() {
+          View = Wheel.View.subclass('View');
           var templates = {
-            'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
+            'create': '<form class="new_thing">{{message}}<input type="submit" value="Make a new thingy!"/></form>',
             'default': '<div class="thing">Thingy</div>'
           };
-          View = Wheel.View.subclass('View');
           View.templates = function() {
             return templates;
           };
+        });
 
+        it('works', function() {
           var view = View.build();
-
           expect(view.renderTemplate('create').attr('class')).toBe('new_thing');
         });
-      });
-    });
 
-    describe('assemble class method', function() {
-      var ListItem;
-
-      beforeEach(function(){
-        ListItem = Wheel.View.subclass({},{
-          template: function() {
-            return "<li class='list_item'>{{first_name}} {{last_name}}</li>";
-          }
-        });
-      });
-
-      describe("when passed an array", function() {
-        var list;
-
-        beforeEach(function() {
-          list = ListItem.assemble([{
-            model: {
-              first_name: 'Herman', last_name: 'Melville'
-            }},{
-            model: {
-              first_name: 'Nathaniel', last_name: 'Hawthorne'
-            }
-          }]);
-        });
-
-        it("returns an array of instances", function() {
-          expect(list.length).toBe(2);
-          expect(list[0] instanceof ListItem).toBe(true);
-          expect(list[1] instanceof ListItem).toBe(true);
-        });
-
-        it("instances are initialized with the correct instance variables", function() {
-          expect(list[0].model.first_name).toBe('Herman');
-          expect(list[0].model.last_name).toBe('Melville');
-
-          expect(list[1].model.first_name).toBe('Nathaniel');
-          expect(list[1].model.last_name).toBe('Hawthorne');
-        });
-
-        it("renders each correctly", function() {
-          // Zepto fails with list[0].$.is('li.list_item')
-
-          expect(list[0].$.hasClass('list_item')).toBe(true);
-          expect(list[0].$.text()).toBe("Herman Melville");
-
-          expect(list[1].$.hasClass('list_item')).toBe(true);
-          expect(list[1].$.text()).toBe("Nathaniel Hawthorne");
+        it('data can be passed in too', function() {
+          var view = View.build();
+          expect(view.renderTemplate('create', {message: 'Do something'}).text()).toMatch(/Do something/);
         });
       });
     });
@@ -457,6 +341,80 @@ describe("Wheel.View", function () {
         repository = fullRepo;
         View.defaultTemplate = 'create';
         expect(View.template()).toBe(repository['View']['create']);
+      });
+    });
+  });
+
+  describe('gathering existing dom', function() {
+    var Wrap, wrap, dom;
+
+    beforeEach(function() {
+      Wrap = Wheel.View.subclass();
+      dom =
+      "  <ul class='lister'>" +
+      "    <li class='item'>one</li>" +
+      "    <li class='seperator'></li>" +
+      "    <li class='item'>two</li>" +
+      "  </ul>";
+    });
+
+    it("requires a selector", function () {
+      var raises = false;
+      try {
+        Wrap.gather(dom);
+      } catch (e) {
+        raises = true;
+        expect(e).toBe("Define a cssSelector on the class to use the 'gather' class method");
+      }
+      expect(raises).toBe(true);
+    });
+
+    describe('with a selector defined', function () {
+      var gathered;
+      beforeEach(function() {
+        Wrap.cssSelector = 'li.item';
+      });
+
+      describe('given a parent element', function () {
+        beforeEach(function() {
+          gathered = Wrap.gather(dom);
+        });
+
+        it("finds the right number of elements", function () {
+          expect(gathered.length).toBe(2);
+        });
+
+        it("creates the right kind of object", function () {
+          expect(gathered[0] instanceof Wrap).toBe(true);
+          expect(gathered[1] instanceof Wrap).toBe(true);
+        });
+
+        it("creates objects with the correct dom", function() {
+          expect(gathered[0].$.is('li.item')).toBeTruthy();
+          expect(gathered[1].$.is('li.item')).toBeTruthy();
+          expect(gathered[0].$.text()).toBe('one');
+          expect(gathered[1].$.text()).toBe('two');
+        });
+      });
+
+      describe('given the element itself', function() {
+        var wrap;
+        beforeEach(function() {
+          gathered = Wrap.gather($(dom).find('li.item')[0]);
+          wrap = gathered[0];
+        });
+
+        it('returns only one object in the array', function() {
+          expect(gathered.length).toBe(1);
+        });
+
+        it('the object is the right type', function() {
+          expect(wrap instanceof Wrap).toBeTruthy();
+        });
+
+        it('the object has the right dom', function() {
+          expect(wrap.$.is('li.item')).toBeTruthy();
+        });
       });
     });
   });

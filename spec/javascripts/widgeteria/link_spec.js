@@ -2,21 +2,14 @@ describe('Wheel.Widgeteria.Link', function() {
   var link, Linker, dom;
 
   beforeEach(function() {
-    dom =
-    "<div class='something_big'>" +
-    "  <ul>" +
-    "    <li>" +
-    "      <a class='clunker' href='http://clunkerfoo.com'>Clunk on Dude!</a>" +
-    "    </li>" +
-    "  </ul>" +
-    "</div>";
+    dom ="<a class='clunker' href='http://clunkerfoo.com'>Clunk on Dude!</a>";
 
     Linker = Wheel.Widgeteria.Link.subclass({
     }, {
       cssSelector: 'a.clunker'
     });
 
-    linker = Linker.gather(dom)[0];
+    linker = Linker.build(dom);
   });
 
   describe("init()", function() {
@@ -41,12 +34,12 @@ describe('Wheel.Widgeteria.Link', function() {
       });
 
       it("will be true if it finds a disabled attribute", function () {
-        linker = new Linker($(dom).find('a').attr('disabled', true));
+        linker = new Linker($(dom).attr('disabled', true));
         expect(linker.disabled).toBe(true);
       });
 
       it("will consider the initialization options before the default or dom attribute", function () {
-        linker = new Linker($(dom).find('a').attr('disabled', true), {disabled: false});
+        linker = new Linker($(dom).attr('disabled', true), {disabled: false});
         expect(linker.disabled).toBe(false);
       });
     });

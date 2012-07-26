@@ -2,9 +2,14 @@
 
 Do we need to reinvient the wheel with another front-end JavaScript framework? Apparently we do!
 
-Wheel.js a front-end framework cobbled together from a bunch of great tools. The reason
+Wheel.js is a front-end framework cobbled together from a bunch of great tools. The reason
 to use Wheel.js over other frameworks is that Wheel.js is designed to address the needs of mobile
 web development first, not as an afterthought. Of course, it works great for desktop web too.
+
+Another selling point for for Wheel.js, which is of course free and needs no selling, is that it
+is built for progressive appification. You can start with the old-school style of adding js
+interactivity a little at a time. Then without making a massive technical-debt style down payment
+on a MV* framework ... you get it for free. It is just here in Wheel.js waiting for you.
 
 === The Mobile Problem Space
 * Touch events are awesome UI, but have detection, implementation gotchas
@@ -16,9 +21,22 @@ web development first, not as an afterthought. Of course, it works great for des
 Wheel.js is easy to use. It is focused on the things that are central to JavaScript application development,
 managing views. In Wheel.js, the View is King. And what is a View? It's not a template. That is a separate
 beastie, used by the View to render DOM. The View is the object responsible for interactions on a given
-bit of DOM.
+bit of DOM and of course changing the rendered DOM. These two concepts are more formally divided into
+the controller and view. Maybe that is coming soon, but at the moment, life seems simple and managable with
+just the view.
 
-See the wiki for more on the amazing View king.
+==== Progressive Appification
+At the start of a project, it isn't always clear how much responsibility will lie of the server and 
+how much will be given to the client. Wheel.js does not force you to choose a full application system
+upfront. You can start with a little bit of Wheel and work up.
+
+==== MV* Appipness
+When you do need a full application framework, Wheel.js gives you more of the moving parts that help
+an application be mobile:
+* An application class and object for containing all your setup logic
+* Systems for managing the user's online/offline status
+* Request queues that send requests only when the app is online, and are intelligent about serializing requests for related objects
+* Intelligent loading where a base layer is sent, sniffs for features, and requests more javascript
 
 === Sensible Defaults
 * Zepto for applicable browsers
@@ -28,30 +46,41 @@ See the wiki for more on the amazing View king.
 * Object-oriented design through the whole stack, so you can override/customize anything anywhere!
 
 === Customizable
-Yeah, just look at that last point. Everything is built like an object, so anything can be overriden and
+Yeah, just look at that last point. Almost everything is built like an object, so anything can be overriden and
 customized. My hope is that you won't have to dig deep into the internals of Wheel to go changing low-level
 methods. Things should just work, but when you have that special need, you also have complete ownership of
 the code.
 
 === Stuff in the roadmap
-* Models with events
 * Drag and Drop HTML5 polyfill for mobile
-* LocalStorage cookie based polyfil
-* Local request queue stored in LocalStorage
-* Multi-touch gesture recognition (swipe, tap, and tap hold already exist)
 * Poller/Socket support
 * Rails Generators
 * Non-Rails usage and dependency managment
 
 == Installation
 Umm, yeah. The roadmap has this becoming a Rails plugin and a more general available package for non-Rails apps.
-Right now it is just a loose collection of files. If you are feeling adventurous, please checkout the /rails_app
-setup included in the projects.
+Right now it is just a loose collection of files.
 
-Currently the sprockets asset pipeline is creating a load script with some basic platform specific stuff.
-That script request other scripts depending on the environment and app requirements.
+There is a manifest directory. If you are using Rails, you will want to copy the whole
+Wheel.js library into /vendor/assets/javascripts. From there you can link to the manifests
+of interest.
 
-So, yeah. Sorry, right now setup is not streamlined. But stay tuned. I am rolling in that direction.
+=== Full App Framework
+The typical path for a full Wheel.js stack is to link to the base.js manifest. This manifest
+in addition to loading a series of required files, sniffs for features, and makes a request for
+additional files. Right now the main test
+
+=== Simple View Standalone Usage
+Still under development, stay tuned
+
+=== Asset Pipeline Woes
+Using a non-standard manifest in Rails requires you to change your app level configuration.
+Inside /config/application.rb, you need to add your manefest name to the line that declares 
+them.
+    config.assets.precompile += %w( application.css app.js init.js ) # or whatever they are called
+
+Sadly, the asset pipeline was not designed for dynamically requsting the parts of the javascript
+application that the browser needs, so true feature sniffing and polyfilling is just a server dream.
 
 == Contributing to Wheel
 * Talk to me, through github, or email, or wherever. I would love to hear your feedback.

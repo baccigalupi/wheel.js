@@ -1,13 +1,40 @@
 describe('Wheel.Model', function() {
-  var task, queue;
+  var Task, task, queue;
   beforeEach(function() {
     queue = {
       add: jasmine.createSpy()
     };
     Wheel.Utils.RequestQueue.singleton = queue;
 
-    Wheel.Model.subclass('Task', {}, {
+    Task = Wheel.Model.subclass('Task', {}, {
       properties: ['name', 'due_at', 'state']
+    });
+  });
+
+  describe('class level building of models', function() {
+    it('when given a hash of model attributes, it will set those options on the model', function() {
+      task = Task.build({name: 'Swish bitters'});
+      expect(task.name()).toBe('Swish bitters');
+    });
+
+    var tasks;
+    describe('when a collection is given', function() {
+      beforeEach(function() {
+        tasks = Task.build([
+          {name: 'Swish bitters'},
+          {name: 'Make Rossana a drink!'}
+        ]);
+      });
+
+      it('returns an array of models', function() {
+        expect(tasks.length).toBe(2);
+        expect(tasks[0]).toBeA(Task);
+      });
+
+      it('each has the right attributes', function() {
+        expect(tasks[0].name()).toBe('Swish bitters');
+        expect(tasks[1].name()).toBe('Make Rossana a drink!');
+      });
     });
   });
 

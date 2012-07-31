@@ -465,4 +465,44 @@ describe("Wheel.View", function () {
       });
     });
   });
+
+  describe('assembling views from a collection of models', function() {
+    var Assembler, assembled, Task, tasks, parent, opts;
+    beforeEach(function() {
+      parent = $('<ul class="tasks"></ul>');
+
+      Task = Wheel.Model.subclass({
+        properties: ['name']
+      });
+
+      tasks = Task.build([
+        {name: 'Do the dishes'},
+        {name: 'Make dinner'}
+      ]);
+
+      Assembler = Wheel.View.subclass();
+      Assembler.template = function() {
+        return "<li class='task'>{{name}}</task>";
+      };
+
+      opts = {
+        parent: parent,
+        foo: 'bar'
+      };
+    });
+
+    it('return an array of views', function() {
+      assembled = Assembler.assemble(tasks);
+      expect(assembled.length).toBe(2);
+      expect(assembled[0]).toBeA(Assembler);
+    });
+
+    it('takes in other options', function() {
+      assembled = Assembler.assemble(tasks, opts);
+      expect(assembled[0].parent).toBe(parent);
+      expect(assembled[0].foo).toBe('bar');
+      expect(assembled[1].parent).toBe(parent);
+      expect(assembled[1].foo).toBe('bar');
+    });
+  });
 });

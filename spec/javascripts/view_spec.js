@@ -342,6 +342,28 @@ describe("Wheel.View", function () {
         View.defaultTemplate = 'create';
         expect(View.template()).toBe(repository['View']['create']);
       });
+
+      describe('templates when the View id is deeply nested', function() {
+        var App;
+        beforeEach(function() {
+          window.App = App = {
+            Views: {}
+          };
+          repository = {
+            'App': {
+              'Views': {
+                'Card': "<div class='card'></div>"
+              }
+            }
+          };
+          Wheel.View.subclass('App.Views.Card');
+          App.Views.Card.templateRepository = function() { return repository; };
+        });
+
+        it('finds via the object path', function() {
+          expect(App.Views.Card.templates()).toBe(repository['App']['Views']['Card']);
+        });
+      });
     });
   });
 

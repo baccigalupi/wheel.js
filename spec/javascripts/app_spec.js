@@ -174,11 +174,11 @@ describe('Wheel.App', function() {
 
   describe('class namespaces', function() {
     it('has a View hash', function() {
-      expect(Wheel.App.View).toEqual({});
+      expect(Wheel.App.Views).toEqual({});
     });
 
     it('has a Model hash', function() {
-      expect(Wheel.App.Model).toEqual({});
+      expect(Wheel.App.Models).toEqual({});
     });
   });
 });

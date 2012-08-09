@@ -58,6 +58,25 @@ describe('Wheel.Class, mix and mash behavior', function() {
     });
   });
 
+  describe('mixover, instance level', function() {
+    it('makes mixed methods primary and assigns super to the base class method', function() {
+      var Printer = Wheel.Class('Printer', {
+        print: function(text) {
+          return "<p>" + text + "</p>";
+        }
+      });
+
+      Printer.mixover({
+        print: function(text) {
+          return "<div id='mixed'>"+ this._super(text) +"</div>";
+        }
+      });
+
+      var printer = Printer.build();
+      expect(printer.print('foo')).toBe("<div id='mixed'><p>foo</p></div>");
+    });
+  });
+
   describe('mashin, class level', function() {
     beforeEach(function() {
       Base = Wheel.Class({}, {
@@ -78,4 +97,23 @@ describe('Wheel.Class, mix and mash behavior', function() {
       expect(Base.print('foo')).toBe("<div class='base'><p>foo</p></div>");
     });
   });
+
+  describe('mashover, class level', function() {
+    it('makes mashed methods primary and assigns super to the base class method', function() {
+      var Printer = Wheel.Class('Printer', {}, {
+        print: function(text) {
+          return "<p>" + text + "</p>";
+        }
+      });
+
+      Printer.mashover({
+        print: function(text) {
+          return "<div id='mixed'>"+ this._super(text) +"</div>";
+        }
+      });
+
+      expect(Printer.print('foo')).toBe("<div id='mixed'><p>foo</p></div>");
+    });
+  });
+
 });

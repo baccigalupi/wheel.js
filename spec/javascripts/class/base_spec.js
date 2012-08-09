@@ -21,6 +21,12 @@ describe('Wheel.Base', function() {
       var base = new Wheel.Base({foo: 'bar'});
       expect(base.foo).toBe('bar');
     });
+
+    it('calls listen', function() {
+      spyOn(Wheel.Base.prototype, 'listen');
+      var base = new Wheel.Base();
+      expect(Wheel.Base.prototype.listen).toHaveBeenCalled();
+    });
   });
 
   describe('class methods', function() {

@@ -15,6 +15,10 @@ describe("Wheel.View", function () {
       expect(view.that()).toBe('that');
     });
 
+    it('sets the unique id', function() {
+      expect(view._uid).not.toBeFalsy();
+    });
+
     it("calls init", function () {
       expect(Wheel.View.prototype.init).toHaveBeenCalled();
     });

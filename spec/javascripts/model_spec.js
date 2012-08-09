@@ -55,146 +55,40 @@ describe('Wheel.Model', function() {
     });
   });
 
-  describe('properties', function() {
-    describe('after subclassing', function() {
-      it('already has built the accessors', function() {
-        expect(typeof Task.prototype.name).toBe('function');
-        expect(typeof Task.prototype.state).toBe('function');
-        expect(typeof Task.prototype.due_at).toBe('function');
-      });
-
-      describe('.allProperties', function() {
-        beforeEach(function() {
-          Task.subclass('SpecialTask', {}, {
-            properties: ['specialness_rating']
-          });
-        });
-
-        it('knows its own properties', function() {
-          expect(Wheel.Model.allProperties()).toEqual([]);
-          expect(Task.allProperties()).toEqual(['name', 'due_at', 'state']);
-        });
-
-        it('it includes superclass properties', function() {
-          expect(SpecialTask.allProperties()).toEqual(['name', 'due_at', 'state', 'specialness_rating']);
-        });
+  // NOTE: Not sure if .allProperties and #properties should move into the base class.
+  // May not be needed for anything but accessing which data is special and appropriate
+  // for server transfers.
+  describe('.allProperties', function() {
+    beforeEach(function() {
+      Task.subclass('SpecialTask', {}, {
+        properties: ['specialness_rating']
       });
     });
 
-    describe('on the instance', function() {
-      it('has accesors', function() {
-        task = Task.build();
-        expect(typeof task.name).toBe('function');
-        expect(typeof task.state).toBe('function');
-        expect(typeof task.due_at).toBe('function');
-      });
+    it('knows its own properties', function() {
+      expect(Wheel.Model.allProperties()).toEqual([]);
+      expect(Task.allProperties()).toEqual(['name', 'due_at', 'state']);
+    });
 
-      describe('with initialization arguments', function() {
-        beforeEach(function() {
-          task = Task.build({
-            name: 'Do some meta',
-            state: 0,
-            due_at: null,
-            normalOpt: "I'm normal"
-          });
-        });
-
-        it('initialization will set the correct attributes', function() {
-          expect(typeof task.name).toBe('function');
-          expect(typeof task.state).toBe('function');
-          expect(typeof task.due_at).toBe('function');
-        });
-
-        it('processes non-property initialization options normally', function() {
-          expect(task.normalOpt).toBe("I'm normal");
-        });
-      });
-
-      it('has an accessor for getting all properties', function() {
-        task = Task.build({
-          name: 'Do some meta',
-          state: 0,
-          due_at: null,
-          normalOpt: "I'm normal"
-        });
-
-        expect(task.properties()).toEqual({
-          name: 'Do some meta',
-          state: 0,
-          due_at: null
-        });
-      });
+    it('it includes superclass properties', function() {
+      expect(SpecialTask.allProperties()).toEqual(['name', 'due_at', 'state', 'specialness_rating']);
     });
   });
 
-  describe('Model.attrAccessor(propName)', function() {
-    var owner;
-    beforeEach(function() {
+  describe('#properties', function() {
+    it('returns a key/value object for all of the properties', function() {
       task = Task.build({
+        name: 'Do some meta',
+        state: 0,
+        due_at: null,
+        normalOpt: "I'm normal"
+      });
+
+      expect(task.properties()).toEqual({
         name: 'Do some meta',
         state: 0,
         due_at: null
       });
-      owner = {name: "Kane"};
-
-      Task.attrAccessor('owner');
-    });
-
-    it('creates a prototype function with that name', function() {
-      expect(typeof Task.prototype.owner == 'function').toBe(true)
-    });
-
-    it('created function reads the underscore prefaced property', function() {
-      task._owner = owner;
-      expect(task.owner()).toBe(owner);
-    });
-
-    describe('when given an argument', function() {
-      it('it writes to the underscore prefaced property', function() {
-        task.owner(owner);
-        expect(task._owner).toBe(owner);
-      });
-
-      it('returns the value', function() {
-        expect(task.owner(owner)).toBe(owner);
-      });
-
-      describe('value has changed', function() {
-        beforeEach(function() {
-          spyOn(task, 'trigger');
-          task.owner(owner);
-        });
-
-        it('triggers a "change" event', function() {
-          expect(task.trigger).toHaveBeenCalled();
-        });
-
-        it('triggers an event related to the property changed', function() {
-          expect(task.trigger).toHaveBeenCalled();
-          expect(task.trigger.mostRecentCall.args[0]).toBe('change:owner');
-        });
-
-        it('marks the object as dirty', function() {
-          expect(task._dirty).toBe(true);
-        });
-      });
-
-      describe('value is the same', function() {
-        it('does not trigger any events', function() {
-          spyOn(task, 'trigger');
-          task.owner(task._owner);
-          expect(task.trigger).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    it('can handle multiple declarations in the same class', function() {
-      Task.attrAccessor('tags');
-      var tags = ['neato', 'jazzy']
-      task.tags(tags);
-      task.owner(owner);
-      expect(task.tags()).toBe(tags);
-      expect(task.owner()).toBe(owner);
     });
   });
 

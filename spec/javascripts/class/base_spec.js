@@ -29,6 +29,10 @@ describe('Wheel.Base', function() {
     });
   });
 
+  describe('properties', function() {
+    
+  });
+
   describe('class methods', function() {
     it('.build() is a helper to avoid failing to use the "new" keyword', function() {
       spyOn(Wheel.Base.prototype, 'initialize');
@@ -39,7 +43,7 @@ describe('Wheel.Base', function() {
 
     describe('.uid()', function() {
       beforeEach(function() {
-        Wheel.Base._uid = 42
+        Wheel.Base._uid = 42;
       });
 
       it('returns the number after _uid', function() {
@@ -55,7 +59,7 @@ describe('Wheel.Base', function() {
     describe('adding behavior to the subclass method', function() {
       beforeEach(function() {
         Wheel.Base._subclass('BaseIt', {
-          volume: 'high',
+          volume: 'high'
         }, {
           classy: true
         });
@@ -106,6 +110,131 @@ describe('Wheel.Base', function() {
         expect(uberLow.volume()).toBe('higher');
         expect(UberLow.classy()).toBe("I am classy. You know it!");
         expect(UberLow.foo).toBe("bar");
+      });
+    });
+
+    describe('.attrAccessor(propName)', function() {
+      var Task, task, owner;
+      beforeEach(function() {
+        Task = Wheel.Base.subclass('Task', {}, {
+          properties: ['name', 'due_at', 'state']
+        });
+
+        task = Task.build({
+          name: 'Do some meta',
+          state: 0,
+          due_at: null
+        });
+
+        owner = {name: "Kane"};
+
+        Task.attrAccessor('owner');
+      });
+
+      it('creates a prototype function with that name', function() {
+        expect(typeof Task.prototype.owner == 'function').toBe(true);
+      });
+
+      it('created function reads the underscore prefaced property', function() {
+        task._owner = owner;
+        expect(task.owner()).toBe(owner);
+      });
+
+      describe('when given an argument', function() {
+        it('it writes to the underscore prefaced property', function() {
+          task.owner(owner);
+          expect(task._owner).toBe(owner);
+        });
+
+        it('returns the value', function() {
+          expect(task.owner(owner)).toBe(owner);
+        });
+
+        describe('value has changed', function() {
+          beforeEach(function() {
+            spyOn(task, 'trigger');
+            task.owner(owner);
+          });
+
+          it('triggers a "change" event', function() {
+            expect(task.trigger).toHaveBeenCalled();
+          });
+
+          it('triggers an event related to the property changed', function() {
+            expect(task.trigger).toHaveBeenCalled();
+            expect(task.trigger.mostRecentCall.args[0]).toBe('change:owner');
+          });
+        });
+
+        describe('value is the same', function() {
+          it('does not trigger any events', function() {
+            spyOn(task, 'trigger');
+            task.owner(task._owner);
+            expect(task.trigger).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      it('can handle multiple declarations in the same class', function() {
+        Task.attrAccessor('tags');
+        var tags = ['neato', 'jazzy'];
+        task.tags(tags);
+        task.owner(owner);
+        expect(task.tags()).toBe(tags);
+        expect(task.owner()).toBe(owner);
+      });
+    });
+  });
+
+  describe('properties', function() {
+    var Task, task, opts;
+    beforeEach(function() {
+      Task = Wheel.Base.subclass('Task', {}, {
+        properties: ['name', 'due_at', 'state']
+      });
+
+      opts = {
+        name: 'Do some meta',
+        state: 0,
+        due_at: Date.now(),
+        foo: 'just a non-property attribute'
+      };
+
+      task = Task.build(opts);
+    });
+
+    it('accesors are built at subclass time', function() {
+      expect(typeof Task.prototype.name).toBe('function');
+      expect(typeof Task.prototype.state).toBe('function');
+      expect(typeof Task.prototype.due_at).toBe('function');
+    });
+
+    it('initialization correctly maps properties', function() {
+      expect(task.name()).toBe(opts.name);
+      expect(task.due_at()).toBe(opts.due_at);
+      expect(task.state()).toBe(opts.state);
+    });
+
+    it('initialization sets normal instance attributes too', function() {
+      expect(task.foo).toBe('just a non-property attribute');
+    });
+
+    describe('subclassing', function() {
+      var SpecialTask;
+      beforeEach(function() {
+        SpecialTask = Task.subclass('SpecialTask', {}, {
+          properties: ['specialness_rating']
+        });
+      });
+
+      it('has accessors for the superclass', function() {
+        expect(typeof Task.prototype.name).toBe('function');
+        expect(typeof Task.prototype.state).toBe('function');
+        expect(typeof Task.prototype.due_at).toBe('function');
+      });
+
+      it('has accessors for new properties', function() {
+        expect(typeof SpecialTask.prototype.specialness_rating).toBe('function');
       });
     });
   });

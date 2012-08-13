@@ -2,32 +2,10 @@ describe('Wheel.App', function() {
   var app;
   beforeEach(function() {
     spyOn(Wheel.Utils.ConnectionChecker.prototype, 'on');
-    window.app = undefined;
-    Wheel.App.singleton = undefined;
     app = Wheel.App.build();
   });
 
   describe('initialize()', function() {
-    describe('singleton-ness', function() {
-      it('will store the new instance to window', function() {
-        expect(window.app).toBe(app);
-      });
-
-      it('will not call init if there is already an app on window', function() {
-        spyOn(Wheel.App.prototype, 'init');
-        Wheel.App.build();
-        expect(Wheel.App.prototype.init).not.toHaveBeenCalled();
-      });
-    });
-
-    it('creates a ConnectionChecker', function() {
-      expect(app.connectionChecker).toBeA(Wheel.Utils.ConnectionChecker);
-    });
-
-    it('creates a RequestQueue', function() {
-      expect(app.requestQueue).toBeA(Wheel.Utils.RequestQueue);
-    });
-
     describe('creates an eventManager', function() {
       beforeEach(function() {
         Wheel.App.singleton = null;
@@ -51,12 +29,24 @@ describe('Wheel.App', function() {
     });
   });
 
-  describe('listen()', function() {
+  describe('#manageRequests', function() {
     beforeEach(function() {
-      spyOn(app, 'connected');
+      app.manageRequests();
     });
 
-    describe('binding to connectionChecker', function() {
+    it('creates a ConnectionChecker', function() {
+      expect(app.connectionChecker).toBeA(Wheel.Utils.ConnectionChecker);
+    });
+
+    it('creates a RequestQueue', function() {
+      expect(app.requestQueue).toBeA(Wheel.Utils.RequestQueue);
+    });
+
+    describe('listening for related events', function() {
+      beforeEach(function() {
+        spyOn(app, 'connected');
+      });
+
       it('calls on', function() {
         expect(Wheel.Utils.ConnectionChecker.prototype.on).toHaveBeenCalled();
       });
@@ -79,6 +69,7 @@ describe('Wheel.App', function() {
 
   describe('connected()', function() {
     it('returns _connected', function() {
+      app.manageRequests();
       app._connected = true;
       expect(app.connected()).toBe(true);
     });
@@ -92,6 +83,7 @@ describe('Wheel.App', function() {
 
   describe('connected(flag), setting', function() {
     beforeEach(function() {
+      app.manageRequests();
       spyOn(app, 'trigger');
     });
 
@@ -144,6 +136,7 @@ describe('Wheel.App', function() {
 
   describe('checkConnection()', function() {
     beforeEach(function() {
+      app.manageRequests();
       spyOn(app, 'connected');
       window.navigator = {};
     });

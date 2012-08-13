@@ -13,6 +13,7 @@ describe('Wheel.TouchManager', function() {
     }];
 
     events = {
+      start:      jasmine.createSpy('start'),
       taphold:    jasmine.createSpy('taphold'),
       tap:        jasmine.createSpy('tap'),
       tapmove:    jasmine.createSpy('tapmove'),
@@ -24,11 +25,13 @@ describe('Wheel.TouchManager', function() {
       swipeup:    jasmine.createSpy('swipeup'),
       swipedown:  jasmine.createSpy('swipedown'),
       pinch:      jasmine.createSpy('pinch'),
-      zoom:       jasmine.createSpy('zoom')
+      zoom:       jasmine.createSpy('zoom'),
+      end:        jasmine.createSpy('end')
     };
 
     div = $('<div class="touch_tester"/>');
     div
+      .bind('start',      function(e) {events.start(e)})
       .bind('taphold',    function(e) {events.taphold(e)})
       .bind('tapmove',    function(e) {events.tapmove(e)})
       .bind('tapend',     function(e) {events.tapend(e)})
@@ -40,13 +43,26 @@ describe('Wheel.TouchManager', function() {
       .bind('swipeup',    function(e) {events.swipeup(e)})
       .bind('swipedown',  function(e) {events.swipedown(e)})
       .bind('pinch',      function(e) {events.pinch(e)})
-      .bind('zoom',       function(e) {events.zoom(e)});
+      .bind('zoom',       function(e) {events.zoom(e)})
+      .bind('end',       function(e)  {events.end(e)});
 
     $(document.body).append(div);
   });
 
   afterEach(function() {
     manager.$.remove();
+  });
+
+  describe('virtualized/normalized events', function() {
+    it('"start" will be triggered on touchstart', function() {
+      div.trigger('touchstart');
+      expect(events.start).toHaveBeenCalled();
+    });
+
+     it('"end" will be triggered on touchend', function() {
+      div.trigger('touchend');
+      expect(events.end).toHaveBeenCalled();
+    });
   });
 
   describe('taphold', function() {

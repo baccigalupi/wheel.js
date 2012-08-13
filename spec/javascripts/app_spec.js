@@ -7,10 +7,6 @@ describe('Wheel.App', function() {
 
   describe('initialize()', function() {
     describe('creates an eventManager', function() {
-      beforeEach(function() {
-        Wheel.App.singleton = null;
-      });
-
       it('that is touch when Modernizr says so', function() {
         Modernizr.touch = true;
         app = Wheel.App.build();
@@ -24,8 +20,32 @@ describe('Wheel.App', function() {
       });
     });
 
-    it('creates a Templates object', function() {
-      expect(app.templates).toBeA(Wheel.Templates);
+    describe('templates', function() {
+      it('creates a Templates object', function() {
+        expect(app.templates).toBeA(Wheel.Templates);
+      });
+
+      it('gathers templates from the DOM', function() {
+        spyOn(Wheel.Templates.prototype, 'gather');
+        app = Wheel.App.build();
+        expect(Wheel.Templates.prototype.gather).toHaveBeenCalled();
+      });
+    });
+
+    describe('storing the app someplace accessible', function() {
+      beforeEach(function() {
+        app = Wheel.App.build();
+      });
+
+      it('stores it on the window', function() {
+        expect(window.app).toBeA(Wheel.App);
+        expect(window.app).toBe(app);
+      });
+
+      it('also stores it on the App class', function() {
+        expect(Wheel.App.app).toBeA(Wheel.App);
+        expect(Wheel.App.app).toBe(app);
+      });
     });
   });
 

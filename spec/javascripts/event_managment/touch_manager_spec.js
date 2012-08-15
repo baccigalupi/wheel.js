@@ -51,6 +51,7 @@ describe('Wheel.TouchManager', function() {
 
   afterEach(function() {
     manager.$.remove();
+    div.remove();
   });
 
   describe('virtualized/normalized events', function() {

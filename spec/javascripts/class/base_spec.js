@@ -238,4 +238,96 @@ describe('Wheel.Base', function() {
       });
     });
   });
+
+  describe('publish and subscribe behavior', function() {
+    var base;
+    beforeEach(function() {
+      base = Wheel.Base.build();
+    });
+
+    describe('#publish', function() {
+      it('throws an error if the Wheel.Publisher is not set', function() {
+        Wheel.Publisher = null;
+        expect(function() {
+          base.publish('foo', {});
+        }).toThrow();
+      });
+
+      describe('when there is a publisher', function() {
+        beforeEach(function() {
+          Wheel.Publisher = Wheel.Base.build();
+        });
+
+        it('calls trigger on the publisher', function() {
+          var active;
+          Wheel.Publisher.on('active', function() {
+            active = true;
+          });
+
+          base.publish('active', {foo: 'bar'});
+          expect(active).toBe(true);
+        });
+
+        it('passes the data', function() {
+          var expectedData = {foo: 'bar'};
+          
+          var called;
+          Wheel.Publisher.on('foo', function(data) {
+            expect(data).toEqual(expectedData);
+            called = true;
+          });
+
+          base.publish('foo', {foo: 'bar'});
+
+          expect(called).toBe(true);
+        });
+      });
+    });
+
+
+    describe('#subscribe', function() {
+      it('throws an error if the Wheel.Publisher is not set', function() {
+        Wheel.Publisher = null;
+        expect(function() {
+          base.subscribe('foo', function() {});
+        }).toThrow();
+      });
+
+      describe('when a publisher is available', function() {
+        beforeEach(function() {
+          Wheel.Publisher = Wheel.Base.build();
+        });
+
+        it('binds the callback to an event name', function() {
+          var callback = jasmine.createSpy();
+          base.subscribe('foo', callback);
+
+          base.publish('foo', {});
+
+          expect(callback).toHaveBeenCalled();
+        });
+
+        it('the callback will be bound to the base object', function() {
+          var callback = function() {
+            this.hasBeenCalled = true;
+          };
+
+          base.subscribe('foo', callback);
+          base.publish('foo');
+          expect(base.hasBeenCalled).toBe(true);
+        });
+
+        it('allows the callback to be bound to different object', function() {
+          var other = Wheel.Base.build();
+          var callback = function() {
+            this.hasBeenCalled = true;
+          };
+
+          base.subscribe('foo', callback, other);
+          base.publish('foo');
+          expect(other.hasBeenCalled).toBe(true);
+        });
+      });
+    });
+  });
 });

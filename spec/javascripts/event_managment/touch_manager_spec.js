@@ -13,7 +13,7 @@ describe('Wheel.TouchManager', function() {
     }];
 
     events = {
-      start:      jasmine.createSpy('start'),
+      tapstart:   jasmine.createSpy('tapstart'),
       taphold:    jasmine.createSpy('taphold'),
       tap:        jasmine.createSpy('tap'),
       tapmove:    jasmine.createSpy('tapmove'),
@@ -26,12 +26,12 @@ describe('Wheel.TouchManager', function() {
       swipedown:  jasmine.createSpy('swipedown'),
       pinch:      jasmine.createSpy('pinch'),
       zoom:       jasmine.createSpy('zoom'),
-      end:        jasmine.createSpy('end')
+      tapend:     jasmine.createSpy('tapend')
     };
 
     div = $('<div class="touch_tester"/>');
     div
-      .bind('start',      function(e) {events.start(e)})
+      .bind('tapstart',   function(e) {events.tapstart(e)})
       .bind('taphold',    function(e) {events.taphold(e)})
       .bind('tapmove',    function(e) {events.tapmove(e)})
       .bind('tapend',     function(e) {events.tapend(e)})
@@ -44,7 +44,7 @@ describe('Wheel.TouchManager', function() {
       .bind('swipedown',  function(e) {events.swipedown(e)})
       .bind('pinch',      function(e) {events.pinch(e)})
       .bind('zoom',       function(e) {events.zoom(e)})
-      .bind('end',       function(e)  {events.end(e)});
+      .bind('tapend',     function(e) {events.tapend(e)});
 
     $(document.body).append(div);
   });
@@ -55,14 +55,14 @@ describe('Wheel.TouchManager', function() {
   });
 
   describe('virtualized/normalized events', function() {
-    it('"start" will be triggered on touchstart', function() {
+    it('"tapstart" will be triggered on touchstart', function() {
       div.trigger('touchstart');
-      expect(events.start).toHaveBeenCalled();
+      expect(events.tapstart).toHaveBeenCalled();
     });
 
-     it('"end" will be triggered on touchend', function() {
+     it('"tapend" will be triggered on touchend', function() {
       div.trigger('touchend');
-      expect(events.end).toHaveBeenCalled();
+      expect(events.tapend).toHaveBeenCalled();
     });
   });
 
@@ -561,15 +561,16 @@ describe('Wheel.TouchManager', function() {
   });
 
   describe('drag events', function() {
-    describe('when dragstart in triggered on an element', function() {
+    describe('when draginit in triggered on an element', function() {
       var dragmove, dragend;
       beforeEach(function() {
         dragmove = jasmine.createSpy();
         dragend = jasmine.createSpy();
         div.on('dragmove', dragmove);
         div.on('dragend', dragend);
+
         div.trigger($.Event('touchstart', {touches: touches}));
-        div.trigger($.Event('dragstart', {touches: touches}));
+        div.trigger($.Event('draginit', {touches: touches}));
       });
 
       it('listens on touchmove and triggers dragmove', function() {
@@ -593,7 +594,7 @@ describe('Wheel.TouchManager', function() {
     describe('other events are not triggered', function() {
       beforeEach(function() {
         div.on('touchstart', function(e) {
-          div.trigger($.Event('dragstart', {touches: e.touches}));
+          div.trigger($.Event('draginit', {touches: e.touches}));
         });
         startEvent = $.Event('touchstart', {touches: touches});
         div.trigger(startEvent);

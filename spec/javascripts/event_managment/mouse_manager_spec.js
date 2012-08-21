@@ -49,7 +49,7 @@ describe('Wheel.MouseManager', function() {
   });
 
   describe('drag events', function() {
-    describe('when dragstart in triggered on an element', function() {
+    describe('when draginit in triggered on an element', function() {
       var dragmove, dragend;
       beforeEach(function() {
         dragmove = jasmine.createSpy('dragmove');
@@ -57,7 +57,7 @@ describe('Wheel.MouseManager', function() {
         div.on('dragmove', dragmove);
         div.on('dragend', dragend);
         div.trigger($.Event('mousedown', {pageX: 100, pageY: 205}));
-        div.trigger($.Event('dragstart', {pageX: 100, pageY: 205}));
+        div.trigger($.Event('draginit', {pageX: 100, pageY: 205}));
       });
 
       it('listens on mousemove and triggers dragmove with correct page data', function() {

@@ -1,7 +1,7 @@
 describe('Wheel.Utils.ObjectPath', function() {
   describe('#write', function() {
     it('builds the full path with object literals, if none are found in window', function() {
-      expect(window.Foo).toBe(undefined);
+      if (window.Foo) { window.Foo = undefined; }
       Wheel.Utils.ObjectPath.write('Foo.Bar.Zardoz', 3);
       expect(window.Foo).toEqual({Bar: {Zardoz: 3}});
     });

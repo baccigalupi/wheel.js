@@ -57,18 +57,14 @@ describe('Wheel.Class(), helper function', function() {
         window['Things'] = undefined; // setting it back
       });
 
-      it('will throw an error if the base does not exist', function() {
-        var error;
-        try {
-          Wheel.Class('Things.Better', {
-            betterThan: function(other) {
-              return true;
-            }
-          });
-        } catch(e) {
-          error = e;
-        }
-        expect(error).not.toBe(undefined);
+      it('will build the object path', function() {
+        window.Things = undefined;
+        var thing = Wheel.Class('Things.Better', {
+          betterThan: function(other) {
+            return true;
+          }
+        });
+        expect(Things.Better).toBe(thing);
       });
     });
   });

@@ -29,10 +29,6 @@ describe('Wheel.Base', function() {
     });
   });
 
-  describe('properties', function() {
-    
-  });
-
   describe('class methods', function() {
     it('.build() is a helper to avoid failing to use the "new" keyword', function() {
       spyOn(Wheel.Base.prototype, 'initialize');

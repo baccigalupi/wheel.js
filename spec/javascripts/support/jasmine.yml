@@ -18,6 +18,7 @@ src_files:
 
     - lib/wheel/namespace.js
     - lib/wheel/mixins/**/*.js
+    - lib/wheel/utils/object_path.js
     - lib/wheel/class.js
     - lib/wheel/class/**/*.js
     - lib/wheel/utils/**/*.js

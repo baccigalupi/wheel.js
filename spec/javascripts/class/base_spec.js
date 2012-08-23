@@ -107,6 +107,12 @@ describe('Wheel.Base', function() {
         expect(UberLow.classy()).toBe("I am classy. You know it!");
         expect(UberLow.foo).toBe("bar");
       });
+
+      it('subclassing will look up the chain to find an application', function() {
+        var FooApp = Wheel.App.subclass('Foo');
+        var FooClass = Wheel.Base.subclass('Foo.Bar');
+        expect(FooClass.App).toBe(FooApp);
+      });
     });
 
     describe('.attrAccessor(propName)', function() {

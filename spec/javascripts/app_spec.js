@@ -194,4 +194,28 @@ describe('Wheel.App', function() {
       expect(Wheel.App.Models).toEqual({});
     });
   });
+
+  describe('auto loading', function() {
+    var apps;
+    beforeEach(function() {
+      apps = [
+        Wheel.App.subclass('App'),
+        Wheel.App.subclass('Sidebar')
+      ];
+    });
+
+    it('subclassing stores a list of applications', function() {
+      expect(Wheel.App.children).toEqual(apps);
+    });
+
+    it('#start calls build on each of the apps', function() {
+      spyOn(apps[0], 'build');
+      spyOn(apps[1], 'build');
+
+      Wheel.App.start();
+
+      expect(apps[0].build).toHaveBeenCalled();
+      expect(apps[1].build).toHaveBeenCalled();
+    });
+  });
 });

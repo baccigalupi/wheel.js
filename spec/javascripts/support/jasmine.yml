@@ -11,27 +11,27 @@
 #   - dist/**/*.js
 #
 src_files:
-    #- wheel/vendor/javascripts/jquery/jquery-1.7.1.js
-    - lib/wheel/vendor/javascripts/zepto/zepto-1.0rc1.js
-    - lib/wheel/vendor/javascripts/modernizr/modernizr-2.5.3.js
-    - lib/wheel/vendor/javascripts/mustache/mustache.js
+    #-vendor/javascripts/jquery/jquery-1.7.1.js
+    - vendor/javascripts/zepto/zepto-1.0rc1.js
+    - vendor/javascripts/modernizr/modernizr-2.5.3.js
+    - vendor/javascripts/mustache/mustache.js
 
-    - lib/wheel/namespace.js
-    - lib/wheel/utils/testers.js
-    - lib/wheel/mixins/**/*.js
-    - lib/wheel/utils/object_path.js
-    - lib/wheel/class.js
-    - lib/wheel/class/**/*.js
-    - lib/wheel/utils/**/*.js
-    - lib/wheel/lib/**/*js
-    - lib/wheel/view.js
-    - lib/wheel/event_managers/event_manager.js
-    - lib/wheel/event_managers/*.js
-    - lib/wheel/*.js
+    - src/namespace.js
+    - src/utils/testers.js
+    - src/mixins/**/*.js
+    - src/utils/object_path.js
+    - src/class.js
+    - src/class/**/*.js
+    - src/utils/**/*.js
+    - src/lib/**/*js
+    - src/view.js
+    - src/event_managers/event_manager.js
+    - src/event_managers/*.js
+    - src/*.js
 
-    - lib/wheel/widgeteria/link.js
-    - lib/wheel/widgeteria/form.js
-    - lib/wheel/widgeteria/*.js
+    - src/widgeteria/link.js
+    - src/widgeteria/form.js
+    - src/widgeteria/*.js
 
 # stylesheets
 #

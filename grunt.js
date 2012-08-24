@@ -18,57 +18,59 @@ module.exports = function(grunt) {
       light: {
         src: [
           '<banner:meta.banner>',
-          'lib/wheel/vendor/javascripts/modernizr/modernizr.custom.js',
-          'lib/wheel/vendor/javascripts/mustache/mustache.js',
-          'lib/wheel/namespace.js',
-          'lib/wheel/utils/testers.js',
-          'lib/wheel/mixins/events.js',
-          'lib/wheel/class.js',
-          'lib/wheel/class/*.js',
-          'lib/wheel/utils/loader.js',
-          'lib/wheel/app.js',
-          'lib/wheel/templates.js',
-          'lib/wheel/view.js',
-          'lib/wheel/event_managers/event_manager.js',
-          'lib/wheel/event_managers/*.js'
+          'vendor/javascripts/modernizr/modernizr.custom.js',
+          'vendor/javascripts/mustache/mustache.js',
+          'src/namespace.js',
+          'src/utils/object_path.js',
+          'src/utils/testers.js',
+          'src/mixins/events.js',
+          'src/class.js',
+          'src/class/*.js',
+          'src/utils/loader.js',
+          'src/app.js',
+          'src/templates.js',
+          'src/view.js',
+          'src/event_managers/event_manager.js',
+          'src/event_managers/*.js'
         ],
         dest: 'dist/wheel_base_light.js'
       },
       base: {
         src: [
           '<banner:meta.banner>',
-          'lib/wheel/vendor/javascripts/modernizr/modernizr.custom.js',
-          'lib/wheel/vendor/javascripts/mustache/mustache.js',
-          'lib/wheel/namespace.js',
-          'lib/wheel/utils/testers.js',
-          'lib/wheel/mixins/events.js',
-          'lib/wheel/mixins/ajax.js',
-          'lib/wheel/class.js',
-          'lib/wheel/class/*.js',
-          'lib/wheel/utils/loader.js',
-          'lib/wheel/utils/connection_checker.js',
-          'lib/wheel/utils/request_queue.js',
-          'lib/wheel/app.js',
-          'lib/wheel/templates.js',
-          'lib/wheel/view.js',
-          'lib/wheel/event_managers/event_manager.js',
-          'lib/wheel/event_managers/*.js'
+          'vendor/javascripts/modernizr/modernizr.custom.js',
+          'vendor/javascripts/mustache/mustache.js',
+          'src/namespace.js',
+          'src/utils/object_path.js',
+          'src/utils/testers.js',
+          'src/mixins/events.js',
+          'src/mixins/ajax.js',
+          'src/class.js',
+          'src/class/*.js',
+          'src/utils/loader.js',
+          'src/utils/connection_checker.js',
+          'src/utils/request_queue.js',
+          'src/app.js',
+          'src/templates.js',
+          'src/view.js',
+          'src/event_managers/event_manager.js',
+          'src/event_managers/*.js'
         ],
         dest: 'dist/wheel_base.js'
       },
       modern: {
         src: [
           '<banner:meta.banner>',
-          'lib/wheel/vendor/javascripts/zepto/zepto-1.0rc1.js'
+          'vendor/javascripts/zepto/zepto-1.0rc1.js'
         ],
         dest: 'dist/wheel_modern.js'
       },
       legacy: {
         src: [
           '<banner:meta.banner>',
-          'lib/wheel/vendor/javascripts/jquery/jquery-1.7.1.js',
-          'lib/wheel/lib/cookie.js',
-          'lib/wheel/utils/storage_fill.js'
+          'vendor/javascripts/jquery/jquery-1.7.1.js',
+          'src/lib/cookie.js',
+          'src/utils/storage_fill.js'
         ],
         dest: 'dist/wheel_legacy.js'
       }
@@ -101,7 +103,7 @@ module.exports = function(grunt) {
     },
 
     lint: {
-      files: ['grunt.js', 'lib/wheel/**/*.js', 'spec/**/*.js']
+      files: ['grunt.js', 'src/**/*.js', 'spec/**/*.js']
     },
     watch: {
       files: '<config:lint.files>',

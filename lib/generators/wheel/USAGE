@@ -1,0 +1,18 @@
+Description:
+    Install wheel related javascript files into your vendor directory
+
+Example:
+    rails generate wheel
+
+    This will create:
+        # files that can be easily added to your layout
+        vendor/assets/javascripts/wheel/dist
+
+        # source files to make your own custom manifest
+        vendor/assets/javascripts/wheel/src
+
+        # vendor files used by wheel.js, all good for building custom manifests
+        vendor/assets/javascripts/wheel/vendor
+
+        # a set of recommended manifests that demonstrate the wheel.js load process
+        vendor/assets/javascripts/wheel/manifests

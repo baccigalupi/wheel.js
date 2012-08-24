@@ -1,3 +1,3 @@
-//= require ../vendor/javascripts/jquery/jquery-1.7.1.js
-//= require ../lib/cookie.js
-//= require ../utils/storage_fill.js
+//= require wheel/vendor/javascripts/jquery/jquery-1.7.1.js
+//= require wheel/src/lib/cookie.js
+//= require wheel/src/utils/storage_fill.js

@@ -14,7 +14,7 @@ module.exports = function(grunt) {
       modernBanner: '// Wheel modern file is for browsers that can do HTML5. It is slimmer and perfect for mobile.'
     },
 
-    min: {
+    concat: {
       light: {
         src: [
           '<banner:meta.banner>',
@@ -131,7 +131,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint concat min');
+  grunt.registerTask('default', 'concat min');
   // external
   grunt.loadNpmTasks('grunt-jasmine-task');
 };

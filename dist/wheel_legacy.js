@@ -1,4 +1,4 @@
-/* Wheel.js - v0.3.0 - 2012-08-23
+/* Wheel.js - v0.3.0 - 2012-08-24
  * http://github.com/baccigalupi/wheel.js
  * Copyright (c) 2011-2012 Kane Baccigalupi; Licensed MIT: http://github.com/baccigalupi/wheel.js/LICENSE.txt */
 

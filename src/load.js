@@ -1,5 +1,10 @@
-// This should not be auto compressed. That way developers
-// can set the paths to the files as they please.
+
+/*
+ * Currently, all js files are expected to be available via the application's root url.
+ * Also, the file where your app is packaged is expected to be /app.js at your domain.
+ *
+ * Override these locations according to your file setup.
+ */
 Modernizr.load({
   test: Wheel.Utils.Loader.canZepto(),
   yep:  'wheel_modern.js',

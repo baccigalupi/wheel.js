@@ -1,7 +1,28 @@
-/* Wheel.js - v0.3.0 - 2012-08-24
+/*
+ * Wheel.js - version 0.3.0
  * http://github.com/baccigalupi/wheel.js
- * Copyright (c) 2011-2012 Kane Baccigalupi; Licensed MIT: http://github.com/baccigalupi/wheel.js/LICENSE.txt */
-
+ * Copyright (c) 2012 Kane Baccigalupi
+ * Licensed MIT: http://github.com/baccigalupi/wheel.js/LICENSE.txt
+ *
+ * Included Libraries:
+ * ================================================================
+ * Modernizr 2.5.3 (Custom Build) | MIT & BSD
+ * Build: http://www.modernizr.com/download/#-draganddrop-touch-cssclasses-teststyles-hasevent-prefixes-load
+ *
+ * mustache.js - Logic-less {{mustache}} templates with JavaScript
+ * http://github.com/janl/mustache.js
+ *
+ * Zepto v1.0rc1 - polyfill zepto event detect fx ajax form touch - zeptojs.com/license
+ *
+ * jQuery JavaScript Library v1.7.2
+ *  http://jquery.com/ Copyright 2011, John Resig. Dual licensed under the MIT or GPL Version 2 licenses. http://jquery.org/license
+ *  Includes Sizzle.js http://sizzlejs.com/ Copyright 2011, The Dojo Foundation. Released under the MIT, BSD, and GPL Licenses.
+ *
+ * Backbone.js 0.9.2 (c) 2010-2012 Jeremy Ashkenas, DocumentCloud Inc.MIT license.
+ *
+ * todo: add ember, jquery cookies plugin, remy's localStorage fill??
+ *
+ */
 /* Modernizr 2.5.3 (Custom Build) | MIT & BSD
  * Build: http://www.modernizr.com/download/#-draganddrop-touch-cssclasses-teststyles-hasevent-prefixes-load
  */
@@ -265,8 +286,7 @@ window.Modernizr = (function( window, document, undefined ) {
 /*yepnope1.5.3|WTFPL*/
 (function(a,b,c){function d(a){return o.call(a)=="[object Function]"}function e(a){return typeof a=="string"}function f(){}function g(a){return!a||a=="loaded"||a=="complete"||a=="uninitialized"}function h(){var a=p.shift();q=1,a?a.t?m(function(){(a.t=="c"?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){a!="img"&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l={},o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};y[c]===1&&(r=1,y[c]=[],l=b.createElement(a)),a=="object"?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),a!="img"&&(r||y[c]===2?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i(b=="c"?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),p.length==1&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&o.call(a.opera)=="[object Opera]",l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return o.call(a)=="[object Array]"},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,i){var j=b(a),l=j.autoCallback;j.url.split(".").pop().split("?").shift(),j.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]||h),j.instead?j.instead(a,e,f,g,i):(y[j.url]?j.noexec=!0:y[j.url]=1,f.load(j.url,j.forceCSS||!j.forceJS&&"css"==j.url.split(".").pop().split("?").shift()?"c":c,j.noexec,j.attrs,j.timeout),(d(e)||d(l))&&f.load(function(){k(),e&&e(j.origUrl,i,g),l&&l(j.origUrl,i,g),y[j.url]=2})))}function i(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var j,l,m=this.yepnope.loader;if(e(a))g(a,0,m,0);else if(w(a))for(j=0;j<a.length;j++)l=a[j],e(l)?g(l,0,m,0):w(l)?B(l):Object(l)===l&&i(l,m);else Object(a)===a&&i(a,m)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,b.readyState==null&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}})(this,document);
 Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
-;
-/*!
+;/*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
  */
@@ -802,7 +822,6 @@ var Mustache = (typeof module !== "undefined" && module.exports) || {};
   }
 
 })(Mustache);
-
 var Wheel = {
   Mixins: {},
   Utils: {},
@@ -810,7 +829,6 @@ var Wheel = {
 };
 
 !window.w && (window.w = Wheel);
-
 Wheel.Utils.ObjectPath = {
   write: function(path, value, baseObject) {
     path = path.split('.');
@@ -839,7 +857,6 @@ Wheel.Utils.ObjectPath = {
     return baseObject;
   }
 };
-
 /* And a little bit of Underscore ...
  * Licence:
  *  Underscore.js 1.3.3
@@ -898,7 +915,6 @@ Wheel.Utils.ObjectPath = {
     return !!obj.addClass;
   };
 })(window);
-
 // This was stolen from Backbone and modified slightly.
 Wheel.Mixins.Events = {
   // Bind one or more space separated events, `events`, to a `callback`
@@ -993,7 +1009,6 @@ Wheel.Mixins.Events = {
 
 };
 
-
 Wheel.Mixins.Ajax = {
   send: function (overrides) {
     this._requestQueue = this._requestQueue || Wheel.Utils.RequestQueue.singleton;
@@ -1027,7 +1042,6 @@ Wheel.Mixins.Ajax = {
   onSuccess:    function(response) {},
   onError:      function(response) {}
 };
-
 /*
  * Object Orientation inspired by John Resig's post on simple class inheritance
  * http://ejohn.org/blog/simple-javascript-inheritance/
@@ -1156,7 +1170,6 @@ Wheel.Mixins.Ajax = {
     return Class;
   };
 })();
-
 Wheel._Class.subclass('Wheel.Base', {
   initialize: function(opts) {
     this._preInit(opts);
@@ -1270,7 +1283,6 @@ Wheel.Base.mixin(Wheel.Mixins.Events);
 Wheel.Class = function(x, y, z) {
   return Wheel.Base.subclass(x, y, z);
 };
-
 Wheel.Base.subclass('Wheel.Class.Singleton', {
   initialize: function(opts) {
     if (!this._class.singleton) {
@@ -1287,7 +1299,6 @@ Wheel.Base.subclass('Wheel.Class.Singleton', {
     }
   }
 });
-
 Wheel.Utils.Loader = {
   canZepto: function(agent) {
     agent = agent || navigator.userAgent;
@@ -1326,7 +1337,6 @@ Wheel.Utils.Loader = {
       ( matches[2] > required[1] || (matches[2] == required[1] && matches[3]>= required[2]) ) ;
   }
 };
-
 
 
 // Even though this is a technically a fill for navigator.online, that
@@ -1414,7 +1424,6 @@ Wheel.Class.Singleton.subclass('Wheel.Utils.ConnectionChecker', {
 });
 
 Wheel.Utils.ConnectionChecker.mixin(Wheel.Mixins.Events);
-
 Wheel.Class.Singleton.subclass('Wheel.Utils.RequestQueue', {
   init: function() {
     this._requestCount = 0;
@@ -1549,7 +1558,6 @@ Wheel.Class.Singleton.subclass('Wheel.Utils.RequestQueue', {
 
   id: 'Wheel.Utils.RequestQueue'
 });
-
 Wheel.Class('Wheel.App', {
   _preInit: function(opts) {
     this._super(opts);
@@ -1614,7 +1622,6 @@ Wheel.Class('Wheel.App', {
     });
   }
 });
-
 Wheel.Class.Singleton.subclass('Wheel.Templates', {
   optionize: function(opts) {
     this.append(opts);
@@ -1645,7 +1652,6 @@ Wheel.Class.Singleton.subclass('Wheel.Templates', {
     }
   }
 });
-
 Wheel.Class('Wheel.View', {
   initialize: function(dom, opts) {
     this.initializeDom(dom, opts);
@@ -1803,7 +1809,6 @@ Wheel.Class('Wheel.View', {
     return views;
   }
 });
-
 /* This was inspired by Zepto.js */
 Wheel.View.subclass('Wheel.EventManager', {
   initializeDom: function(opts) {
@@ -2010,37 +2015,6 @@ Wheel.View.subclass('Wheel.EventManager', {
   RESPONSIVE_TAP: true,
   GESTURE_TOLERANCE: 20
 });
-
-Wheel.EventManager.subclass('Wheel.MouseManager', {
-  listen: function() {
-    this._super();
-    var self = this;
-    this.touch = {};
-
-    function onMove(e) {
-      self.onMove(e);
-    }
-
-    function onEnd(e) {
-      self.onEnd(e);
-      self.$.off(self.moveEvent, onMove);
-    }
-
-    // only listen for touchmove when a mousedown event
-    // has occurred
-    this.$.on(this.startEvent, function(e) {
-      self.onStart(e);
-      self.$.on(self.moveEvent, onMove);
-    });
-
-    this.$.on(this.endEvent, onEnd);
-  },
-
-  startEvent: 'mousedown',
-  moveEvent:  'mousemove',
-  endEvent:   'mouseup'
-});
-
 Wheel.EventManager.subclass('Wheel.TouchManager', {
   listen: function() {
     this._super();
@@ -2156,3 +2130,48 @@ Wheel.EventManager.subclass('Wheel.TouchManager', {
   id: 'Wheel.TouchManager'
 });
 
+Wheel.EventManager.subclass('Wheel.MouseManager', {
+  listen: function() {
+    this._super();
+    var self = this;
+    this.touch = {};
+
+    function onMove(e) {
+      self.onMove(e);
+    }
+
+    function onEnd(e) {
+      self.onEnd(e);
+      self.$.off(self.moveEvent, onMove);
+    }
+
+    // only listen for touchmove when a mousedown event
+    // has occurred
+    this.$.on(this.startEvent, function(e) {
+      self.onStart(e);
+      self.$.on(self.moveEvent, onMove);
+    });
+
+    this.$.on(this.endEvent, onEnd);
+  },
+
+  startEvent: 'mousedown',
+  moveEvent:  'mousemove',
+  endEvent:   'mouseup'
+});
+
+/*
+ * Currently, all js files are expected to be available via the application's root url.
+ * Also, the file where your app is packaged is expected to be /app.js at your domain.
+ *
+ * Override these locations according to your file setup.
+ */
+Modernizr.load({
+  test: Wheel.Utils.Loader.canZepto(),
+  yep:  'wheel_modern.js',
+  nope: 'wheel_legacy.js',
+  both: 'app.js',
+  complete: function() {
+    Wheel.App.start(); // yup, this will build any subclasses of Wheel.App
+  }
+});

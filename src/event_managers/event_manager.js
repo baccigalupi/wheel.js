@@ -63,16 +63,14 @@ Wheel.View.subclass('Wheel.EventManager', {
     }
   },
 
-  _triggerEvent: function(originalEvent, altType) {
+  _triggerEvent: function(originalEvent, altType, eventOpts) {
     if (!this.target) { return; }
-    var x = 'x2' in this.touch ? this.touch.x2 : this.touch.x1;
-    var y = 'y2' in this.touch ? this.touch.y2 : this.touch.y1;
+    eventOpts = eventOpts || {};
+    eventOpts.pageX = 'x2' in this.touch ? this.touch.x2 : this.touch.x1;
+    eventOpts.pageY = 'y2' in this.touch ? this.touch.y2 : this.touch.y1;
+    eventOpts.originalEvent = originalEvent;
 
-    this.target.trigger($.Event(altType || this.touch.type, {
-      originalEvent: originalEvent,
-      pageX: x,
-      pageY: y
-    }));
+    this.target.trigger($.Event(altType || this.touch.type, eventOpts));
   },
 
   _setTarget: function(e) {
@@ -122,8 +120,23 @@ Wheel.View.subclass('Wheel.EventManager', {
     if (this.touch.type && this.touch.type === 'pull') {
       e.preventDefault();
       e = this._unpackEvent(e);
-      this._triggerEvent(e, 'pullmove');
+      this._triggerEvent(e, 'pullmove', this._eventDetails());
     }
+  },
+
+  _eventDetails: function() {
+    var deltaX = this.touch.x2 - this.touch.x1;
+    var deltaY = this.touch.y2 - this.touch.y1;
+    var deltaTime = Date.now() - this.touch.time;
+    var distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+    return {
+      deltaX: deltaX,
+      deltaY: deltaY,
+      deltaTime: deltaTime,
+      distance: distance,
+      velocity: distance/deltaTime,
+      angle: Math.atan2(deltaY,deltaX)
+    };
   },
 
   _handlePullEnd: function(e) {
@@ -163,7 +176,7 @@ Wheel.View.subclass('Wheel.EventManager', {
       if ( this.preventScroll(_direction) ) {
         e.preventDefault();
       }
-      this._triggerEvent(e);
+      this._triggerEvent(e, "swipe", this._eventDetails());
       this._triggerEvent(e, "swipe" + _direction);
     }
   },

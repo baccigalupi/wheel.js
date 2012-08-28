@@ -89,8 +89,8 @@ task('build', [], function (params) {
     fs.writeSync(fileOut, loader);
   };
 
-  if (params.name) {
-    buildFile(params.name);
+  if (name) {
+    buildFile(name);
   } else {
     for( var name in manifests) {
       buildFile(name);

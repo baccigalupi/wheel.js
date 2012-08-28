@@ -560,41 +560,41 @@ describe('Wheel.TouchManager', function() {
     });
   });
 
-  describe('drag events', function() {
-    describe('when draginit in triggered on an element', function() {
-      var dragmove, dragend;
+  describe('pull events', function() {
+    describe('when pullinit in triggered on an element', function() {
+      var pullmove, pullend;
       beforeEach(function() {
-        dragmove = jasmine.createSpy();
-        dragend = jasmine.createSpy();
-        div.on('dragmove', dragmove);
-        div.on('dragend', dragend);
+        pullmove = jasmine.createSpy();
+        pullend = jasmine.createSpy();
+        div.on('pullmove', pullmove);
+        div.on('pullend', pullend);
 
         div.trigger($.Event('touchstart', {touches: touches}));
-        div.trigger($.Event('draginit', {touches: touches}));
+        div.trigger($.Event('pullinit', {touches: touches}));
       });
 
-      it('listens on touchmove and triggers dragmove', function() {
+      it('listens on touchmove and triggers pullmove', function() {
         div.trigger($.Event('touchmove', {touches: touches}));
-        expect(dragmove).toHaveBeenCalled();
+        expect(pullmove).toHaveBeenCalled();
       });
 
-      it('dragmove creates an event that passes on the page data', function() {
+      it('pullmove creates an event that passes on the page data', function() {
         div.trigger($.Event('touchmove', {touches: [{pageX: 150, pageY: 275}]}));
-        var event = dragmove.mostRecentCall.args[0];
+        var event = pullmove.mostRecentCall.args[0];
         expect(event.pageX).toBe(150);
         expect(event.pageY).toBe(275);
       });
 
-      it('triggers dragend on touchend', function() {
+      it('triggers pullend on touchend', function() {
         div.trigger($.Event('touchend', {changedTouches: touches}));
-        expect(dragend).toHaveBeenCalled();
+        expect(pullend).toHaveBeenCalled();
       });
     });
 
     describe('other events are not triggered', function() {
       beforeEach(function() {
         div.on('touchstart', function(e) {
-          div.trigger($.Event('draginit', {touches: e.touches}));
+          div.trigger($.Event('pullinit', {touches: e.touches}));
         });
         startEvent = $.Event('touchstart', {touches: touches});
         div.trigger(startEvent);

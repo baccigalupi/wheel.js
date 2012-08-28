@@ -1,4 +1,3 @@
-/* This was inspired by Zepto.js */
 Wheel.View.subclass('Wheel.EventManager', {
   initializeDom: function(opts) {
     this.optionize(opts);
@@ -7,17 +6,17 @@ Wheel.View.subclass('Wheel.EventManager', {
 
   listen: function() {
     var self = this;
-    this.$.on('draginit', function(e) {
-      self.onDragInit(e);
+    this.$.on('pullinit', function(e) {
+      self.onPullInit(e);
     });
   },
 
-  onDragInit: function(e) {
+  onPullInit: function(e) {
     e.preventDefault();
     this._setTarget(e);
-    this.touch.type = 'drag';
+    this.touch.type = 'pull';
     e = this._unpackEvent(e);
-		this._triggerEvent(e, 'dragstart');
+		this._triggerEvent(e, 'pullstart');
   },
 
   onStart: function(e) {
@@ -47,7 +46,7 @@ Wheel.View.subclass('Wheel.EventManager', {
   },
 
   onMove: function(e) {
-    this._handleDragMove(e);
+    this._handlePullMove(e);
     if (this.touch.type) { return; }
     e = this._unpackEvent(e);
     this._testSwipe(e);
@@ -56,7 +55,7 @@ Wheel.View.subclass('Wheel.EventManager', {
   onEnd: function(e) {
     e = this._unpackEvent(e);
     this._triggerEvent(e, 'tapend');
-    this._handleDragEnd(e);
+    this._handlePullEnd(e);
     if (this.touch.type || this.touch.ctrl) {
       this._resetTouch();
     } else {
@@ -119,18 +118,18 @@ Wheel.View.subclass('Wheel.EventManager', {
     }
   },
 
-  _handleDragMove: function(e) {
-    if (this.touch.type && this.touch.type === 'drag') {
+  _handlePullMove: function(e) {
+    if (this.touch.type && this.touch.type === 'pull') {
       e.preventDefault();
       e = this._unpackEvent(e);
-      this._triggerEvent(e, 'dragmove');
+      this._triggerEvent(e, 'pullmove');
     }
   },
 
-  _handleDragEnd: function(e) {
-    if (this.touch.type && this.touch.type === 'drag') {
+  _handlePullEnd: function(e) {
+    if (this.touch.type && this.touch.type === 'pull') {
       e = this._unpackEvent(e);
-      this._triggerEvent(e, 'dragend');
+      this._triggerEvent(e, 'pullend');
     }
   },
 

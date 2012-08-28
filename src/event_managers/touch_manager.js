@@ -22,7 +22,7 @@ Wheel.EventManager.subclass('Wheel.TouchManager', {
   },
 
   onMove: function(e) {
-    this._handleDragMove(e);
+    this._handlePullMove(e);
     if (this.touch.type) { return; }
     e = this._unpackEvent(e);
     this.multi && this._detectGesture(e);

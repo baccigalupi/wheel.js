@@ -27,7 +27,10 @@ src_files:
     - src/view.js
     - src/event_managers/event_manager.js
     - src/event_managers/*.js
-    - src/*.js
+    - src/app.js
+    - src/model.js
+    - src/templates.js
+    - src/view.js
 
     - src/widgeteria/link.js
     - src/widgeteria/form.js

@@ -48,26 +48,26 @@ describe('Wheel.MouseManager', function() {
     });
   });
 
-  describe('drag events', function() {
-    describe('when draginit in triggered on an element', function() {
-      var dragmove, dragend;
+  describe('pull events', function() {
+    describe('when pullinit in triggered on an element', function() {
+      var pullmove, pullend;
       beforeEach(function() {
-        dragmove = jasmine.createSpy('dragmove');
-        dragend = jasmine.createSpy('dragend');
-        div.on('dragmove', dragmove);
-        div.on('dragend', dragend);
+        pullmove = jasmine.createSpy('pullmove');
+        pullend = jasmine.createSpy('pullend');
+        div.on('pullmove', pullmove);
+        div.on('pullend', pullend);
         div.trigger($.Event('mousedown', {pageX: 100, pageY: 205}));
-        div.trigger($.Event('draginit', {pageX: 100, pageY: 205}));
+        div.trigger($.Event('pullinit', {pageX: 100, pageY: 205}));
       });
 
-      it('listens on mousemove and triggers dragmove with correct page data', function() {
+      it('listens on mousemove and triggers pullmove with correct page data', function() {
         div.trigger($.Event('mousemove', {pageX: 150, pageY: 275}));
-        expect(dragmove).toHaveBeenCalled();
+        expect(pullmove).toHaveBeenCalled();
       });
 
-      it('triggers dragend on mouseup', function() {
+      it('triggers pullend on mouseup', function() {
         div.trigger('mouseup');
-        expect(dragend).toHaveBeenCalled();
+        expect(pullend).toHaveBeenCalled();
       });
     });
   });

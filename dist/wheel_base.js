@@ -1208,18 +1208,19 @@ Wheel._Class.subclass('Wheel.Base', {
   },
 
   publish: function(eventType, eventData) {
-    this._throwIfNoPublisher();
+    this._publisher || this._findPublisher();
     Wheel.Publisher.trigger(eventType, eventData);
   },
 
   subscribe: function(eventName, callback, context) {
-    this._throwIfNoPublisher();
+    this._publisher || this._findPublisher();
     Wheel.Publisher.on(eventName, callback, context || this);
   },
 
-  _throwIfNoPublisher: function() {
-    if (!Wheel.Publisher) {
-      throw "Wheel.Publisher is not defined. We cannot use publish/subscribe yet!";
+  _findPublisher: function() {
+    this._publisher = (this._class.App && this._class.App.app) || Wheel.Publisher;
+    if (!this._publisher) {
+      throw "Cannot find app or Wheel.Publisher. Please namespace your classes under an application class or assign a Wheel.Publisher";
     }
   }
 }, {
@@ -1231,12 +1232,12 @@ Wheel._Class.subclass('Wheel.Base', {
   build: function() {
     var klass = this;
 
-    function creator(args) {
+    function Class(args) {
       return klass.apply(this, args);
     }
-    creator.prototype = klass.prototype;
+    Class.prototype = klass.prototype;
 
-    return new creator(arguments);
+    return new Class(arguments);
   },
 
   attrAccessor: function(prop) {
@@ -1257,7 +1258,7 @@ Wheel._Class.subclass('Wheel.Base', {
     var klass = this._subclass(name, iprops, cprops);
     if (klass.properties && klass.properties.length) {
       $.each(klass.properties, function(i, prop) {
-        if ( typeof klass.prototype[prop] != 'function' ) {
+        if ( typeof klass.prototype[prop] !== 'function' ) {
           klass.attrAccessor(prop);
         }
       });
@@ -1267,7 +1268,7 @@ Wheel._Class.subclass('Wheel.Base', {
       var length = path.length;
       var i, base = window;
       for (i = 0; i < length-1; i++) {
-        var base = window[path[i]];
+        base = window[path[i]];
         if (base && base._typeof === 'Wheel.App') {
           klass.App = base;
           break;
@@ -1740,11 +1741,11 @@ Wheel.Class('Wheel.View', {
   },
 
   _getTemplateRepository: function() {
-    return window.app && window.app.templates;
+    return this.App && this.App.app && this.App.app.templates;
   },
 
   templates: function() {
-    if (!this._templates) {
+    if (!this._templates && this !== Wheel.View) {
       this._templates = Wheel.Utils.ObjectPath.read(this.id, this.templateRepository());
       var superTemplates = this.superclass.templates && this.superclass.templates();
       if (superTemplates && this._templates) {

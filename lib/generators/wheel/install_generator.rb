@@ -5,6 +5,6 @@ class WheelGenerator < Rails::Generators::Base
     directory 'src',        'vendor/assets/javascripts/wheel/src'
     directory 'vendor',     'vendor/assets/javascripts/wheel/vendor'
     directory 'dist',       'vendor/assets/javascripts/wheel/dist'
-    directory 'manifests',  'vendor/assets/javascripts/wheel/manifests'
+    directory 'lib/generators/wheel/manifests', 'vendor/assets/javascripts/wheel/manifests'
   end
 end

@@ -279,12 +279,12 @@ describe('Wheel.Base', function() {
     describe('#publish', function() {
       describe('when there is a publisher', function() {
         beforeEach(function() {
-          Wheel.Publisher = Wheel.Base.build();
+          base._publisher = Wheel.Base.build();
         });
 
         it('calls trigger on the publisher', function() {
           var active;
-          Wheel.Publisher.on('active', function() {
+          base._publisher.on('active', function() {
             active = true;
           });
 
@@ -296,7 +296,7 @@ describe('Wheel.Base', function() {
           var expectedData = {foo: 'bar'};
 
           var called;
-          Wheel.Publisher.on('foo', function(data) {
+          base._publisher.on('foo', function(data) {
             expect(data).toEqual(expectedData);
             called = true;
           });
@@ -307,7 +307,6 @@ describe('Wheel.Base', function() {
         });
       });
     });
-
 
     describe('#subscribe', function() {
       describe('when a publisher is available', function() {

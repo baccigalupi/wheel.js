@@ -37,12 +37,12 @@ Wheel._Class.subclass('Wheel.Base', {
 
   publish: function(eventType, eventData) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.trigger(eventType, eventData);
+    this._publisher.trigger(eventType, eventData);
   },
 
   subscribe: function(eventName, callback, context) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.on(eventName, callback, context || this);
+    this._publisher.on(eventName, callback, context || this);
   },
 
   _findPublisher: function() {

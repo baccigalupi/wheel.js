@@ -247,14 +247,36 @@ describe('Wheel.Base', function() {
       base = Wheel.Base.build();
     });
 
-    describe('#publish', function() {
-      it('throws an error if the Wheel.Publisher is not set', function() {
-        Wheel.Publisher = null;
+    describe('finding a publisher', function() {
+      it('defaults to the app in the object path', function() {
+        var App, app, Sub, sub;
+        App = Wheel.App.subclass('App');
+        Sub = Wheel.Base.subclass('App.Base');
+        app = App.build();
+        sub = Sub.build();
+
         expect(function() {
-          base.publish('foo', {});
-        }).toThrow();
+          sub._findPublisher();
+        }).not.toThrow();
+        expect(sub._publisher).toBe(app);
       });
 
+      it('can also use the Wheel.Publisher if it has been set', function() {
+        Wheel.Publisher = Wheel.Base.build();
+        expect(function() {
+          base._findPublisher();
+        }).not.toThrow();
+      });
+
+      it('throws an error if it cannot find one', function() {
+        Wheel.Publisher = null;
+        expect(function() {
+          base._findPublisher();
+        }).toThrow();
+      });
+    });
+
+    describe('#publish', function() {
       describe('when there is a publisher', function() {
         beforeEach(function() {
           Wheel.Publisher = Wheel.Base.build();
@@ -272,7 +294,7 @@ describe('Wheel.Base', function() {
 
         it('passes the data', function() {
           var expectedData = {foo: 'bar'};
-          
+
           var called;
           Wheel.Publisher.on('foo', function(data) {
             expect(data).toEqual(expectedData);
@@ -288,13 +310,6 @@ describe('Wheel.Base', function() {
 
 
     describe('#subscribe', function() {
-      it('throws an error if the Wheel.Publisher is not set', function() {
-        Wheel.Publisher = null;
-        expect(function() {
-          base.subscribe('foo', function() {});
-        }).toThrow();
-      });
-
       describe('when a publisher is available', function() {
         beforeEach(function() {
           Wheel.Publisher = Wheel.Base.build();

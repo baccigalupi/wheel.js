@@ -36,18 +36,19 @@ Wheel._Class.subclass('Wheel.Base', {
   },
 
   publish: function(eventType, eventData) {
-    this._throwIfNoPublisher();
+    this._publisher || this._findPublisher();
     Wheel.Publisher.trigger(eventType, eventData);
   },
 
   subscribe: function(eventName, callback, context) {
-    this._throwIfNoPublisher();
+    this._publisher || this._findPublisher();
     Wheel.Publisher.on(eventName, callback, context || this);
   },
 
-  _throwIfNoPublisher: function() {
-    if (!Wheel.Publisher) {
-      throw "Wheel.Publisher is not defined. We cannot use publish/subscribe yet!";
+  _findPublisher: function() {
+    this._publisher = (this._class.App && this._class.App.app) || Wheel.Publisher;
+    if (!this._publisher) {
+      throw "Cannot find app or Wheel.Publisher. Please namespace your classes under an application class or assign a Wheel.Publisher";
     }
   }
 }, {

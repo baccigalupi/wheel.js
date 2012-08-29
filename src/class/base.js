@@ -59,12 +59,12 @@ Wheel._Class.subclass('Wheel.Base', {
   build: function() {
     var klass = this;
 
-    function creator(args) {
+    function Class(args) {
       return klass.apply(this, args);
     }
-    creator.prototype = klass.prototype;
+    Class.prototype = klass.prototype;
 
-    return new creator(arguments);
+    return new Class(arguments);
   },
 
   attrAccessor: function(prop) {
@@ -85,7 +85,7 @@ Wheel._Class.subclass('Wheel.Base', {
     var klass = this._subclass(name, iprops, cprops);
     if (klass.properties && klass.properties.length) {
       $.each(klass.properties, function(i, prop) {
-        if ( typeof klass.prototype[prop] != 'function' ) {
+        if ( typeof klass.prototype[prop] !== 'function' ) {
           klass.attrAccessor(prop);
         }
       });
@@ -95,7 +95,7 @@ Wheel._Class.subclass('Wheel.Base', {
       var length = path.length;
       var i, base = window;
       for (i = 0; i < length-1; i++) {
-        var base = window[path[i]];
+        base = window[path[i]];
         if (base && base._typeof === 'Wheel.App') {
           klass.App = base;
           break;

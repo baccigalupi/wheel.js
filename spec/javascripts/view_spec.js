@@ -288,113 +288,70 @@ describe("Wheel.View", function () {
   });
 
   describe('templates', function() {
-    var View, repository;
-
-    it('repository defaults to the apps templates object', function() {
-      repository = {foo: 'bar'};
-      window.app = {
-        templates: repository
-      };
-
-      View = Wheel.View.subclass();
-      expect(View.templateRepository()).toBe(repository);
-    });
-
-    it('asks the Templates respitory for templates related to its class', function() {
+    var App, app, View, repository;
+    beforeEach(function() {
       repository = {
-        'View': {
+        'App.View': {
           'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
           'default': '<div class="thing">Thingy</div>'
         }
       };
-      View = Wheel.View.subclass('View');
-      View.templateRepository = function() { return repository; };
-      expect(View.templates()).toEqual(repository['View']);
+
+      App = Wheel.App.subclass('App');
+      View = Wheel.View.subclass('App.View');
+
+      app = App.build();
+      app.templates.append(repository);
     });
 
-    describe('#templates', function() {
-      var fullRepo = {
-        'View': {
-          'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
-          'default': '<div class="thing">Thingy</div>'
-        }
-      };
+    afterEach(function() {
+    });
 
-      beforeEach(function() {
-        View = Wheel.View.subclass('View');
-        View.templateRepository = function() { return repository; };
+    it('repository defaults to the app\'s templates object', function() {
+      expect(View.templateRepository()).toBe(app.templates);
+    });
+
+    it('asks the template\'s respitory for templates related to its class', function() {
+      expect(View.templates()).toEqual(repository['App.View']);
+    });
+
+    describe('#template', function() {
+      it('will return the default view if templates is a hash', function() {
+        expect(View.template()).toBe(repository['App.View']['default']);
       });
 
-      describe('#template', function() {
-        it('will return the template if it is a string', function() {
-          repository = { View: "<div class='thingy'>Thingy</div>" };
-
-          expect(View.template()).toBe(repository['View']);
-        });
-
-        it('will return the default view if templates is a hash', function() {
-          repository = fullRepo;
-          expect(View.template()).toBe(repository['View']['default']);
-        });
-
-        it('will return an alternate view when passed a key argument', function() {
-          repository = fullRepo;
-          expect(View.template('create')).toBe(repository['View']['create']);
-        });
-
-        it('view class can customize its default template', function() {
-          repository = fullRepo;
-          View.defaultTemplate = 'create';
-          expect(View.template()).toBe(repository['View']['create']);
-        });
+      it('will return an alternate view when passed a key argument', function() {
+        expect(View.template('create')).toBe(repository['App.View']['create']);
       });
 
-      describe('#templates when the View id is deeply nested', function() {
-        var App;
-        beforeEach(function() {
-          window.App = App = {
-            Views: {}
-          };
-          repository = {
-            'App': {
-              'Views': {
-                'Card': "<div class='card'></div>"
-              }
-            }
-          };
-          Wheel.View.subclass('App.Views.Card');
-          App.Views.Card.templateRepository = function() { return repository; };
-        });
-
-        it('finds via the object path', function() {
-          expect(App.Views.Card.templates()).toBe(repository['App']['Views']['Card']);
-        });
+      it('view class can customize its default template', function() {
+        View.defaultTemplate = 'create';
+        expect(View.template()).toBe(repository['App.View']['create']);
       });
 
-      describe('#templates when the parent class has templates', function() {
+      it('will return the template if it is a string', function() {
+        app.templates['App']['View'] = "<div class='view'>view</div>";
+        expect(View.template()).toBe("<div class='view'>view</div>");
+
+        // cleanup
+        app.templates['App']['View'] = repository['App.View'];
+      });
+
+      describe('when the parent class also has templates', function() {
         var SubView;
         beforeEach(function() {
-          repository = {
-            'View': {
-              'create': '<form class="new_thing"><input type="submit" value="Make a new thingy!"/></form>',
-              'default': '<div class="thing">Thingy</div>'
-            },
-            'SubView' : {
-              'default': '<div class="thangy">Thangy</div>'
-            }
-          };
-          View = Wheel.View.subclass('View');
-          SubView = View.subclass('SubView');
-          View.templateRepository = function() { return repository; };
-          SubView.templateRepository = View.templateRepository;
+          SubView = View.subclass('App.SubView');
+          app.templates.append({'App.SubView': {
+            'default': '<div class="thangy">Thangy</div>'
+          }});
         });
 
-        it('should include its own view(s)', function() {
-          expect(SubView.templates()['default']).toBe(repository.SubView['default']);
+        it('should include its own view', function() {
+          expect(SubView.templates()['default']).toBe(app.templates['App']['SubView']['default']);
         });
 
         it('should include non-colliding parent views', function() {
-          expect(SubView.templates().create).toBe(repository.View.create);
+          expect(SubView.templates().create).toBe(app.templates['App']['View']['create']);
         });
       });
     });

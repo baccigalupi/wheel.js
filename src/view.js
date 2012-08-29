@@ -86,11 +86,11 @@ Wheel.Class('Wheel.View', {
   },
 
   _getTemplateRepository: function() {
-    return window.app && window.app.templates;
+    return this.App && this.App.app && this.App.app.templates;
   },
 
   templates: function() {
-    if (!this._templates) {
+    if (!this._templates && this !== Wheel.View) {
       this._templates = Wheel.Utils.ObjectPath.read(this.id, this.templateRepository());
       var superTemplates = this.superclass.templates && this.superclass.templates();
       if (superTemplates && this._templates) {

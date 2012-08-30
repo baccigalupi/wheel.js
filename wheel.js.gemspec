@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = "2012-08-29"
+  s.date = "2012-08-30"
   s.description = "MV* JavaScript framework tailored to Rails, making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app."
   s.email = "baccigalupi@gmail.com"
   s.extra_rdoc_files = [
@@ -55,6 +55,7 @@ Gem::Specification.new do |s|
     "spec/javascripts/mixins/ajax_spec.js",
     "spec/javascripts/mixins/draggable_spec.js",
     "spec/javascripts/mixins/events_spec.js",
+    "spec/javascripts/mixins/managed_ajax_spec.js",
     "spec/javascripts/mixins/storage_spec.js",
     "spec/javascripts/model_spec.js",
     "spec/javascripts/spec_runner.html",
@@ -76,6 +77,7 @@ Gem::Specification.new do |s|
     "spec/javascripts/widgeteria/ajax_link_spec.js",
     "spec/javascripts/widgeteria/form_spec.js",
     "spec/javascripts/widgeteria/link_spec.js",
+    "spec/javascripts/zepto_shim_spec.js",
     "src/app.js",
     "src/banner.js",
     "src/class.js",
@@ -89,6 +91,7 @@ Gem::Specification.new do |s|
     "src/load.js",
     "src/mixins/ajax.js",
     "src/mixins/events.js",
+    "src/mixins/managed_ajax.js",
     "src/mixins/storage.js",
     "src/model.js",
     "src/namespace.js",
@@ -107,6 +110,7 @@ Gem::Specification.new do |s|
     "src/widgeteria/ajax_link.js",
     "src/widgeteria/form.js",
     "src/widgeteria/link.js",
+    "src/zepto_shim.js",
     "vendor/javascripts/jquery/jquery-1.7.1.js",
     "vendor/javascripts/modernizr/modernizr-2.5.3.js",
     "vendor/javascripts/modernizr/modernizr.custom.js",

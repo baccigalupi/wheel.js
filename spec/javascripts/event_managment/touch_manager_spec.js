@@ -48,6 +48,9 @@ describe('Wheel.TouchManager', function() {
   });
 
   afterEach(function() {
+    // TODO: figure out why this is only interfering with tapend test
+    // and not others
+    //
     //manager.$.remove();
     //div.remove();
   });

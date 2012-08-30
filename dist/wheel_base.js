@@ -1011,21 +1011,27 @@ Wheel.Mixins.Events = {
 
 Wheel.Mixins.Ajax = {
   send: function (overrides) {
-    this._requestQueue = this._requestQueue || Wheel.Utils.RequestQueue.singleton;
-    var data = this.data();
+    overrides = overrides || {};
+    var data = overrides.data || this.data();
 
     var opts = {
-      url: this.url,
-      context: this,
-      data: data,
-      type: (overrides && overrides.httpMethod) || this.httpMethod,
+      url:      overrides.url || this.url,
+      data:     data,
+      type:     overrides.httpMethod || this.httpMethod,
       dataType: this.dataType || 'json',
-      success: this.onSuccess,
-      error: this.processError,
-      complete: this.onCompletion
+      success:  overrides.success || this.onSuccess,
+      error:    this.processError,
+      complete: overrides.complete || this.onCompletion
     };
     overrides && $.extend(opts, overrides);
-    this._requestQueue.add(opts);
+    this._send(opts);
+  },
+
+  _send: function(opts) {
+    opts.success =  opts.success.bind(this);
+    opts.complete = opts.complete.bind(this);
+    opts.error =    opts.error.bind(this);
+    $.ajax(opts);
   },
 
   processError: function (xhr) {
@@ -1209,12 +1215,12 @@ Wheel._Class.subclass('Wheel.Base', {
 
   publish: function(eventType, eventData) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.trigger(eventType, eventData);
+    this._publisher.trigger(eventType, eventData);
   },
 
   subscribe: function(eventName, callback, context) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.on(eventName, callback, context || this);
+    this._publisher.on(eventName, callback, context || this);
   },
 
   _findPublisher: function() {
@@ -1280,6 +1286,12 @@ Wheel._Class.subclass('Wheel.Base', {
 });
 
 Wheel.Base.mixin(Wheel.Mixins.Events);
+
+if (Wheel.Mixins['ManagedAjax']) {
+  Wheel.Base.mixin(Wheel.Mixins.ManagedAjax);
+} else {
+  Wheel.Base.mixin(Wheel.Mixins.Ajax);
+}
 
 Wheel.Class = function(x, y, z) {
   return Wheel.Base.subclass(x, y, z);
@@ -1564,7 +1576,7 @@ Wheel.Class('Wheel.App', {
     this._super(opts);
     this.initApp();
     this._class.app = this;
-    window.app = this;
+    this._class.App = this._class;
   },
 
   initApp: function() {

@@ -43,7 +43,8 @@ task('build', [], function (params) {
     ],
 
     modern: [
-      'vendor/javascripts/zepto/zepto-1.0rc1.js'
+      'vendor/javascripts/zepto/zepto.js',
+      'src/zepto_shim.js'
     ],
 
     legacy: [

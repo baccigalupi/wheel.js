@@ -1176,12 +1176,12 @@ Wheel._Class.subclass('Wheel.Base', {
 
   publish: function(eventType, eventData) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.trigger(eventType, eventData);
+    this._publisher.trigger(eventType, eventData);
   },
 
   subscribe: function(eventName, callback, context) {
     this._publisher || this._findPublisher();
-    Wheel.Publisher.on(eventName, callback, context || this);
+    this._publisher.on(eventName, callback, context || this);
   },
 
   _findPublisher: function() {
@@ -1248,6 +1248,12 @@ Wheel._Class.subclass('Wheel.Base', {
 
 Wheel.Base.mixin(Wheel.Mixins.Events);
 
+if (Wheel.Mixins['ManagedAjax']) {
+  Wheel.Base.mixin(Wheel.Mixins.ManagedAjax);
+} else {
+  Wheel.Base.mixin(Wheel.Mixins.Ajax);
+}
+
 Wheel.Class = function(x, y, z) {
   return Wheel.Base.subclass(x, y, z);
 };
@@ -1312,7 +1318,7 @@ Wheel.Class('Wheel.App', {
     this._super(opts);
     this.initApp();
     this._class.app = this;
-    window.app = this;
+    this._class.App = this._class;
   },
 
   initApp: function() {

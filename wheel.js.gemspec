@@ -115,7 +115,7 @@ Gem::Specification.new do |s|
     "vendor/javascripts/modernizr/modernizr-2.5.3.js",
     "vendor/javascripts/modernizr/modernizr.custom.js",
     "vendor/javascripts/mustache/mustache.js",
-    "vendor/javascripts/zepto/zepto-1.0rc1.js",
+    "vendor/javascripts/zepto/zepto.js",
     "wheel.js.gemspec"
   ]
   s.homepage = "http://github.com/baccigalupi/wheel.js"

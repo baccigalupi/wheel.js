@@ -37,15 +37,14 @@ describe('Wheel.App', function() {
         app = Wheel.App.build();
       });
 
-      it('stores it on the window', function() {
-        expect(window.app).toBeA(Wheel.App);
-        expect(window.app).toBe(app);
-      });
-
       it('also stores it on the App class', function() {
         expect(Wheel.App.app).toBeA(Wheel.App);
         expect(Wheel.App.app).toBe(app);
       });
+    });
+
+    it('recognizes itself as a publisher', function() {
+      expect(function() {app.publish('foo')}).not.toThrow();
     });
   });
 

@@ -311,7 +311,7 @@ describe('Wheel.Base', function() {
     describe('#subscribe', function() {
       describe('when a publisher is available', function() {
         beforeEach(function() {
-          Wheel.Publisher = Wheel.Base.build();
+          base._publisher = Wheel.Base.build();
         });
 
         it('binds the callback to an event name', function() {

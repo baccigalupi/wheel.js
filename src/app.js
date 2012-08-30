@@ -3,7 +3,7 @@ Wheel.Class('Wheel.App', {
     this._super(opts);
     this.initApp();
     this._class.app = this;
-    window.app = this;
+    this._class.App = this._class;
   },
 
   initApp: function() {

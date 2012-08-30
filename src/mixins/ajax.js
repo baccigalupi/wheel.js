@@ -1,20 +1,26 @@
 Wheel.Mixins.Ajax = {
   send: function (overrides) {
-    this._requestQueue = this._requestQueue || Wheel.Utils.RequestQueue.singleton;
-    var data = this.data();
+    overrides = overrides || {};
+    var data = overrides.data || this.data();
 
     var opts = {
-      url: this.url,
-      context: this,
-      data: data,
-      type: (overrides && overrides.httpMethod) || this.httpMethod,
+      url:      overrides.url || this.url,
+      data:     data,
+      type:     overrides.httpMethod || this.httpMethod,
       dataType: this.dataType || 'json',
-      success: this.onSuccess,
-      error: this.processError,
-      complete: this.onCompletion
+      success:  overrides.success || this.onSuccess,
+      error:    this.processError,
+      complete: overrides.complete || this.onCompletion
     };
     overrides && $.extend(opts, overrides);
-    this._requestQueue.add(opts);
+    this._send(opts);
+  },
+
+  _send: function(opts) {
+    opts.success =  opts.success.bind(this);
+    opts.complete = opts.complete.bind(this);
+    opts.error =    opts.error.bind(this);
+    $.ajax(opts);
   },
 
   processError: function (xhr) {

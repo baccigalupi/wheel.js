@@ -2,15 +2,16 @@ describe("Wheel.Mixins.Ajax", function () {
   var Sender, sender;
 
   beforeEach(function() {
-    Wheel.Utils.RequestQueue.singleton = {
-      add: jasmine.createSpy()
-    };
+    spyOn($, 'ajax');
 
     Sender = Wheel.View.subclass({
       init: function () {
         this.url = 'http://csenderity.com';
       },
-      send: function (overrides) { this.bar = 'foo'; this._super(overrides); },
+      send: function (overrides) {
+        this.bar = 'foo';
+        this._super(overrides);
+      },
       data: function() { return {}; },
       onSuccess: function(response) { this.response = response; },
       onCompletion: function(response) { this.response = response },
@@ -25,17 +26,7 @@ describe("Wheel.Mixins.Ajax", function () {
     sender = new Sender();
   });
 
-  describe("init", function (){
-    it('runs', function () {
-      expect(sender.url).toBe('http://csenderity.com');
-    });
-  });
-
   describe("send", function () {
-    beforeEach(function() {
-      sender._requestQueue = Wheel.Utils.RequestQueue.singleton; // the spy
-    });
-
     describe('setting defaults', function() {
       beforeEach(function() {
         sender.send();
@@ -68,7 +59,7 @@ describe("Wheel.Mixins.Ajax", function () {
       var sendWith = function(httpMethod) {
         sender.httpMethod = httpMethod;
         sender.send();
-        args = sender._requestQueue.add.argsForCall[0][0];
+        args = $.ajax.mostRecentCall.args[0];
       };
 
       beforeEach(function() {
@@ -88,7 +79,7 @@ describe("Wheel.Mixins.Ajax", function () {
         });
 
         it("calls the request queue's send method", function () {
-          expect(sender._requestQueue.add).toHaveBeenCalled();
+          expect($.ajax).toHaveBeenCalled();
         });
 
         it("uses the right url", function() {
@@ -107,7 +98,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = sender._requestQueue.add.argsForCall[0][0];
+          args = $.ajax.mostRecentCall.args[0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -118,7 +109,7 @@ describe("Wheel.Mixins.Ajax", function () {
             async: false
           });
 
-          args = sender._requestQueue.add.argsForCall[0][0];
+          args = $.ajax.mostRecentCall.args[0];
           expect(args.type).toBe('HEAD');
           expect(args.async).toBe(false);
         });
@@ -128,7 +119,7 @@ describe("Wheel.Mixins.Ajax", function () {
             data: {foo: 'bar'}
           });
 
-          args = sender._requestQueue.add.argsForCall[0][0];
+          args = $.ajax.mostRecentCall.args[0];
           expect(args.data).toEqual({foo: 'bar'});
         });
       });
@@ -138,36 +129,28 @@ describe("Wheel.Mixins.Ajax", function () {
           sendWith('get');
         });
 
-        it("uses the object as context", function () {
-          expect(args.context).toBe(sender);
-        });
-
-        it("registers a success handler", function () {
-          expect(args.success).toBe(sender.onSuccess)
+        it("binds the success handler", function () {
+          args.success('success response');
+          expect(sender.response).toBe('success response');
         });
 
         it("registers an error handler", function () {
-          expect(args.error).toBe(sender.processError);
+          args.error({
+            responseText: '"error response"',
+            statusCode: function() { return 404; }
+          });
+          expect(sender.response).toBe('error response');
         });
 
         it("registers a complete handler", function () {
-          expect(args.complete).toBe(sender.onCompletion);
+          args.complete('complete response');
+          expect(sender.response).toBe('complete response');
         });
       });
     });
   });
 
   describe('mixin call the class defined callbacks', function() {
-    it('onSuccess(response)', function() {
-      sender.onSuccess({status: 'all good'});
-      expect(sender.response).toEqual({status: 'all good'});
-    });
-
-    it('onCompletion(response)', function() {
-      sender.onCompletion({status: 'done!'});
-      expect(sender.response).toEqual({status: 'done!'});
-    });
-
     describe('processError(xhr)', function () {
       beforeEach(function () {
         spyOn(sender, 'onError');
@@ -190,4 +173,6 @@ describe("Wheel.Mixins.Ajax", function () {
     });
   });
 });
+
+
 

@@ -18,6 +18,7 @@ src_files:
 
     - src/namespace.js
     - src/utils/testers.js
+    - src/mixins/ajax.js
     - src/mixins/**/*.js
     - src/utils/object_path.js
     - src/class.js

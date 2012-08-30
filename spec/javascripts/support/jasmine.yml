@@ -16,6 +16,7 @@ src_files:
     - vendor/javascripts/modernizr/modernizr-2.5.3.js
     - vendor/javascripts/mustache/mustache.js
 
+    - src/zepto_shim.js
     - src/namespace.js
     - src/utils/testers.js
     - src/mixins/ajax.js

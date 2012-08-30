@@ -135,5 +135,4 @@ Wheel.Base.subclass('Wheel.Model', {
     return models;
   }
 });
-Wheel.Model.mixin(Wheel.Mixins.ManagedAjax);
 Wheel.Model.mashin(Wheel.Mixins.Events);

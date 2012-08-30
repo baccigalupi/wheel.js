@@ -109,6 +109,12 @@ Wheel._Class.subclass('Wheel.Base', {
 
 Wheel.Base.mixin(Wheel.Mixins.Events);
 
+if (Wheel.Mixins['ManagedAjax']) {
+  Wheel.Base.mixin(Wheel.Mixins.ManagedAjax);
+} else {
+  Wheel.Base.mixin(Wheel.Mixins.Ajax);
+}
+
 Wheel.Class = function(x, y, z) {
   return Wheel.Base.subclass(x, y, z);
 };

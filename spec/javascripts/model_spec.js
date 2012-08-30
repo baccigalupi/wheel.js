@@ -98,7 +98,7 @@ describe('Wheel.Model', function() {
     });
 
     it('mixes in Ajax', function() {
-      expect(Task.prototype.send).toBe(Wheel.Mixins.Ajax.send);
+      expect(Task.prototype.send).toBe(Wheel.Mixins.ManagedAjax.send);
     });
 
     it('mashes in Events', function() {

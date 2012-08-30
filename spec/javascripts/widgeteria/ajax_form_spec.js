@@ -19,10 +19,6 @@ describe('Wheel.Widgeteria.AjaxForm', function() {
     expect(form instanceof Wheel.Widgeteria.AjaxForm).toBe(true);
   });
 
-  it("mixes in Ajax", function () {
-    expect(form.send).toBe(Wheel.Mixins.Ajax.send);
-  })
-
   describe("onSubmit", function () {
     var args, spy, data;
     beforeEach(function() {

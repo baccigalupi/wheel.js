@@ -3,5 +3,3 @@ Wheel.Widgeteria.Form.subclass('Wheel.Widgeteria.AjaxForm', {
     this.send();
   }
 });
-
-Wheel.Widgeteria.AjaxForm.mixin(Wheel.Mixins.Ajax);

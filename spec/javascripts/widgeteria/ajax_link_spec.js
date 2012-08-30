@@ -15,10 +15,6 @@ describe("Wheel.Widgeteria.AjaxLink", function () {
     expect(link instanceof Wheel.Widgeteria.AjaxLink).toBe(true);
   });
 
-  it("mixes in Ajax", function () {
-    expect(link.send).toBe(Wheel.Mixins.Ajax.send);
-  })
-
   describe("onClick", function () {
     var args, spy, data;
     beforeEach(function() {

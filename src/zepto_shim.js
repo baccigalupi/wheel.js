@@ -1,4 +1,4 @@
-(function() {
+;(function() {
   var remove = $.fn.remove;
   $.fn.detach = remove;
 

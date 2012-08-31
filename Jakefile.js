@@ -4,6 +4,8 @@ var Step = require('step');
 
 desc('Concat and minify the various distributions');
 task('build', function () {
+  console.log('building distributions');
+
   var manifests = {
     light: [
       'vendor/javascripts/modernizr/modernizr.custom.js',
@@ -140,21 +142,29 @@ namespace('bump', function() {
 });
 
 task('gemspec', function() {
+  console.log('creating the gemspec');
   exec('rake gemspec');
 });
 
 task('push', function() {
+  console.log('Donig the git dance to github');
   Step(
     function() {
-      exec('git add .');
+      exec('git add .', this);
     },
-    function(err, stdout, stderr) {
+    function(err, text) {
+      console.log(text);
       if (err) throw err;
-      exec('git commit -m "release"')
+      exec('git commit -m "release"', this)
     },
-    function(err, stdout, stderr) {
+    function(err, text) {
+      console.log(text);
       if (err) throw err;
-      exec('git push');
+      exec('git push', this);
+    },
+    function(err, text) {
+      console.log(text);
+      if (err) throw err;
     }
   );
 });

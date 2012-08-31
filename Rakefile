@@ -27,8 +27,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "wheel.js"
   gem.homepage = "http://github.com/baccigalupi/wheel.js"
   gem.license = "MIT"
-  gem.summary = %Q{MV* JavaScript framework tailored to Rails}
-  gem.description = %Q{MV* JavaScript framework tailored to Rails, making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app.}
+  gem.summary = %Q{MV* JavaScript framework for mobile and beyond}
+  gem.description = %Q{MV* JavaScript framework making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app.}
   gem.email = "baccigalupi@gmail.com"
   gem.authors = ["Kane Baccigalupi"]
   # dependencies defined in Gemfile

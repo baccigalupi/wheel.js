@@ -1,5 +1,7 @@
-desc('Build the distributions, or pass in a particular name to just build that.');
-task('build', [], function (params) {
+var fs = require('fs');
+
+desc('Concat and minify the various distributions');
+task('build', function () {
   var manifests = {
     light: [
       'vendor/javascripts/modernizr/modernizr.custom.js',
@@ -54,7 +56,6 @@ task('build', [], function (params) {
     ]
   };
 
-  var fs = require('fs');
   var parser = require('uglify-js').parser;
   var uglifier = require('uglify-js').uglify;
   var banner = fs.readFileSync('src/banner.js').toString();
@@ -90,11 +91,40 @@ task('build', [], function (params) {
     fs.writeSync(fileOut, loader);
   };
 
-  if (name) {
+  for( var name in manifests) {
     buildFile(name);
-  } else {
-    for( var name in manifests) {
-      buildFile(name);
-    }
   }
+});
+
+namespace('bump', function() {
+  var bump = function(i) {
+    var splitter = '.';
+    var version = fs.readFileSync('VERSION').toString();
+    version = version.split(splitter);
+    version[1] = (+version[1]) + 1;
+    version = version.join(splitter).trim();
+
+    console.log('bumping version to: ', version);
+
+    // write back to VERSION
+    var fileOut = fs.openSync('VERSION', 'w+');
+    fs.writeSync(fileOut, version);
+
+    // read update and write back to package.json
+    var package = JSON.parse(fs.readFileSync("package.json").toString());
+    package.version = version;
+    fileOut = fs.openSync('package.json', 'w+');
+    package = JSON.stringify(package, null, 2);
+    fs.writeSync(fileOut, package);
+  };
+
+  desc('bump the minor release number in the gem and package');
+  task('minor', function() {
+    bump(1);
+  });
+
+  desc('bump the patch release number in the gem and package');
+  task('patch', function() {
+    bump(2);
+  });
 });

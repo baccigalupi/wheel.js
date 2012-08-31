@@ -141,27 +141,30 @@ namespace('bump', function() {
   });
 });
 
-task('gemspec', function() {
-  console.log('creating the gemspec');
-  exec('rake gemspec');
-});
-
-task('push', function() {
-  console.log('Donig the git dance to github');
+task('push', function(message) {
   Step(
     function() {
+      exec('rake gemspec', this);
+    },
+
+    function(err, text) {
+      console.log(text);
+      if (err) throw err;
       exec('git add .', this);
     },
+
     function(err, text) {
       console.log(text);
       if (err) throw err;
       exec('git commit -m "release"', this)
     },
+
     function(err, text) {
       console.log(text);
       if (err) throw err;
       exec('git push', this);
     },
+
     function(err, text) {
       console.log(text);
       if (err) throw err;
@@ -169,20 +172,18 @@ task('push', function() {
   );
 });
 
-namespace('release', function() {
+namespace('release', function(message) {
   desc('build distributions; bump the patch version; create the gemspec; commit; and push to github');
   task('patch', function() {
     jake.Task['build'].invoke();
     jake.Task['bump:patch'].invoke();
-    jake.Task['gemspec'].invoke();
-    jake.Task['push'].invoke();
+    jake.Task['push'].invoke(message);
   });
 
   desc('build distributions; bump the minor version; create the gemspec; commit; and push to github');
-  task('minor', function() {
+  task('minor', function(message) {
     jake.Task['build'].invoke();
     jake.Task['bump:minor'].invoke();
-    jake.Task['gemspec'].invoke();
-    jake.Task['push'].invoke();
+    jake.Task['push'].invoke(message);
   });
 });

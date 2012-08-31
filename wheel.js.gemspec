@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "wheel.js"
-  s.version = "0.3.1"
+  s.version = "0.3.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = "2012-08-30"
-  s.description = "MV* JavaScript framework tailored to Rails, making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app."
+  s.date = "2012-08-31"
+  s.description = "MV* JavaScript framework making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app."
   s.email = "baccigalupi@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
     "lib/generators/wheel/manifests/wheel_legacy.js",
     "lib/generators/wheel/manifests/wheel_modern.js",
     "lib/wheel.js.rb",
+    "package.json",
     "spec/javascripts/app_spec.js",
     "spec/javascripts/class/base_spec.js",
     "spec/javascripts/class/helper_spec.js",
@@ -122,7 +123,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "MV* JavaScript framework tailored to Rails"
+  s.summary = "MV* JavaScript framework for mobile and beyond"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

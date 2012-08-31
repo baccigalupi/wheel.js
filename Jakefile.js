@@ -1,4 +1,6 @@
 var fs = require('fs');
+var exec = require('child_process').exec;
+var Step = require('step');
 
 desc('Concat and minify the various distributions');
 task('build', function () {
@@ -101,7 +103,10 @@ namespace('bump', function() {
     var splitter = '.';
     var version = fs.readFileSync('VERSION').toString();
     version = version.split(splitter);
-    version[1] = (+version[1]) + 1;
+    version[i] = (+version[i]) + 1;
+    for (i++; i < version.length; i++) {
+      version[i] = 0;
+    }
     version = version.join(splitter).trim();
 
     console.log('bumping version to: ', version);
@@ -118,6 +123,11 @@ namespace('bump', function() {
     fs.writeSync(fileOut, package);
   };
 
+  desc('bump the major release number in the gem and package');
+  task('major', function() {
+    bump(1);
+  });
+
   desc('bump the minor release number in the gem and package');
   task('minor', function() {
     bump(1);
@@ -126,5 +136,43 @@ namespace('bump', function() {
   desc('bump the patch release number in the gem and package');
   task('patch', function() {
     bump(2);
+  });
+});
+
+task('gemspec', function() {
+  exec('rake gemspec');
+});
+
+task('push', function() {
+  Step(
+    function() {
+      exec('git add .');
+    },
+    function(err, stdout, stderr) {
+      if (err) throw err;
+      exec('git commit -m "release"')
+    },
+    function(err, stdout, stderr) {
+      if (err) throw err;
+      exec('git push');
+    }
+  );
+});
+
+namespace('release', function() {
+  desc('build distributions; bump the patch version; create the gemspec; commit; and push to github');
+  task('patch', function() {
+    jake.Task['build'].invoke();
+    jake.Task['bump:patch'].invoke();
+    jake.Task['gemspec'].invoke();
+    jake.Task['push'].invoke();
+  });
+
+  desc('build distributions; bump the minor version; create the gemspec; commit; and push to github');
+  task('minor', function() {
+    jake.Task['build'].invoke();
+    jake.Task['bump:minor'].invoke();
+    jake.Task['gemspec'].invoke();
+    jake.Task['push'].invoke();
   });
 });

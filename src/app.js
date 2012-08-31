@@ -7,7 +7,15 @@ Wheel.Class('Wheel.App', {
   },
 
   initApp: function() {
+    this.buildEventManager();
+    this.buildAndLoadTemplates();
+  },
+
+  buildEventManager: function() {
     this.eventManager = Modernizr.touch ? Wheel.TouchManager.build() : Wheel.MouseManager.build();
+  },
+
+  buildAndLoadTemplates: function() {
     this.templates = Wheel.Templates.build();
     this.templates.gather(); // no harm, no foul
   },

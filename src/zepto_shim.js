@@ -1,6 +1,6 @@
 (function() {
   var remove = $.fn.remove;
-  $.fn.detatch = remove;
+  $.fn.detach = remove;
 
   $.fn.remove = function() {
     remove.apply(this, arguments);

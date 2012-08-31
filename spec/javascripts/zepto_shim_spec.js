@@ -35,9 +35,9 @@ describe('Shimming Zepto as needed', function() {
       });
     });
 
-    describe('#detatch', function() {
+    describe('#detach', function() {
       beforeEach(function() {
-        $shimmer.detatch();
+        $shimmer.detach();
       });
 
       it('removes the elements from the dom', function() {

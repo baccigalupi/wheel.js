@@ -57,12 +57,15 @@ describe('Wheel.TouchManager', function() {
 
   describe('virtualized/normalized events', function() {
     it('"tapstart" will be triggered on touchstart', function() {
-      div.trigger('touchstart');
+      div.trigger($.Event('touchstart', {touches:touches}));
       expect(events.tapstart).toHaveBeenCalled();
+      var event = events.tapstart.mostRecentCall.args[0];
+      expect(event.pageX).toBe(100);
+      expect(event.pageY).toBe(200);
     });
 
      it('"tapend" will be triggered on touchend', function() {
-      div.trigger('touchend');
+      div.trigger($.Event('touchend', {touches: touches}));
       expect(events.tapend).toHaveBeenCalled();
     });
   });

@@ -3,8 +3,6 @@
  * http://ejohn.org/blog/simple-javascript-inheritance/
  *
  */
-
-// The foundation of Wheel.js is a
 (function(){
   Function.prototype.bind = Function.prototype.bind || function(context) {
     var func = this;

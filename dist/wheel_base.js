@@ -1053,8 +1053,6 @@ Wheel.Mixins.Ajax = {
  * http://ejohn.org/blog/simple-javascript-inheritance/
  *
  */
-
-// The foundation of Wheel.js is a
 (function(){
   Function.prototype.bind = Function.prototype.bind || function(context) {
     var func = this;
@@ -1580,7 +1578,15 @@ Wheel.Class('Wheel.App', {
   },
 
   initApp: function() {
+    this.buildEventManager();
+    this.buildAndLoadTemplates();
+  },
+
+  buildEventManager: function() {
     this.eventManager = Modernizr.touch ? Wheel.TouchManager.build() : Wheel.MouseManager.build();
+  },
+
+  buildAndLoadTemplates: function() {
     this.templates = Wheel.Templates.build();
     this.templates.gather(); // no harm, no foul
   },
@@ -1848,9 +1854,6 @@ Wheel.View.subclass('Wheel.EventManager', {
     e = this._normalizeEvent(e);
     this._setTarget(e);
 
-    // this is the normalized start event
-    this._triggerEvent(e, 'tapstart');
-
     // clear existing timeout because there is a new touch start event
     // timeouts are set for 'taphold' and/or for 'tap'
     this._clearTimeout();
@@ -1859,6 +1862,9 @@ Wheel.View.subclass('Wheel.EventManager', {
     this.touch.x1 = e.pageX;
     this.touch.y1 = e.pageY;
     this.touch.time = Date.now();
+
+    // this is the normalized start event
+    this._triggerEvent(e, 'tapstart');
 
     if (!this._testDoubleTap() && !this.touch.ctrl) {
       // wait to see if this is a taphold event

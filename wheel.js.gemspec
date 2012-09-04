@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "wheel.js"
-  s.version = "0.3.6"
+  s.version = "0.3.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = "2012-08-31"
+  s.date = "2012-09-04"
   s.description = "MV* JavaScript framework making it easy to go from a little JavaScript with progressive inhancement to a one-page JS app."
   s.email = "baccigalupi@gmail.com"
   s.extra_rdoc_files = [

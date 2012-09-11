@@ -15,7 +15,6 @@ Wheel._Class.subclass('Wheel.Base', {
   },
 
   optionize: function(opts) {
-    var normalOpts = {};
     var opt;
     for( opt in opts ) {
       if ( typeof this._class.prototype[opt] == 'function' ) {
@@ -72,8 +71,9 @@ Wheel._Class.subclass('Wheel.Base', {
     var propId = '_'+prop;
     this.prototype[prop] = function(value){
       if (value !== undefined) {
+        var oldValue = this[propId];
         this[propId] = value;
-        if (self[propId] != value) {
+        if (oldValue !== value) {
           this.trigger('change');
           this.trigger('change:'+prop);
         }
